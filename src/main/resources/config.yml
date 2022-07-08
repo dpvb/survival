@@ -1,0 +1,3 @@
+mongo-connection-string: "dummy_connection_string"
+mongo-username: "dummy_username"
+mongo-password: "dummy_password"
