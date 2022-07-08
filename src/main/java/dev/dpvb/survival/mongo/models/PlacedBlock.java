@@ -1,7 +1,6 @@
 package dev.dpvb.survival.mongo.models;
 
 import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.codecs.pojo.annotations.BsonProperty;
 
 public final class PlacedBlock {
 
@@ -9,6 +8,10 @@ public final class PlacedBlock {
     private Long blockKey;
     private Integer health;
     private Integer tier;
+
+    public PlacedBlock() {
+
+    }
 
     public PlacedBlock(final Long blockKey, final Integer health, final Integer tier) {
         this.blockKey = blockKey;

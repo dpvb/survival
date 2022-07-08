@@ -2,8 +2,17 @@ package dev.dpvb.survival;
 
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.mongo.models.PlacedBlock;
+import dev.dpvb.survival.mongo.services.PlacedBlockService;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.Random;
 
 public final class Survival extends JavaPlugin {
 
@@ -17,6 +26,7 @@ public final class Survival extends JavaPlugin {
         setupConfigFile();
         // Setup MongoManager
         MongoManager.getInstance();
+
     }
 
     @Override

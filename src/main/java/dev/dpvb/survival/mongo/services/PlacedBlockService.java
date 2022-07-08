@@ -2,7 +2,9 @@ package dev.dpvb.survival.mongo.services;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import dev.dpvb.survival.mongo.models.PlacedBlock;
+import org.jetbrains.annotations.Nullable;
 
 public class PlacedBlockService {
 
@@ -12,7 +14,12 @@ public class PlacedBlockService {
         pbCollection = database.getCollection("placed-blocks", PlacedBlock.class);
     }
 
-    public void post(PlacedBlock placedBlock) {
+    @Nullable
+    public PlacedBlock get(long id) {
+        return pbCollection.find(Filters.eq(id)).first();
+    }
+
+    public void create(PlacedBlock placedBlock) {
         pbCollection.insertOne(placedBlock);
     }
 
