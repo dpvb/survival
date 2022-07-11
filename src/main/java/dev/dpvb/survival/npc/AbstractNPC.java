@@ -12,31 +12,25 @@ import org.bukkit.entity.Player;
 
 public abstract class AbstractNPC {
 
-    private final String name;
-    private final String displayName;
-    private final String skinConfigKey;
-    private final String skinTexture;
-    private final String skinSignature;
-    private NPC npc;
+    private final NPC npc;
 
+    /**
+     * Use this constructor to create an NPC for the first time. This constructor should not be used on reinitialization.
+     * @param name The name of the NPC
+     * @param displayName The display name of the NPC
+     * @param skinConfigKey The key of the configuration section for this NPC's skin.
+     * @param location The {@link Location} to create the NPC
+     */
     public AbstractNPC(String name, String displayName, String skinConfigKey, Location location) {
-        this.name = name;
-        this.displayName = displayName;
-        this.skinConfigKey = skinConfigKey;
-        this.skinTexture = Survival.Configuration.getNPCSkinSection().getString(skinConfigKey + ".texture");
-        this.skinSignature = Survival.Configuration.getNPCSkinSection().getString(skinConfigKey + ".signature");
-        setup(location);
-    }
-
-    private void setup(Location location) {
+        // Create NPC
         npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, name);
 
         // Set Skin
         SkinTrait skinTrait = npc.getOrAddTrait(SkinTrait.class);
         skinTrait.setSkinPersistent(
                 skinConfigKey,
-                skinSignature,
-                skinTexture
+                Survival.Configuration.getNPCSkinSection().getString(skinConfigKey + ".signature"),
+                Survival.Configuration.getNPCSkinSection().getString(skinConfigKey + ".texture")
         );
 
         // Setup Target Looking
@@ -51,6 +45,15 @@ public abstract class AbstractNPC {
 
         // Spawn the NPC
         npc.spawn(location);
+    }
+
+    /**
+     * The constructor used to initialize an AbstractNPC object that has already been created.
+     * This is used in conjunction with {@link NPCManager#loadNPCs()}
+     * @param npc The {@link NPC} to initialize this class with.
+     */
+    public AbstractNPC(NPC npc) {
+        this.npc = npc;
     }
 
     public abstract void rightClickAction(Player clicker);

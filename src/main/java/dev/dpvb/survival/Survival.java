@@ -2,6 +2,7 @@ package dev.dpvb.survival;
 
 import dev.dpvb.survival.commands.TestCommand;
 import dev.dpvb.survival.listeners.NPCListener;
+import dev.dpvb.survival.npc.NPCManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -21,6 +22,8 @@ public final class Survival extends JavaPlugin {
         getCommand("test").setExecutor(new TestCommand());
         // Register Listener
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
+        // Load NPCs
+        Bukkit.getScheduler().runTaskLater(this, NPCManager.getInstance()::loadNPCs, 5);
     }
 
     private void setupConfigFile() {
