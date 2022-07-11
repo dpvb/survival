@@ -9,7 +9,7 @@ import java.util.Set;
 public class NPCManager {
 
     private static NPCManager instance;
-    private Set<BasicEnchanterNPC> npcs;
+    private Set<AbstractNPC> npcs;
 
     private NPCManager() {
         npcs = new HashSet<>();
@@ -23,22 +23,22 @@ public class NPCManager {
         return instance;
     }
 
-    public void addNPC(BasicEnchanterNPC npc) {
+    public void addNPC(AbstractNPC npc) {
         npcs.add(npc);
     }
 
     @Nullable
-    public BasicEnchanterNPC getNPC(NPC npc) {
-        for (BasicEnchanterNPC basicEnchanterNPC : npcs) {
-            if (npc.equals(basicEnchanterNPC.getNPC())) {
-                return basicEnchanterNPC;
+    public AbstractNPC getNPC(NPC npc) {
+        for (AbstractNPC abstractNPC : npcs) {
+            if (npc.equals(abstractNPC.getNPC())) {
+                return abstractNPC;
             }
         }
 
         return null;
     }
 
-    public Set<BasicEnchanterNPC> getNPCs() {
+    public Set<AbstractNPC> getNPCs() {
         return npcs;
     }
 }
