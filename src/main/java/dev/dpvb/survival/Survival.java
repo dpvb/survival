@@ -1,5 +1,9 @@
 package dev.dpvb.survival;
 
+import dev.dpvb.survival.commands.TestCommand;
+import dev.dpvb.survival.listeners.NPCListener;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,6 +17,10 @@ public final class Survival extends JavaPlugin {
         instance = this;
         // Setup Config File
         setupConfigFile();
+        // Add Commands
+        getCommand("test").setExecutor(new TestCommand());
+        // Register Listener
+        Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
     }
 
     private void setupConfigFile() {
@@ -27,5 +35,9 @@ public final class Survival extends JavaPlugin {
 
     public static class Configuration {
         private static FileConfiguration config;
+
+        public static ConfigurationSection getNPCSkinSection() {
+            return config.getConfigurationSection("npc-skins");
+        }
     }
 }
