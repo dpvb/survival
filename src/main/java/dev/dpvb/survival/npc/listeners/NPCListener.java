@@ -1,4 +1,4 @@
-package dev.dpvb.survival.listeners;
+package dev.dpvb.survival.npc.listeners;
 
 import dev.dpvb.survival.npc.NPCManager;
 import net.citizensnpcs.api.event.NPCRightClickEvent;

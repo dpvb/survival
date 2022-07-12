@@ -1,7 +1,7 @@
 package dev.dpvb.survival;
 
 import dev.dpvb.survival.commands.TestCommand;
-import dev.dpvb.survival.listeners.NPCListener;
+import dev.dpvb.survival.npc.listeners.NPCListener;
 import dev.dpvb.survival.npc.NPCManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
