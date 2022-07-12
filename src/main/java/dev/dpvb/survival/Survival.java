@@ -4,10 +4,8 @@ import dev.dpvb.survival.commands.TestCommand;
 import dev.dpvb.survival.listeners.NPCListener;
 import dev.dpvb.survival.npc.NPCManager;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Survival extends JavaPlugin {
@@ -29,7 +27,6 @@ public final class Survival extends JavaPlugin {
     }
 
     private void setupConfigFile() {
-        getConfig().options().copyDefaults();
         saveDefaultConfig();
         Configuration.config = getConfig();
     }
@@ -43,6 +40,10 @@ public final class Survival extends JavaPlugin {
 
         public static ConfigurationSection getNPCSkinSection() {
             return config.getConfigurationSection("npc-skins");
+        }
+
+        public static ConfigurationSection getEnchantingSection() {
+            return config.getConfigurationSection("enchanting");
         }
     }
 }

@@ -1,9 +1,12 @@
 package dev.dpvb.survival.npc;
 
 import dev.dpvb.survival.Survival;
+import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
+import dev.dpvb.survival.npc.enchanting.BasicEnchanterNPC;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
@@ -31,6 +34,11 @@ public class NPCManager {
      * Should only be calling this in {@link Survival#onEnable()}
      */
     public void loadNPCs() {
+        // Load Enchantment Configuration for Enchantment NPCs
+        ConfigurationSection enchConfig = Survival.Configuration.getEnchantingSection();
+        BasicEnchanterNPC.loadEnchantments(enchConfig.getConfigurationSection("basic"));
+
+        // Create AbstractNPC instances.
         for (NPC npc : CitizensAPI.getNPCRegistry()) {
             switch (npc.getName().split(" ")[0]) {
                 case "b-ench" -> npcs.add(new BasicEnchanterNPC(npc));

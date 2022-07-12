@@ -1,16 +1,36 @@
+# swords
+# axes
+# bow
+# crossbow
+# trident
+# helmets
+# chestplates
+# leggings
+# boots
+
 enchanting:
   basic:
-    minecraft_axe:
-      - sharpness:
-          1: 1
-      - efficiency:
-          1: 1
-          2: 2
-          3: 4
-      - sweeping_edge:
-          1: 1
+    axes:
+      sharpness:
+        1: 1
+      efficiency:
+        1: 1
+        2: 2
+        3: 4
+      sweeping:
+        1: 1
+    swords:
+      sharpness:
+        1: 1
+      sweeping:
+        1: 1
+      fire_aspect:
+        1: 1
   advanced:
-
+    axes:
+      sharpness:
+        2: 2
+        3: 2
 
 
 

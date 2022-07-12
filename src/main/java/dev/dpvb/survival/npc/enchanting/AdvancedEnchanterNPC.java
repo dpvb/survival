@@ -1,5 +1,6 @@
-package dev.dpvb.survival.npc;
+package dev.dpvb.survival.npc.enchanting;
 
+import dev.dpvb.survival.npc.AbstractNPC;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
