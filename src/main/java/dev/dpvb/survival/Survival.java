@@ -4,8 +4,10 @@ import dev.dpvb.survival.commands.TestCommand;
 import dev.dpvb.survival.listeners.NPCListener;
 import dev.dpvb.survival.npc.NPCManager;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Survival extends JavaPlugin {

@@ -13,7 +13,8 @@ public class NPCListener implements Listener {
     @EventHandler
     public void onNPCRightClick(NPCRightClickEvent event) {
         NPC clickedNPC = event.getNPC();
-        Optional.ofNullable(NPCManager.getInstance().getNPC(clickedNPC)).ifPresent(npc -> npc.rightClickAction(event.getClicker()));
+        Optional.ofNullable(NPCManager.getInstance().getNPC(clickedNPC))
+                .ifPresent(npc -> npc.rightClickAction(event.getClicker()));
     }
 
 }

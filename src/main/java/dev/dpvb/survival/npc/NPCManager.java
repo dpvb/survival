@@ -32,10 +32,9 @@ public class NPCManager {
      */
     public void loadNPCs() {
         for (NPC npc : CitizensAPI.getNPCRegistry()) {
-            String npcName = npc.getName();
-            String identifier = npcName.split(" ")[0];
-            if (identifier.equals("b-ench")) {
-                npcs.add(new BasicEnchanterNPC(npc));
+            switch (npc.getName().split(" ")[0]) {
+                case "b-ench" -> npcs.add(new BasicEnchanterNPC(npc));
+                case "a-ench" -> npcs.add(new AdvancedEnchanterNPC(npc));
             }
         }
 

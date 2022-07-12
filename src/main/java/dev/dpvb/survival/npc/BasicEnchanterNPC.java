@@ -22,7 +22,6 @@ public class BasicEnchanterNPC extends AbstractNPC{
         super(npc);
     }
 
-
     @Override
     public void rightClickAction(Player clicker) {
         clicker.sendMessage("You right clicked me!");
