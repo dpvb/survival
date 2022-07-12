@@ -28,13 +28,7 @@ public class BasicEnchanterNPC extends AbstractNPC {
 
     @Override
     public void rightClickAction(Player clicker) {
-        System.out.println("THIS IS A TEST");
-        for (Map.Entry<ItemTypes, Set<EnchantmentCost>> entry : enchantments.entrySet()) {
-            System.out.println(entry.getKey().name());
-            for (EnchantmentCost ec : entry.getValue()) {
-                System.out.println("\t" + ec.toString());
-            }
-        }
+
     }
 
     public static void loadEnchantments(ConfigurationSection section) {

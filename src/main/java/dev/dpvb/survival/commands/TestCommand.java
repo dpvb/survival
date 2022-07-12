@@ -1,7 +1,6 @@
 package dev.dpvb.survival.commands;
 
-import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
-import dev.dpvb.survival.npc.NPCManager;
+import dev.dpvb.survival.util.skull.SkullGenerator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,9 +12,9 @@ public class TestCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player player) {
-            NPCManager.getInstance().addNPC(new AdvancedEnchanterNPC(player.getLocation()));
+            player.getInventory().addItem(SkullGenerator.getInstance().getSkullMap().get("right-arrow"));
 
-            player.sendMessage("NPC Created.");
+            player.sendMessage("Skull created.");
         }
 
         return false;
