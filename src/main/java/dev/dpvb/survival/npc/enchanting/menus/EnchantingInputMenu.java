@@ -28,7 +28,7 @@ public class EnchantingInputMenu extends InventoryWrapper {
     @Override
     public Inventory generateInventory() {
         // Create Inventory object
-        Inventory page1 = Bukkit.createInventory(player, 27, Component.text("Enchant an Item"));
+        Inventory inventory = Bukkit.createInventory(player, 27, Component.text("Enchant an Item"));
 
         // Initial Setup
         ItemStack backgroundItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
@@ -37,14 +37,14 @@ public class EnchantingInputMenu extends InventoryWrapper {
             if (i == 13) {
                 continue;
             }
-            page1.setItem(i, backgroundItem);
+            inventory.setItem(i, backgroundItem);
         }
 
         // Create Confirm Button
         confirmGenerator = new ItemGenerator(Material.RED_STAINED_GLASS_PANE)
                 .setDisplayName(Component.text("Give an Item").color(NamedTextColor.RED));
-        page1.setItem(26, confirmGenerator.build());
-        return page1;
+        inventory.setItem(26, confirmGenerator.build());
+        return inventory;
     }
 
     @Override
