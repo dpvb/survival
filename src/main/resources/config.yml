@@ -1,0 +1,44 @@
+# swords
+# axes
+# bow
+# crossbow
+# trident
+# helmets
+# chestplates
+# leggings
+# boots
+
+enchanting:
+  basic:
+    axes:
+      sharpness:
+        1: 1
+      efficiency:
+        1: 1
+        2: 2
+        3: 2
+    swords:
+      sharpness:
+        1: 1
+      sweeping:
+        1: 1
+      fire_aspect:
+        1: 1
+  advanced:
+    axes:
+      sharpness:
+        2: 2
+        3: 3
+      efficiency:
+        4: 2
+        5: 2
+
+
+
+npc-skins:
+  basic-enchanter:
+    signature: "PN2GAtnrVds8eyXI6dBzFUATwzF1A1cXi9KMj8HSxaoIO8SqQ3cm3B0ElXQxsAO1yGWnOLE1BN8eyQ3++jogrqWpv55BpvUv9ke1HKKo7YdAUQsFhN7SHe0GjpXDLDU/8RWZDcPyFpGb7br1LqIXDFzlNd7DdSX/MV47FD+vsNlSfYJOzFONoUc+MgrLaVegiwhrVTR+KA/UGfA1eu4yttoGcVBZcZvl9X2xMSfha6MOzly/c/NFbbwQmsSCCppj26DeTSf7hdW7rlJ2yUtfuzOPKM3v1hy0hWHeBNHgPn2keL/LAJvyD2hr38e1pKXoDF0MNI6jEbgf6jKZ3+fU6JVYo4yXKnFRU8mstM8HvyerEClnG2fedOLhh4429glspU25BmznHVIIHy3zObux/LIWFbZ1PIkPKULd15p1Xq0n6GEggRwtkYMHzh+JuNCEVEBX1D2HZepx4OCjtOiZd2kekAvFEowEAoelBbxzenwrRftLKLJCK2mluhH60lYoK407T+uiagb3dS3PGjey0L8nBQ7vMJ9qgC04XLO0S1Dpk7AGx/v/Nlp7AOQQ4qy5JXRhK1jAmleqh0kmBW1cq60n7hgzX/s8JnYscK7vt3vz8SFgOCQZjI01yDQlSFMrBVopyF7SmmyZ57Nbe7fyYMm6EU3tf3ZWRPSDLWURoTw="
+    texture: "ewogICJ0aW1lc3RhbXAiIDogMTY0NTE1ODY5NTI0NywKICAicHJvZmlsZUlkIiA6ICJhOGJhMGY1YTFmNjQ0MTgzODZkZGI3OWExZmY5ZWRlYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJDcmVlcGVyOTA3NSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS82ZDU1ZmRjNWRkZDNkZjAyZGQ1ZjQ2MWE3MjQ4YmMyYTIyMzQ2NjYwNmJlMDI2MjVjNTc3Nzg3YWJhZWFhNDM5IgogICAgfQogIH0KfQ=="
+  advanced-enchanter:
+    signature: "PN2GAtnrVds8eyXI6dBzFUATwzF1A1cXi9KMj8HSxaoIO8SqQ3cm3B0ElXQxsAO1yGWnOLE1BN8eyQ3++jogrqWpv55BpvUv9ke1HKKo7YdAUQsFhN7SHe0GjpXDLDU/8RWZDcPyFpGb7br1LqIXDFzlNd7DdSX/MV47FD+vsNlSfYJOzFONoUc+MgrLaVegiwhrVTR+KA/UGfA1eu4yttoGcVBZcZvl9X2xMSfha6MOzly/c/NFbbwQmsSCCppj26DeTSf7hdW7rlJ2yUtfuzOPKM3v1hy0hWHeBNHgPn2keL/LAJvyD2hr38e1pKXoDF0MNI6jEbgf6jKZ3+fU6JVYo4yXKnFRU8mstM8HvyerEClnG2fedOLhh4429glspU25BmznHVIIHy3zObux/LIWFbZ1PIkPKULd15p1Xq0n6GEggRwtkYMHzh+JuNCEVEBX1D2HZepx4OCjtOiZd2kekAvFEowEAoelBbxzenwrRftLKLJCK2mluhH60lYoK407T+uiagb3dS3PGjey0L8nBQ7vMJ9qgC04XLO0S1Dpk7AGx/v/Nlp7AOQQ4qy5JXRhK1jAmleqh0kmBW1cq60n7hgzX/s8JnYscK7vt3vz8SFgOCQZjI01yDQlSFMrBVopyF7SmmyZ57Nbe7fyYMm6EU3tf3ZWRPSDLWURoTw="
+    texture: "ewogICJ0aW1lc3RhbXAiIDogMTY0NTE1ODY5NTI0NywKICAicHJvZmlsZUlkIiA6ICJhOGJhMGY1YTFmNjQ0MTgzODZkZGI3OWExZmY5ZWRlYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJDcmVlcGVyOTA3NSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS82ZDU1ZmRjNWRkZDNkZjAyZGQ1ZjQ2MWE3MjQ4YmMyYTIyMzQ2NjYwNmJlMDI2MjVjNTc3Nzg3YWJhZWFhNDM5IgogICAgfQogIH0KfQ=="

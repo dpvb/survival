@@ -4,3 +4,9 @@ main: dev.dpvb.survival.Survival
 api-version: 1.19
 authors: [ dpvb ]
 description: Modern Twist on PvP and Base Building
+depend:
+  - Citizens
+
+commands:
+  test:
+    description: Test command.
