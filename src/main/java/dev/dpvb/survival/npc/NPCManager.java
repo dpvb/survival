@@ -3,19 +3,25 @@ package dev.dpvb.survival.npc;
 import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
 import dev.dpvb.survival.npc.enchanting.BasicEnchanterNPC;
+import dev.dpvb.survival.npc.enchanting.EnchantmentCost;
+import dev.dpvb.survival.npc.enchanting.ItemTypes;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class NPCManager {
 
     private static NPCManager instance;
     private Set<AbstractNPC> npcs;
+    private Map<ItemTypes, Set<EnchantmentCost>> basicEnchantments;
+    private Map<ItemTypes, Set<EnchantmentCost>> advancedEnchantments;
 
     private NPCManager() {
         npcs = new HashSet<>();
@@ -36,8 +42,9 @@ public class NPCManager {
     public void loadNPCs() {
         // Load Enchantment Configuration for Enchantment NPCs
         ConfigurationSection enchConfig = Survival.Configuration.getEnchantingSection();
-        BasicEnchanterNPC.loadEnchantments(enchConfig.getConfigurationSection("basic"));
-        AdvancedEnchanterNPC.loadEnchantments(enchConfig.getConfigurationSection("advanced"));
+
+        basicEnchantments = loadEnchantments(enchConfig.getConfigurationSection("basic"));
+        advancedEnchantments = loadEnchantments(enchConfig.getConfigurationSection("advanced"));
 
         // Create AbstractNPC instances.
         for (NPC npc : CitizensAPI.getNPCRegistry()) {
@@ -65,7 +72,43 @@ public class NPCManager {
         return null;
     }
 
+    public Map<ItemTypes, Set<EnchantmentCost>> loadEnchantments(ConfigurationSection section) {
+        Map<ItemTypes, Set<EnchantmentCost>> enchantments = new HashMap<>();
+        Set<String> types = section.getKeys(false);
+        for (String type : types) {
+            ConfigurationSection typeSection = section.getConfigurationSection(type);
+            if (typeSection == null) {
+                continue;
+            }
+
+            ItemTypes itemType = ItemTypes.valueOf(type.toUpperCase());
+
+            Set<EnchantmentCost> enchantmentCosts = new HashSet<>();
+            Set<String> enchantNames = typeSection.getKeys(false);
+            for (String enchantName : enchantNames) {
+                ConfigurationSection enchantSection = typeSection.getConfigurationSection(enchantName);
+                if (enchantSection == null) {
+                    continue;
+                }
+
+                EnchantmentCost ec = new EnchantmentCost(enchantSection);
+                enchantmentCosts.add(ec);
+            }
+            enchantments.put(itemType, enchantmentCosts);
+        }
+
+        return enchantments;
+    }
+
     public Set<AbstractNPC> getNPCs() {
         return npcs;
+    }
+
+    public Map<ItemTypes, Set<EnchantmentCost>> getBasicEnchantments() {
+        return basicEnchantments;
+    }
+
+    public Map<ItemTypes, Set<EnchantmentCost>> getAdvancedEnchantments() {
+        return advancedEnchantments;
     }
 }
