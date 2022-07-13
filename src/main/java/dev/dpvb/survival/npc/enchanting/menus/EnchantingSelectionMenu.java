@@ -72,7 +72,7 @@ public class EnchantingSelectionMenu extends InventoryWrapper {
 
         for (EnchantmentCost cost : costs) {
             Enchantment ench = cost.getEnchantment();
-            Integer nextLevel = enchantsOnItem.getOrDefault(ench, 0) + 1;
+            int nextLevel = enchantsOnItem.getOrDefault(ench, 0) + 1;
 
             ItemStack itemStack;
             Component upgradeComponent = Component.text("Upgrade ").append(ench.displayName(nextLevel));

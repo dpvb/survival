@@ -37,6 +37,7 @@ public class NPCManager {
         // Load Enchantment Configuration for Enchantment NPCs
         ConfigurationSection enchConfig = Survival.Configuration.getEnchantingSection();
         BasicEnchanterNPC.loadEnchantments(enchConfig.getConfigurationSection("basic"));
+        AdvancedEnchanterNPC.loadEnchantments(enchConfig.getConfigurationSection("advanced"));
 
         // Create AbstractNPC instances.
         for (NPC npc : CitizensAPI.getNPCRegistry()) {

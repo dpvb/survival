@@ -16,7 +16,7 @@ enchanting:
       efficiency:
         1: 1
         2: 2
-        3: 4
+        3: 2
     swords:
       sharpness:
         1: 1
@@ -28,7 +28,10 @@ enchanting:
     axes:
       sharpness:
         2: 2
-        3: 2
+        3: 3
+      efficiency:
+        4: 2
+        5: 2
 
 
 
