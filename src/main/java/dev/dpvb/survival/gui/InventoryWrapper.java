@@ -11,7 +11,7 @@ import org.bukkit.inventory.Inventory;
 
 public abstract class InventoryWrapper implements Listener {
 
-    private Inventory inventory = generateInventory();
+    private Inventory inventory;
 
     protected abstract Inventory generateInventory();
 
@@ -42,6 +42,9 @@ public abstract class InventoryWrapper implements Listener {
     }
 
     public Inventory getInventory() {
+        if (inventory == null) {
+            inventory = generateInventory();
+        }
         return inventory;
     }
 }

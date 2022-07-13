@@ -33,11 +33,8 @@ public class BasicEnchanterNPC extends AbstractNPC {
 
     @Override
     public void rightClickAction(Player clicker) {
-
-        InventoryWrapper inputMenu = new EnchantingInputMenu(clicker).register();
+        InventoryWrapper inputMenu = new EnchantingInputMenu(clicker, enchantments).register();
         clicker.openInventory(inputMenu.getInventory());
-
-        InventoryWrapper selectionMenu = new EnchantingSelectionMenu(clicker, new ItemStack(Material.DIAMOND_SWORD), enchantments);
     }
 
     public static void loadEnchantments(ConfigurationSection section) {

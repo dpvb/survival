@@ -1,6 +1,7 @@
 package dev.dpvb.survival.npc.enchanting.menus;
 
 import dev.dpvb.survival.gui.InventoryWrapper;
+import dev.dpvb.survival.npc.enchanting.EnchantmentCost;
 import dev.dpvb.survival.npc.enchanting.ItemTypes;
 import dev.dpvb.survival.util.item.ItemGenerator;
 import net.kyori.adventure.text.Component;
@@ -15,14 +16,19 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
+import java.util.Set;
+
 public class EnchantingInputMenu extends InventoryWrapper {
 
     private ItemGenerator confirmGenerator;
     private final Player player;
     private ItemStack enchantingItem;
+    private Map<ItemTypes, Set<EnchantmentCost>> enchantments;
 
-    public EnchantingInputMenu(Player player) {
+    public EnchantingInputMenu(Player player, Map<ItemTypes, Set<EnchantmentCost>> enchantments) {
         this.player = player;
+        this.enchantments = enchantments;
     }
 
     @Override
@@ -41,9 +47,9 @@ public class EnchantingInputMenu extends InventoryWrapper {
         }
 
         // Create Confirm Button
-        confirmGenerator = new ItemGenerator(Material.RED_STAINED_GLASS_PANE)
+        confirmGenerator = new ItemGenerator()
                 .setDisplayName(Component.text("Give an Item").color(NamedTextColor.RED));
-        inventory.setItem(26, confirmGenerator.build());
+        inventory.setItem(26, confirmGenerator.build(Material.RED_STAINED_GLASS_PANE));
         return inventory;
     }
 
@@ -81,6 +87,10 @@ public class EnchantingInputMenu extends InventoryWrapper {
                 if (clickedItem.getType() == Material.LIME_STAINED_GLASS_PANE) {
                     enchantingItem = getInventory().getItem(13);
                     player.getInventory().close();
+
+                    // Open the next inventory screen.
+                    InventoryWrapper selectionMenu = new EnchantingSelectionMenu(player, enchantingItem, enchantments).register();
+                    player.openInventory(selectionMenu.getInventory());
                 }
             }
         }
@@ -112,13 +122,16 @@ public class EnchantingInputMenu extends InventoryWrapper {
     }
 
     private void updateConfirmButtonMaterial(boolean enabled) {
+        ItemStack item;
         if (enabled) {
-            confirmGenerator.setMaterial(Material.LIME_STAINED_GLASS_PANE)
-                    .setDisplayName(Component.text("Proceed").color(NamedTextColor.GREEN));
+            item = confirmGenerator
+                    .setDisplayName(Component.text("Proceed").color(NamedTextColor.GREEN))
+                    .build(Material.LIME_STAINED_GLASS_PANE);
         } else {
-            confirmGenerator.setMaterial(Material.RED_STAINED_GLASS_PANE)
-                    .setDisplayName(Component.text("Give an Item").color(NamedTextColor.RED));
+            item = confirmGenerator
+                    .setDisplayName(Component.text("Give an Item").color(NamedTextColor.RED))
+                    .build(Material.RED_STAINED_GLASS_PANE);
         }
-        getInventory().setItem(26, confirmGenerator.build());
+        getInventory().setItem(26, item);
     }
 }

@@ -1,6 +1,7 @@
 package dev.dpvb.survival.npc.enchanting;
 
 import org.bukkit.Material;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
@@ -78,6 +79,17 @@ public enum ItemTypes implements Predicate<Material> {
                     material == Material.IRON_BOOTS ||
                     material == Material.DIAMOND_BOOTS;
         }
+    };
+
+    @Nullable
+    public static ItemTypes getItemType(Material material) {
+        for (ItemTypes type : ItemTypes.values()) {
+            if (type.test(material)) {
+                return type;
+            }
+        }
+
+        return null;
     }
 
 }
