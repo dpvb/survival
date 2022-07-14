@@ -6,7 +6,5 @@ authors: [ dpvb ]
 description: Modern Twist on PvP and Base Building
 depend:
   - Citizens
-
-commands:
-  test:
-    description: Test command.
+libraries:
+  - cloud.commandframework:cloud-paper:1.7.0
