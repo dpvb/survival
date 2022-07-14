@@ -1,12 +1,7 @@
-# swords
-# axes
-# bow
-# crossbow
-# trident
-# helmets
-# chestplates
-# leggings
-# boots
+mongo:
+  connection-string: "dummy_conn_string"
+  username: "dummy_username"
+  password: "dummy_password"
 
 enchanting:
   basic:
