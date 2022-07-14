@@ -8,3 +8,4 @@ depend:
   - Citizens
 libraries:
   - cloud.commandframework:cloud-paper:1.7.0
+  - org.mongodb:mongodb-driver-sync:4.6.1
