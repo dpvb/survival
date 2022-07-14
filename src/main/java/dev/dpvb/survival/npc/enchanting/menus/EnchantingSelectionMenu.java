@@ -6,9 +6,7 @@ import dev.dpvb.survival.npc.enchanting.ItemTypes;
 import dev.dpvb.survival.util.item.ItemGenerator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -109,6 +107,9 @@ public class EnchantingSelectionMenu extends InventoryWrapper {
                 item.addEnchantment(pe.ec.getEnchantment(), pe.level);
                 player.getInventory().close();
                 givePlayerItem(player, item);
+
+                // Play a sound for the Player
+                player.playSound(player, Sound.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.MASTER, 1f, 1f);
             }
         }
 

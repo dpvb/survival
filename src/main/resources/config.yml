@@ -75,9 +75,12 @@ enchanting:
   advanced:
     # Weapons
     swords:
-      sweeping:
+      sharpness:
         2: 2
         3: 3
+      sweeping:
+        2: 2
+        3: 2
       knockback:
         2: 2
       fire_aspect:

@@ -6,9 +6,7 @@ import dev.dpvb.survival.npc.enchanting.ItemTypes;
 import dev.dpvb.survival.util.item.ItemGenerator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -85,7 +83,13 @@ public class EnchantingInputMenu extends InventoryWrapper {
                 ItemStack clickedItem = event.getCurrentItem();
                 //noinspection ConstantConditions
                 if (clickedItem.getType() == Material.LIME_STAINED_GLASS_PANE) {
+                    // Get the Enchanting Item
                     enchantingItem = getInventory().getItem(13);
+
+                    // Play a sound for the Player
+                    player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BIT, SoundCategory.MASTER, 1f, 1f);
+
+                    // Close the inventory
                     player.getInventory().close();
 
                     // Open the next inventory screen.
