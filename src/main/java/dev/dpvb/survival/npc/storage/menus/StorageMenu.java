@@ -34,8 +34,6 @@ public class StorageMenu extends InventoryWrapper {
             if (serializedItem == null) {
                 continue;
             }
-
-            Bukkit.getLogger().info(Arrays.toString(serializedItem));
             inventory.setItem(i, ItemStack.deserializeBytes(serializedItem));
         }
         return inventory;
@@ -48,7 +46,6 @@ public class StorageMenu extends InventoryWrapper {
 
     @Override
     public void handle(InventoryCloseEvent event) {
-        Bukkit.getLogger().info("THIS IS A TEST");
         Map<Integer, byte[]> contents = StorageManager.getInstance().getStorageContents(player.getUniqueId());
         for (int i = 0; i < getInventory().getSize(); i++) {
             ItemStack item = getInventory().getItem(i);
@@ -60,9 +57,5 @@ public class StorageMenu extends InventoryWrapper {
         }
 
         StorageManager.getInstance().updateStorageContents(player.getUniqueId(), contents);
-
-        for (byte[] storageContent : StorageManager.getInstance().getStorageContents(player.getUniqueId()).values()) {
-            Bukkit.getLogger().info(Arrays.toString(storageContent));
-        }
     }
 }

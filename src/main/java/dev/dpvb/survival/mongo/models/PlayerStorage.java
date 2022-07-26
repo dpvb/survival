@@ -10,13 +10,13 @@ public class PlayerStorage {
 
     @BsonId
     private UUID uuid;
-    private Map<Integer, byte[]> contents;
+    private Map<String, byte[]> contents;
 
     public PlayerStorage() {
 
     }
 
-    public PlayerStorage(UUID uuid, Map<Integer, byte[]> contents) {
+    public PlayerStorage(UUID uuid, Map<String, byte[]> contents) {
         this.uuid = uuid;
         this.contents = contents;
     }
@@ -29,11 +29,11 @@ public class PlayerStorage {
         this.uuid = uuid;
     }
 
-    public Map<Integer, byte[]> getContents() {
+    public Map<String, byte[]> getContents() {
         return contents;
     }
 
-    public void setContents(Map<Integer, byte[]> contents) {
+    public void setContents(Map<String, byte[]> contents) {
         this.contents = contents;
     }
 }

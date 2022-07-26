@@ -10,7 +10,7 @@ public class StorageManager {
 
     private static StorageManager instance;
 
-    private Map<UUID, PlayerStorage> storageMap;
+    private final Map<UUID, Map<Integer, byte[]>> storageMap;
 
     private StorageManager() {
         storageMap = new HashMap<>();
@@ -27,22 +27,34 @@ public class StorageManager {
     public void load() {
         List<PlayerStorage> all = MongoManager.getInstance().getPlayerStorageService().getAll();
         for (PlayerStorage storage : all) {
-            storageMap.put(storage.getId(), storage);
+            Map<String, byte[]> fromContents = storage.getContents();
+            Map<Integer, byte[]> toContents = new HashMap<>();
+
+            fromContents.forEach((key, value) -> toContents.put(Integer.parseInt(key), value));
+
+            storageMap.put(storage.getId(), toContents);
         }
     }
 
     public void save() {
         final PlayerStorageService pss = MongoManager.getInstance().getPlayerStorageService();
-        for (PlayerStorage storage : storageMap.values()) {
-            pss.replace(storage);
+        for (Map.Entry<UUID, Map<Integer, byte[]>> entry : storageMap.entrySet()) {
+            Map<Integer, byte[]> fromContents = entry.getValue();
+            Map<String, byte[]> toContents = new HashMap<>();
+
+            for (Map.Entry<Integer, byte[]> itemEntry : fromContents.entrySet()) {
+                toContents.put(String.valueOf(itemEntry.getKey()), itemEntry.getValue());
+            }
+
+            pss.replace(new PlayerStorage(
+                    entry.getKey(),
+                    toContents
+            ));
         }
     }
 
     public void generatePlayerStorage(UUID uuid) {
-        storageMap.put(uuid, new PlayerStorage(
-                uuid,
-                new HashMap<>()
-        ));
+        storageMap.put(uuid, new HashMap<>());
     }
 
     public boolean storageExists(UUID uuid) {
@@ -50,10 +62,10 @@ public class StorageManager {
     }
 
     public void updateStorageContents(UUID uuid, Map<Integer, byte[]> contents) {
-        storageMap.get(uuid).setContents(contents);
+        storageMap.put(uuid, contents);
     }
 
     public Map<Integer, byte[]> getStorageContents(UUID uuid) {
-        return storageMap.get(uuid).getContents();
+        return storageMap.get(uuid);
     }
 }
