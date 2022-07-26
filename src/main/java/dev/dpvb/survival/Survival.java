@@ -8,6 +8,7 @@ import dev.dpvb.survival.commands.Commands;
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.npc.listeners.NPCListener;
 import dev.dpvb.survival.npc.NPCManager;
+import dev.dpvb.survival.stats.PlayerInfoListener;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -34,10 +35,17 @@ public final class Survival extends JavaPlugin {
         PlayerInfoManager.getInstance().load();
         // Setup Commands
         setupCommands();
-        // Register Listener
+        // Register Listeners
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerInfoListener(), this);
         // Load NPCs
         Bukkit.getScheduler().runTaskLater(this, NPCManager.getInstance()::loadNPCs, 5);
+    }
+
+    @Override
+    public void onDisable() {
+        // Upload PlayerInfo to Mongo
+        PlayerInfoManager.getInstance().save();
     }
 
     private void setupCommands() {

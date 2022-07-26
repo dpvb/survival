@@ -3,6 +3,7 @@ package dev.dpvb.survival.npc.enchanting.menus;
 import dev.dpvb.survival.gui.InventoryWrapper;
 import dev.dpvb.survival.npc.enchanting.EnchantmentCost;
 import dev.dpvb.survival.npc.enchanting.ItemTypes;
+import dev.dpvb.survival.stats.PlayerInfoManager;
 import dev.dpvb.survival.util.item.ItemGenerator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -76,16 +77,25 @@ public class EnchantingSelectionMenu extends InventoryWrapper {
             Component upgradeComponent = Component.text("Upgrade ").append(ench.displayName(nextLevel));
 
             Integer price = cost.getLevelToPrice().get(nextLevel);
-            if (price != null) {
-                itemStack = new ItemGenerator().setDisplayName(upgradeComponent.color(NamedTextColor.GREEN))
-                        .addLoreLine(Component.text("Price: " + cost.getLevelToPrice().get(nextLevel)).color(NamedTextColor.YELLOW))
-                        .build(Material.ENCHANTED_BOOK);
-                pendingEnchants.put(itemStack, new PendingEnchant(cost, nextLevel));
-            } else {
+            if (price == null) {
                 itemStack = new ItemGenerator().setDisplayName(upgradeComponent.color(NamedTextColor.RED))
                         .addLoreLine(Component.text("You can't upgrade this").color(NamedTextColor.YELLOW))
                         .addLoreLine(Component.text("any further here.").color(NamedTextColor.YELLOW))
-                        .build(Material.RED_STAINED_GLASS_PANE);
+                        .addEnchantment(Enchantment.DURABILITY, 1)
+                        .hideEnchantments(true)
+                        .build(Material.BOOK);
+            } else if (price > PlayerInfoManager.getInstance().getTokens(player.getUniqueId())) {
+                itemStack = new ItemGenerator().setDisplayName(upgradeComponent.color(NamedTextColor.RED))
+                        .addLoreLine(Component.text("Price: " + cost.getLevelToPrice().get(nextLevel)).color(NamedTextColor.YELLOW))
+                        .addLoreLine(Component.text("You can't afford this!").color(NamedTextColor.GRAY))
+                        .addEnchantment(Enchantment.DURABILITY, 1)
+                        .hideEnchantments(true)
+                        .build(Material.BOOK);
+            } else {
+                itemStack = new ItemGenerator().setDisplayName(upgradeComponent.color(NamedTextColor.GREEN))
+                        .addLoreLine(Component.text("Price: " + cost.getLevelToPrice().get(nextLevel)).color(NamedTextColor.GREEN))
+                        .build(Material.ENCHANTED_BOOK);
+                pendingEnchants.put(itemStack, new PendingEnchant(cost, nextLevel));
             }
 
             enchantUpgrades.add(itemStack);
@@ -101,7 +111,8 @@ public class EnchantingSelectionMenu extends InventoryWrapper {
             if (clickedItem != null && clickedItem.getType() == Material.ENCHANTED_BOOK) {
                 PendingEnchant pe = pendingEnchants.get(clickedItem);
 
-                // CHECK IF PLAYER CAN AFFORD THE ENCHANTMENT.
+                // Deduct Tokens from Player
+                PlayerInfoManager.getInstance().addTokens(player.getUniqueId(), -pe.ec.getLevelToPrice().get(pe.level));
 
                 // Give Player the Item with the Enchantment Applied to it.
                 item.addEnchantment(pe.ec.getEnchantment(), pe.level);
