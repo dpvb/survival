@@ -55,4 +55,12 @@ public class PlayerInfoManager {
         PlayerInfo info = map.get(uuid);
         info.setTokens(info.getTokens() + tokens);
     }
+
+    public void setTokens(UUID uuid, int tokens) {
+        map.get(uuid).setTokens(tokens);
+    }
+
+    public int getTokens(UUID uuid) {
+        return map.get(uuid).getTokens();
+    }
 }
