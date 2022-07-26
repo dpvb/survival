@@ -35,8 +35,8 @@ public class PlayerInfoManager {
 
     public void save() {
         final PlayerInfoService playerInfoService = MongoManager.getInstance().getPlayerInfoService();
-        for (Map.Entry<UUID, PlayerInfo> entry : map.entrySet()) {
-            playerInfoService.replace(entry.getValue());
+        for (PlayerInfo playerInfo : map.values()) {
+            playerInfoService.replace(playerInfo);
         }
     }
 

@@ -5,6 +5,7 @@ import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
 import dev.dpvb.survival.npc.enchanting.BasicEnchanterNPC;
 import dev.dpvb.survival.npc.enchanting.EnchantmentCost;
 import dev.dpvb.survival.npc.enchanting.ItemTypes;
+import dev.dpvb.survival.npc.storage.StorageNPC;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -51,6 +52,7 @@ public class NPCManager {
             switch (npc.getName().split(" ")[0]) {
                 case "b-ench" -> npcs.add(new BasicEnchanterNPC(npc));
                 case "a-ench" -> npcs.add(new AdvancedEnchanterNPC(npc));
+                case "store" -> npcs.add(new StorageNPC(npc));
             }
         }
 

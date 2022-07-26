@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.mongo.services.PlayerInfoService;
+import dev.dpvb.survival.mongo.services.PlayerStorageService;
 import org.bson.UuidRepresentation;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -20,6 +21,7 @@ public class MongoManager {
 
     private static MongoManager instance;
     private PlayerInfoService playerInfoService;
+    private PlayerStorageService playerStorageService;
 
     private MongoManager() {
         ConnectionString connString = new ConnectionString(
@@ -43,6 +45,7 @@ public class MongoManager {
         Bukkit.getLogger().info("Database connected.");
 
         playerInfoService = new PlayerInfoService(db);
+        playerStorageService = new PlayerStorageService(db);
     }
 
     public static MongoManager getInstance() {
@@ -55,5 +58,9 @@ public class MongoManager {
 
     public PlayerInfoService getPlayerInfoService() {
         return playerInfoService;
+    }
+
+    public PlayerStorageService getPlayerStorageService() {
+        return playerStorageService;
     }
 }

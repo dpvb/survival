@@ -5,6 +5,8 @@ import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.bukkit.parsers.PlayerArgument;
 import cloud.commandframework.context.CommandContext;
 import dev.dpvb.survival.mongo.models.PlayerInfo;
+import dev.dpvb.survival.npc.NPCManager;
+import dev.dpvb.survival.npc.storage.StorageNPC;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -70,7 +72,8 @@ public class Commands {
     }
 
     private void testCommand(final @NonNull CommandContext<CommandSender> ctx) {
-
+        Player player = (Player) ctx.getSender();
+        NPCManager.getInstance().addNPC(new StorageNPC(player.getLocation()));
     }
 
 

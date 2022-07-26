@@ -4,14 +4,10 @@ import dev.dpvb.survival.gui.InventoryWrapper;
 import dev.dpvb.survival.npc.AbstractNPC;
 import dev.dpvb.survival.npc.NPCManager;
 import dev.dpvb.survival.npc.enchanting.menus.EnchantingInputMenu;
-import dev.dpvb.survival.npc.enchanting.menus.EnchantingSelectionMenu;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
