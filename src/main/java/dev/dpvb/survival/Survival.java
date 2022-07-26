@@ -6,16 +6,15 @@ import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.paper.PaperCommandManager;
 import dev.dpvb.survival.commands.Commands;
 import dev.dpvb.survival.mongo.MongoManager;
-import dev.dpvb.survival.mongo.models.PlayerInfo;
 import dev.dpvb.survival.npc.listeners.NPCListener;
 import dev.dpvb.survival.npc.NPCManager;
+import dev.dpvb.survival.stats.PlayerInfoManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.UUID;
 import java.util.function.Function;
 
 public final class Survival extends JavaPlugin {
@@ -31,6 +30,8 @@ public final class Survival extends JavaPlugin {
         setupConfigFile();
         // Setup Mongo
         MongoManager.getInstance();
+        // Load Player Info Statistics [from Mongo]
+        PlayerInfoManager.getInstance().load();
         // Setup Commands
         setupCommands();
         // Register Listener
