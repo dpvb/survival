@@ -2,7 +2,7 @@ package dev.dpvb.survival.npc.enchanting.menus;
 
 import dev.dpvb.survival.gui.InventoryWrapper;
 import dev.dpvb.survival.npc.enchanting.EnchantmentCost;
-import dev.dpvb.survival.npc.enchanting.ItemTypes;
+import dev.dpvb.survival.npc.enchanting.EnchantableItemTypes;
 import dev.dpvb.survival.util.item.ItemGenerator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -22,9 +22,9 @@ public class EnchantingInputMenu extends InventoryWrapper {
     private ItemGenerator confirmGenerator;
     private final Player player;
     private ItemStack enchantingItem;
-    private Map<ItemTypes, Set<EnchantmentCost>> enchantments;
+    private Map<EnchantableItemTypes, Set<EnchantmentCost>> enchantments;
 
-    public EnchantingInputMenu(Player player, Map<ItemTypes, Set<EnchantmentCost>> enchantments) {
+    public EnchantingInputMenu(Player player, Map<EnchantableItemTypes, Set<EnchantmentCost>> enchantments) {
         this.player = player;
         this.enchantments = enchantments;
     }
@@ -58,7 +58,7 @@ public class EnchantingInputMenu extends InventoryWrapper {
             ItemStack clickedItem = event.getCurrentItem();
             if (clickedItem != null) {
                 int clickedSlot = event.getSlot();
-                for (ItemTypes itemType : ItemTypes.values()) {
+                for (EnchantableItemTypes itemType : EnchantableItemTypes.values()) {
                     if (itemType.test(clickedItem.getType())) {
                         ItemStack itemInEnchanter = event.getInventory().getItem(13);
                         event.getClickedInventory().setItem(clickedSlot, itemInEnchanter);

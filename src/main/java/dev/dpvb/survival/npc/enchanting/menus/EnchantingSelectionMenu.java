@@ -2,7 +2,7 @@ package dev.dpvb.survival.npc.enchanting.menus;
 
 import dev.dpvb.survival.gui.InventoryWrapper;
 import dev.dpvb.survival.npc.enchanting.EnchantmentCost;
-import dev.dpvb.survival.npc.enchanting.ItemTypes;
+import dev.dpvb.survival.npc.enchanting.EnchantableItemTypes;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import dev.dpvb.survival.util.item.ItemGenerator;
 import net.kyori.adventure.text.Component;
@@ -22,10 +22,10 @@ public class EnchantingSelectionMenu extends InventoryWrapper {
 
     private final Player player;
     private final ItemStack item;
-    private final Map<ItemTypes, Set<EnchantmentCost>> enchantments;
+    private final Map<EnchantableItemTypes, Set<EnchantmentCost>> enchantments;
     private Map<ItemStack, PendingEnchant> pendingEnchants;
 
-    public EnchantingSelectionMenu(Player player, ItemStack item, Map<ItemTypes, Set<EnchantmentCost>> enchantments) {
+    public EnchantingSelectionMenu(Player player, ItemStack item, Map<EnchantableItemTypes, Set<EnchantmentCost>> enchantments) {
         this.player = player;
         this.item = item;
         this.enchantments = enchantments;
@@ -64,7 +64,7 @@ public class EnchantingSelectionMenu extends InventoryWrapper {
 
     private List<ItemStack> getEnchantUpgrades() {
         Map<Enchantment, Integer> enchantsOnItem = item.getEnchantments();
-        Set<EnchantmentCost> costs = enchantments.get(ItemTypes.getItemType(item.getType()));
+        Set<EnchantmentCost> costs = enchantments.get(EnchantableItemTypes.getItemType(item.getType()));
 
         List<ItemStack> enchantUpgrades = new ArrayList<>();
         pendingEnchants = new HashMap<>();

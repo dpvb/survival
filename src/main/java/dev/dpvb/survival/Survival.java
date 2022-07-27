@@ -17,6 +17,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.ObjectInputFilter;
 import java.util.function.Function;
 
 public final class Survival extends JavaPlugin {
@@ -91,6 +92,10 @@ public final class Survival extends JavaPlugin {
 
         public static ConfigurationSection getEnchantingSection() {
             return config.getConfigurationSection("enchanting");
+        }
+
+        public static ConfigurationSection getUpgradingSection() {
+            return config.getConfigurationSection("upgrades");
         }
 
         public static String getMongoConnectionString() {
