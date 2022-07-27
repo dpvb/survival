@@ -5,10 +5,11 @@ import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.paper.PaperCommandManager;
 import dev.dpvb.survival.commands.Commands;
+import dev.dpvb.survival.events.FirstJoinListener;
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.npc.listeners.NPCListener;
 import dev.dpvb.survival.npc.NPCManager;
-import dev.dpvb.survival.stats.PlayerInfoListener;
+import dev.dpvb.survival.npc.storage.StorageManager;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -31,13 +32,15 @@ public final class Survival extends JavaPlugin {
         setupConfigFile();
         // Setup Mongo
         MongoManager.getInstance();
-        // Load Player Info Statistics [from Mongo]
+        // Load Player Info Statistics from Mongo
         PlayerInfoManager.getInstance().load();
+        // Load all Storage from Mongo
+        StorageManager.getInstance().load();
         // Setup Commands
         setupCommands();
         // Register Listeners
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerInfoListener(), this);
+        Bukkit.getPluginManager().registerEvents(new FirstJoinListener(), this);
         // Load NPCs
         Bukkit.getScheduler().runTaskLater(this, NPCManager.getInstance()::loadNPCs, 5);
     }
@@ -46,6 +49,8 @@ public final class Survival extends JavaPlugin {
     public void onDisable() {
         // Upload PlayerInfo to Mongo
         PlayerInfoManager.getInstance().save();
+        // Upload Storage to Mongo
+        StorageManager.getInstance().save();
     }
 
     private void setupCommands() {
