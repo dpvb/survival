@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-public enum ItemTypes implements Predicate<Material> {
+public enum EnchantableItemTypes implements Predicate<Material> {
 
     SWORDS {
         @Override
@@ -82,8 +82,8 @@ public enum ItemTypes implements Predicate<Material> {
     };
 
     @Nullable
-    public static ItemTypes getItemType(Material material) {
-        for (ItemTypes type : ItemTypes.values()) {
+    public static EnchantableItemTypes getItemType(Material material) {
+        for (EnchantableItemTypes type : EnchantableItemTypes.values()) {
             if (type.test(material)) {
                 return type;
             }

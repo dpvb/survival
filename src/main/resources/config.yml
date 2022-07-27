@@ -151,6 +151,62 @@ enchanting:
         3: 3
         4: 4
 
+upgrades:
+  wooden_sword:
+    to: stone_sword
+    price: 1
+  stone_sword:
+    to: iron_sword
+    price: 1
+  iron_sword:
+    to: diamond_sword
+    price: 1
+  wooden_axe:
+    to: stone_axe
+    price: 1
+  stone_axe:
+    to: iron_axe
+    price: 1
+  iron_axe:
+    to: diamond_axe
+    price: 1
+  leather_helmet:
+    to: chainmail_helmet
+    price: 1
+  leather_chestplate:
+    to: chainmail_chestplate
+    price: 1
+  leather_leggings:
+    to: chainmail_leggings
+    price: 1
+  leather_boots:
+    to: chainmail_boots
+    price: 1
+  chainmail_helmet:
+    to: iron_helmet
+    price: 1
+  chainmail_chestplate:
+    to: iron_chestplate
+    price: 1
+  chainmail_leggings:
+    to: iron_leggings
+    price: 1
+  chainmail_boots:
+    to: iron_boots
+    price: 1
+  iron_helmet:
+    to: diamond_helmet
+    price: 1
+  iron_chestplate:
+    to: diamond_chestplate
+    price: 1
+  iron_leggings:
+    to: diamond_leggings
+    price: 1
+  iron_boots:
+    to: diamond_boots
+    price: 1
+
 npc-skins:
   basic-enchanter:
     signature: "PN2GAtnrVds8eyXI6dBzFUATwzF1A1cXi9KMj8HSxaoIO8SqQ3cm3B0ElXQxsAO1yGWnOLE1BN8eyQ3++jogrqWpv55BpvUv9ke1HKKo7YdAUQsFhN7SHe0GjpXDLDU/8RWZDcPyFpGb7br1LqIXDFzlNd7DdSX/MV47FD+vsNlSfYJOzFONoUc+MgrLaVegiwhrVTR+KA/UGfA1eu4yttoGcVBZcZvl9X2xMSfha6MOzly/c/NFbbwQmsSCCppj26DeTSf7hdW7rlJ2yUtfuzOPKM3v1hy0hWHeBNHgPn2keL/LAJvyD2hr38e1pKXoDF0MNI6jEbgf6jKZ3+fU6JVYo4yXKnFRU8mstM8HvyerEClnG2fedOLhh4429glspU25BmznHVIIHy3zObux/LIWFbZ1PIkPKULd15p1Xq0n6GEggRwtkYMHzh+JuNCEVEBX1D2HZepx4OCjtOiZd2kekAvFEowEAoelBbxzenwrRftLKLJCK2mluhH60lYoK407T+uiagb3dS3PGjey0L8nBQ7vMJ9qgC04XLO0S1Dpk7AGx/v/Nlp7AOQQ4qy5JXRhK1jAmleqh0kmBW1cq60n7hgzX/s8JnYscK7vt3vz8SFgOCQZjI01yDQlSFMrBVopyF7SmmyZ57Nbe7fyYMm6EU3tf3ZWRPSDLWURoTw="
@@ -161,3 +217,6 @@ npc-skins:
   storage:
     signature: "ilRhRUm0jm6YJmRT1wi1XOTg6IFNUakRc6aAQC1R/zMsoXP5qXt3Rm8wCfe3Ga+WGN9obq4p2hm2i0lGPtOFeZ1V2WfXzLBC266WPFpitFeo3ymOygDQdDK8Hgar3YrsaczidEQ3MaSFFMEud+tdzLDQwuc6DphaOghLIKrZQKEpuozDV3zPUWPrElXOnwsSGR440oq3YWk+e/2vHAeWKel1nBzcY4woxAfWwv70A44cnEXzomCrJD7jabik4Rsp74f7v2M7EYOaEdK+539R3va4IZ4V+KxkOtM80YIWVpXPUeVL4mozc8ql1lyqmeNDbqDRNJ+UxBW8k6sQkxO6nChoMaCMtPpyQRQ90HBgiaK4h2fbYVVzJqHXN8G6tm+5nWpizDSZgb43eMCZCgyvWOOdnFmFmQbK0L6NklGWjG/2CybSg4wRWDRoTKP6p8Q5BZFHuA5y223PaB0HpjQO1k2xRK7pWrQsP1BOgJIxdZQeo37te66e0hdU1SnW6sHBNtjM8+tdSnT9f+VcjAfgcHLOhXiabPmifDrrLB+jNYtia0/cCkRdsBGBxDU9Ro5ccMdZntjvNa8o4oAy9LPgKqD+FjHFnGcYuaO3lIbwhbafJ9FjROF9EpyI/rFO4+RhbdAT7ouA5/UC8P8nNq26l8x4ZAwZBOTs/FMhyG14KAo="
     texture: "ewogICJ0aW1lc3RhbXAiIDogMTY1ODE3NzY2NTAyNSwKICAicHJvZmlsZUlkIiA6ICIzOTg5OGFiODFmMjU0NmQxOGIyY2ExMTE1MDRkZGU1MCIsCiAgInByb2ZpbGVOYW1lIiA6ICI4YjJjYTExMTUwNGRkZTUwIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzYyMzVkMDM1ZDgwODk3MDI3OTVlNDViZGQyZTI4ZTE0ZDA0OTkwOGJmYjIxYmZhMTk4ZDcwZmQ4ZmViNDAxZiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+  upgrader:
+    signature: "Ib9AF9NCfiTD6qxjEoMldjDKh5SWBfPddBBprtEcCFZY8KsGPX3qSaLy6bmYEnR1KjLmDR0XcuaMqHB4v4E7ZfiebJoBRSgwbZmCN7SMJTKRKbrgL1t/m2/Exo9C6UcGzy2fK/mRdyCu+a2YjHzdTv9BP8JzvvKuejq02IrfzF9IzpsRrvkfUPGAZ4Ukc9OgiRLmjznaM7+nCGUh7EaEvWqQxYGY1jT/DH0nj7W880WDNCLs5nWBzs/Ho8PDbOOgdVmpVDvWDbaEE0S7Q7AxHhTXRVNKyxk9vwa90keKz6kRRzUQnd+CmL2rNYmZ4ngSy3U/+yxSBYCvMJEEzQNZrizb0Zf9ciUNpysDc51HPBn8/lqDXI8E69Z96Ch+JfKxWuOQTJ1S2aSuI3yX5lwYwVeYyVTtk3v1PHvk3by7v5sf3lop9Q2w5UKNhSlDZwZ74dZ9k0oLw+luJ/OPsll1DUT95Ly3AoHPAyNyKsgaWI+IJJlpl8LM2tAHAv1sns1p8ZBgpRZH+8dI7yVhNI42GM6WIITUXK0PzUDxlHGfuaVAlP3LfUrFYMTfeeqrqO1QM6nt1fPrFd9XkcdcMJjYkMU5WZbifcl2RfGiv4SHr7LiFJl1f2XtFKdO0isnLyqGrwAczsbUdrIJzUjDheKSGZWfDLUPEim99hzsvyE/xfY="
+    texture: "ewogICJ0aW1lc3RhbXAiIDogMTU5MDE1NjYzNDYzOCwKICAicHJvZmlsZUlkIiA6ICI5MWZlMTk2ODdjOTA0NjU2YWExZmMwNTk4NmRkM2ZlNyIsCiAgInByb2ZpbGVOYW1lIiA6ICJoaGphYnJpcyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9iMmIxMmE4MTRjZWQ4YWYwMmNkZGYyOWEzN2U3ZjMwMTFlNDMwZThhMThiMzhiNzA2ZjI3YzZiZDMxNjUwYjY1IgogICAgfQogIH0KfQ=="
