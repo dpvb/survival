@@ -2,7 +2,6 @@ package dev.dpvb.survival.mongo.models;
 
 import org.bson.codecs.pojo.annotations.BsonId;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
