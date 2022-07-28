@@ -4,7 +4,6 @@ import cloud.commandframework.CommandTree;
 import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.paper.PaperCommandManager;
-import dev.dpvb.survival.chests.events.ChestListener;
 import dev.dpvb.survival.commands.Commands;
 import dev.dpvb.survival.events.FirstJoinListener;
 import dev.dpvb.survival.mongo.MongoManager;
@@ -18,7 +17,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.ObjectInputFilter;
 import java.util.function.Function;
 
 public final class Survival extends JavaPlugin {
@@ -43,7 +41,6 @@ public final class Survival extends JavaPlugin {
         // Register Listeners
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         Bukkit.getPluginManager().registerEvents(new FirstJoinListener(), this);
-        Bukkit.getPluginManager().registerEvents(new ChestListener(), this);
         // Load NPCs
         Bukkit.getScheduler().runTaskLater(this, NPCManager.getInstance()::loadNPCs, 5);
     }

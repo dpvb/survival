@@ -67,4 +67,8 @@ public class MongoManager {
     public PlayerStorageService getPlayerStorageService() {
         return playerStorageService;
     }
+
+    public ChestDataService getChestDataService() {
+        return chestDataService;
+    }
 }

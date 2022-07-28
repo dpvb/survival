@@ -4,6 +4,7 @@ import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.bukkit.parsers.PlayerArgument;
 import cloud.commandframework.context.CommandContext;
+import dev.dpvb.survival.chests.ChestManager;
 import dev.dpvb.survival.mongo.models.PlayerInfo;
 import dev.dpvb.survival.npc.NPCManager;
 import dev.dpvb.survival.npc.storage.StorageNPC;
@@ -51,6 +52,21 @@ public class Commands {
                         .senderType(Player.class)
                         .handler(this::tokenSetCommand)
         );
+
+        manager.command(
+                manager.commandBuilder("survivaladmin")
+                        .literal("savechests")
+                        .argument(IntegerArgument.of("radius"))
+                        .senderType(Player.class)
+                        .handler(this::saveChestsCommand)
+        );
+    }
+
+    private void saveChestsCommand(@NonNull CommandContext<CommandSender> ctx) {
+        Player player = (Player) ctx.getSender();
+        int radius = ctx.get("radius");
+        ChestManager.getInstance().saveChestsToMongo(player.getLocation(), radius);
+        player.sendMessage("Saved chests.");
     }
 
     private void tokenCommand(@NonNull CommandContext<CommandSender> ctx) {

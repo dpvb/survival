@@ -4,6 +4,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import dev.dpvb.survival.mongo.models.ChestData;
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,10 @@ public class ChestDataService {
 
     public void create(ChestData chestData) {
         chestDataCollection.insertOne(chestData);
+    }
+
+    public void deleteAll() {
+        chestDataCollection.deleteMany(new Document());
     }
 
     public List<ChestData> getAll() {
