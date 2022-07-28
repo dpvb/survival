@@ -48,4 +48,28 @@ public class ChestData {
     public ChestTier getTier() {
         return tier;
     }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setZ(int z) {
+        this.z = z;
+    }
+
+    public void setWorld(String world) {
+        this.world = world;
+    }
+
+    public void setFace(BlockFace face) {
+        this.face = face;
+    }
+
+    public void setTier(ChestTier tier) {
+        this.tier = tier;
+    }
 }

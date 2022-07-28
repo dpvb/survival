@@ -1,5 +1,7 @@
 package dev.dpvb.survival.chests;
 
+import dev.dpvb.survival.Survival;
+import dev.dpvb.survival.chests.events.ChestListener;
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.mongo.models.ChestData;
 import dev.dpvb.survival.mongo.services.ChestDataService;
@@ -11,15 +13,20 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Directional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChestManager {
 
     private static ChestManager instance;
-    private ChestDataService chestDataService;
+    private final Map<Location, LootChest> lootChestMap;
 
     private ChestManager() {
-        chestDataService = MongoManager.getInstance().getChestDataService();
+        lootChestMap = new HashMap<>();
+
+        // Register Chest Listener
+        Bukkit.getPluginManager().registerEvents(new ChestListener(), Survival.getInstance());
     }
 
     public static ChestManager getInstance() {
@@ -30,11 +37,22 @@ public class ChestManager {
         return instance;
     }
 
+    public void loadLootChests() {
+        List<ChestData> chestDataList = MongoManager.getInstance().getChestDataService().getAll();
+        for (ChestData chestData : chestDataList) {
+            World world = Bukkit.getWorld(chestData.getWorld());
+            Location loc = new Location(world, chestData.getX(), chestData.getY(), chestData.getZ());
+            Block block = world.getBlockAt(loc);
+            lootChestMap.put(loc, new LootChest(block, chestData.getTier()));
+        }
+    }
+
     public void saveChestsToMongo(Location origin, int radius) {
         int centerX = origin.getBlockX();
         int centerZ = origin.getBlockZ();
         World world = origin.getWorld();
         List<ChestData> chestDataList = new ArrayList<>();
+        ChestDataService chestDataService = MongoManager.getInstance().getChestDataService();
         chestDataService.deleteAll();
 
         for (int x = centerX - radius; x <= centerX + radius; x++) {
@@ -62,5 +80,9 @@ public class ChestManager {
         for (ChestData chestData : chestDataList) {
             chestDataService.create(chestData);
         }
+    }
+
+    public Map<Location, LootChest> getLootChestMap() {
+        return lootChestMap;
     }
 }

@@ -22,9 +22,9 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 public class MongoManager {
 
     private static MongoManager instance;
-    private PlayerInfoService playerInfoService;
-    private PlayerStorageService playerStorageService;
-    private ChestDataService chestDataService;
+    private final PlayerInfoService playerInfoService;
+    private final PlayerStorageService playerStorageService;
+    private final ChestDataService chestDataService;
 
     private MongoManager() {
         ConnectionString connString = new ConnectionString(
