@@ -55,5 +55,8 @@ public class StorageMenu extends InventoryWrapper {
         }
 
         StorageManager.getInstance().updateStorageContents(player.getUniqueId(), contents);
+
+        // Cleanup this inventory
+        cleanup();
     }
 }

@@ -116,6 +116,9 @@ public class EnchantingInputMenu extends InventoryWrapper {
 
         // If the inventory is full, drop the Item on the ground.
         givePlayerItem(player, item);
+
+        // Cleanup this Inventory
+        cleanup();
     }
 
     private void givePlayerItem(HumanEntity player, ItemStack item) {

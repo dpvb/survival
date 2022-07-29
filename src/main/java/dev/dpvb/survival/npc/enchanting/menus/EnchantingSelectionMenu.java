@@ -135,6 +135,9 @@ public class EnchantingSelectionMenu extends InventoryWrapper {
 
         // Give Player Item Back if they put an Item into the Enchanter and closed it.
         givePlayerItem(player, item);
+
+        // Cleanup this Inventory
+        cleanup();
     }
 
     private void givePlayerItem(HumanEntity player, ItemStack item) {

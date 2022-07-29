@@ -32,7 +32,6 @@ public abstract class InventoryWrapper implements Listener {
     public void onInventoryCloseEvent(InventoryCloseEvent event) {
         if (event.getInventory() == inventory) {
             handle(event);
-            HandlerList.unregisterAll(this);
         }
     }
 
@@ -46,5 +45,9 @@ public abstract class InventoryWrapper implements Listener {
             inventory = generateInventory();
         }
         return inventory;
+    }
+
+    public void cleanup() {
+        HandlerList.unregisterAll(this);
     }
 }

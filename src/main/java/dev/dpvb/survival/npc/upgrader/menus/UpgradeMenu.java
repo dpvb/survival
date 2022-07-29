@@ -122,6 +122,9 @@ public class UpgradeMenu extends InventoryWrapper {
 
         // If the inventory is full, drop the Item on the ground.
         givePlayerItem(player, itemInSlot);
+
+        // Cleanup this inventory
+        cleanup();
     }
 
     private void updateUpgradeButton() {
