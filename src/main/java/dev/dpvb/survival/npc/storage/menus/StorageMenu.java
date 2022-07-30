@@ -1,6 +1,6 @@
 package dev.dpvb.survival.npc.storage.menus;
 
-import dev.dpvb.survival.gui.InventoryWrapper;
+import dev.dpvb.survival.gui.AutoCleanInventoryWrapper;
 import dev.dpvb.survival.npc.storage.StorageManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
-public class StorageMenu extends InventoryWrapper {
+public class StorageMenu extends AutoCleanInventoryWrapper {
 
     private final Player player;
 
@@ -56,7 +56,5 @@ public class StorageMenu extends InventoryWrapper {
 
         StorageManager.getInstance().updateStorageContents(player.getUniqueId(), contents);
 
-        // Cleanup this inventory
-        cleanup();
     }
 }

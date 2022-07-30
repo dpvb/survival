@@ -11,7 +11,7 @@ import org.bukkit.inventory.Inventory;
 
 public abstract class InventoryWrapper implements Listener {
 
-    private Inventory inventory;
+    protected Inventory inventory;
 
     protected abstract Inventory generateInventory();
 
@@ -47,7 +47,4 @@ public abstract class InventoryWrapper implements Listener {
         return inventory;
     }
 
-    public void cleanup() {
-        HandlerList.unregisterAll(this);
-    }
 }

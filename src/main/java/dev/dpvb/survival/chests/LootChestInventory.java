@@ -1,5 +1,6 @@
 package dev.dpvb.survival.chests;
 
+
 import dev.dpvb.survival.gui.InventoryWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -7,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Lidded;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;

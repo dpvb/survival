@@ -1,6 +1,6 @@
 package dev.dpvb.survival.npc.enchanting.menus;
 
-import dev.dpvb.survival.gui.InventoryWrapper;
+import dev.dpvb.survival.gui.AutoCleanInventoryWrapper;
 import dev.dpvb.survival.npc.enchanting.EnchantmentCost;
 import dev.dpvb.survival.npc.enchanting.EnchantableItemTypes;
 import dev.dpvb.survival.stats.PlayerInfoManager;
@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class EnchantingSelectionMenu extends InventoryWrapper {
+public class EnchantingSelectionMenu extends AutoCleanInventoryWrapper {
 
     private final Player player;
     private final ItemStack item;
@@ -136,8 +136,6 @@ public class EnchantingSelectionMenu extends InventoryWrapper {
         // Give Player Item Back if they put an Item into the Enchanter and closed it.
         givePlayerItem(player, item);
 
-        // Cleanup this Inventory
-        cleanup();
     }
 
     private void givePlayerItem(HumanEntity player, ItemStack item) {
