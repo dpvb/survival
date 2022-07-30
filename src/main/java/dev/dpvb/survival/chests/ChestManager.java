@@ -43,7 +43,7 @@ public class ChestManager {
             World world = Bukkit.getWorld(chestData.getWorld());
             Location loc = new Location(world, chestData.getX(), chestData.getY(), chestData.getZ());
             Block block = world.getBlockAt(loc);
-            lootChestMap.put(loc, new LootChest(block, chestData.getTier()));
+            lootChestMap.put(loc, new LootChest(block, chestData));
         }
     }
 

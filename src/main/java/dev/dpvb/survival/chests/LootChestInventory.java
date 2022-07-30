@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Lidded;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -34,35 +35,20 @@ public class LootChestInventory extends InventoryWrapper {
 
     @Override
     public void handle(InventoryClickEvent event) {
-        if (event.getClickedInventory() == getInventory()) {
-            ItemStack clickedItem = event.getCurrentItem();
-            if (clickedItem == null) {
-                return;
-            }
 
-            getInventory().setItem(event.getSlot(), null);
-            givePlayerItem(event.getWhoClicked(), clickedItem);
-            return;
-        }
-
-        event.setCancelled(true);
     }
 
     @Override
     public void handle(InventoryCloseEvent event) {
-        Bukkit.getLogger().info("" + event.getInventory().getViewers().size());
         if (event.getInventory().getViewers().size() == 1) {
-            BlockState state = chest.getBlock().getState();
-            if (state instanceof Lidded lidded) {
-                lidded.close();
+            if (event.getInventory().isEmpty()) {
+                chest.destroy();
+            } else {
+                BlockState state = chest.getBlock().getState();
+                if (state instanceof Lidded lidded) {
+                    lidded.close();
+                }
             }
-        }
-    }
-
-    private void givePlayerItem(HumanEntity player, ItemStack item) {
-        if (!player.getInventory().addItem(item).isEmpty()) {
-            Location l = player.getLocation();
-            l.getWorld().dropItemNaturally(l, item);
         }
     }
 }

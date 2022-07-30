@@ -47,4 +47,8 @@ public abstract class InventoryWrapper implements Listener {
         return inventory;
     }
 
+    public void unregister() {
+        HandlerList.unregisterAll(this);
+    }
+
 }
