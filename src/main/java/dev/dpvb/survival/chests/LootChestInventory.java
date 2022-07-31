@@ -11,6 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class LootChestInventory extends InventoryWrapper {
 
@@ -19,7 +20,7 @@ public class LootChestInventory extends InventoryWrapper {
 
     public LootChestInventory(LootChest chest) {
         this.chest = chest;
-        this.size = 9;
+        this.size = 27;
     }
 
     @Override
@@ -30,7 +31,11 @@ public class LootChestInventory extends InventoryWrapper {
         // Create the Inventory
         Inventory inventory = Bukkit.createInventory(null, size);
         for (ItemStack item : items) {
-            inventory.addItem(item);
+            int slot;
+            do {
+                slot = ThreadLocalRandom.current().nextInt(0, size);
+            } while (inventory.getItem(slot) != null);
+            inventory.setItem(slot, item);
         }
         return inventory;
     }

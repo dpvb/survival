@@ -1,8 +1,12 @@
 package dev.dpvb.survival.chests;
 
+import com.destroystokyo.paper.ParticleBuilder;
+import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.gui.InventoryWrapper;
 import dev.dpvb.survival.mongo.models.ChestData;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -11,12 +15,16 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class LootChest {
 
     private Block block;
     private ChestData chestData;
     private boolean exists;
     private InventoryWrapper inventory;
+    private final int respawnTimeMin = 15; // in seconds
+    private final int respawnTimeMax = 45; // in seconds
 
     public LootChest(Block block, ChestData chestData) {
         this.block = block;
@@ -49,10 +57,28 @@ public class LootChest {
     }
 
     public void destroy() {
+        // Destroy the Chest
         exists = false;
         inventory.unregister();
+        BlockData data = block.getBlockData();
         block.setType(Material.AIR);
+
+        // Play Sound
         block.getLocation().getWorld().playSound(block.getLocation(), Sound.BLOCK_WOOD_BREAK, 1f, 1f);
+
+        // Create Particles
+        new ParticleBuilder(Particle.BLOCK_DUST)
+                .data(data)
+                .location(block.getLocation())
+                .offset(0.5, 0.5, 0.5)
+                .receivers(10)
+                .count(20)
+                .spawn();
+
+
+        // Prep to spawn new Chest
+        final int respawnTime = ThreadLocalRandom.current().nextInt(respawnTimeMin, respawnTimeMax);
+        Bukkit.getScheduler().runTaskLater(Survival.getInstance(), this::spawnChest, respawnTime * 20L);
     }
 
     public InventoryWrapper getInventory() {

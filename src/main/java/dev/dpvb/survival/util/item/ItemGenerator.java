@@ -16,6 +16,7 @@ public class ItemGenerator {
     private Component displayName;
     private List<Component> lore;
     private Map<Enchantment, Integer> enchantments;
+    private int amount = 1;
     private boolean hideEnchantments = false;
 
     public ItemGenerator() {
@@ -52,6 +53,11 @@ public class ItemGenerator {
         return this;
     }
 
+    public ItemGenerator setAmount(int amount) {
+        this.amount = amount;
+        return this;
+    }
+
     public ItemStack build(Material material) {
         ItemStack item = new ItemStack(material);
 
@@ -68,6 +74,7 @@ public class ItemGenerator {
 
         item.setItemMeta(meta);
         item.addUnsafeEnchantments(enchantments);
+        item.setAmount(amount);
         return new ItemStack(item);
     }
 

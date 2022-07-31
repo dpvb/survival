@@ -41,8 +41,13 @@ public enum ChestTier {
             // Get the chance from the entry
             double chance = section.getDouble(materialName + ".chance");
 
+            // Check if an Amount field exists
+            int amount = section.getInt(materialName + ".amount", 1);
+
             // Create ItemStack
-            ItemStack item = new ItemGenerator().build(material);
+            ItemStack item = new ItemGenerator()
+                    .setAmount(amount)
+                    .build(material);
 
             // Create Loot object and add it to Loot Set.
             lootTable.add(new Loot(item, chance));
