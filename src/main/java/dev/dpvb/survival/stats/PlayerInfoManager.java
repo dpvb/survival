@@ -26,6 +26,9 @@ public class PlayerInfoManager {
         return instance;
     }
 
+    /**
+     * Loads the Player Info Statistics from the Mongo DB.
+     */
     public void load() {
         List<PlayerInfo> all = MongoManager.getInstance().getPlayerInfoService().getAll();
         for (PlayerInfo playerInfo : all) {
@@ -33,6 +36,9 @@ public class PlayerInfoManager {
         }
     }
 
+    /**
+     * Saves all the current information in the {@link PlayerInfoManager#map} to the MongoDB
+     */
     public void save() {
         final PlayerInfoService playerInfoService = MongoManager.getInstance().getPlayerInfoService();
         for (PlayerInfo playerInfo : map.values()) {
@@ -40,6 +46,10 @@ public class PlayerInfoManager {
         }
     }
 
+    /**
+     * Generates a new {@link PlayerInfo} instance and puts it in the {@link PlayerInfoManager#map}
+     * @param uuid The UUID of the Player.
+     */
     public void generatePlayerInfo(UUID uuid) {
         map.put(uuid, new PlayerInfo(
                 uuid,
@@ -47,19 +57,39 @@ public class PlayerInfoManager {
         ));
     }
 
+    /**
+     * Checks if a certain player's information already exists.
+     * @param uuid The UUID of the Player
+     * @return True if the information exists.
+     */
     public boolean playerInfoExists(UUID uuid) {
         return map.containsKey(uuid);
     }
 
+    /**
+     * Changes the token amount by the amount specified by the tokens argument.
+     * @param uuid The UUID of the Player
+     * @param tokens The amount of tokens to add.
+     */
     public void addTokens(UUID uuid, int tokens) {
         PlayerInfo info = map.get(uuid);
         info.setTokens(info.getTokens() + tokens);
     }
 
+    /**
+     * Set the Player's tokens to a specific amount.
+     * @param uuid The UUID of the Player
+     * @param tokens The amount of tokens to set to.
+     */
     public void setTokens(UUID uuid, int tokens) {
         map.get(uuid).setTokens(tokens);
     }
 
+    /**
+     * Gets the Player's current amount of tokens.
+     * @param uuid The UUID of the Player
+     * @return the number of tokens the Player has.
+     */
     public int getTokens(UUID uuid) {
         return map.get(uuid).getTokens();
     }
