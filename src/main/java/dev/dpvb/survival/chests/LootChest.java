@@ -35,10 +35,6 @@ public class LootChest {
         block.setBlockData(data);
     }
 
-    public InventoryWrapper getInventory() {
-        return inventory;
-    }
-
     public void open(Player player) {
         // Open the inventory for the player.
         player.openInventory(inventory.getInventory());
@@ -52,14 +48,22 @@ public class LootChest {
         }
     }
 
+    public void destroy() {
+        exists = false;
+        inventory.unregister();
+        block.setType(Material.AIR);
+        block.getLocation().getWorld().playSound(block.getLocation(), Sound.BLOCK_WOOD_BREAK, 1f, 1f);
+    }
+
+    public InventoryWrapper getInventory() {
+        return inventory;
+    }
+
     public Block getBlock() {
         return block;
     }
 
-    public void destroy() {
-        inventory.unregister();
-        exists = false;
-        block.setType(Material.AIR);
-        block.getLocation().getWorld().playSound(block.getLocation(), Sound.BLOCK_WOOD_BREAK, 1f, 1f);
+    public ChestTier getTier() {
+        return chestData.getTier();
     }
 }

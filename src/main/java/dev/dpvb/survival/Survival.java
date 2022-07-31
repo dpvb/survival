@@ -100,6 +100,10 @@ public final class Survival extends JavaPlugin {
             return config.getConfigurationSection("upgrades");
         }
 
+        public static ConfigurationSection getLootSection() {
+            return config.getConfigurationSection("loot");
+        }
+
         public static String getMongoConnectionString() {
             return config.getString("mongo.connection-string");
         }

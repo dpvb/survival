@@ -3,6 +3,24 @@ mongo:
   username: "dummy_username"
   password: "dummy_password"
 
+loot:
+  tier-one:
+    wooden_sword:
+      chance: 1.0
+    stone_sword:
+      chance: 0.1
+    leather_helmet:
+      chance: 0.2
+    leather_chestplate:
+      chance: 0.15
+    leather_leggings:
+      chance: 0.15
+    leather_boots:
+      chance: 0.2
+  tier-two:
+    iron_sword:
+      chance: 0.5
+
 enchanting:
   basic:
     # Weapons
