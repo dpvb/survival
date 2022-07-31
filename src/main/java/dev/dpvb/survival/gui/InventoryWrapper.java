@@ -11,7 +11,7 @@ import org.bukkit.inventory.Inventory;
 
 public abstract class InventoryWrapper implements Listener {
 
-    private Inventory inventory;
+    protected Inventory inventory;
 
     protected abstract Inventory generateInventory();
 
@@ -32,7 +32,6 @@ public abstract class InventoryWrapper implements Listener {
     public void onInventoryCloseEvent(InventoryCloseEvent event) {
         if (event.getInventory() == inventory) {
             handle(event);
-            HandlerList.unregisterAll(this);
         }
     }
 
@@ -47,4 +46,9 @@ public abstract class InventoryWrapper implements Listener {
         }
         return inventory;
     }
+
+    public void unregister() {
+        HandlerList.unregisterAll(this);
+    }
+
 }

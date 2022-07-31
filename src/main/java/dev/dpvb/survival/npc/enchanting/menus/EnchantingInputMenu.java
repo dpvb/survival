@@ -1,5 +1,6 @@
 package dev.dpvb.survival.npc.enchanting.menus;
 
+import dev.dpvb.survival.gui.AutoCleanInventoryWrapper;
 import dev.dpvb.survival.gui.InventoryWrapper;
 import dev.dpvb.survival.npc.enchanting.EnchantmentCost;
 import dev.dpvb.survival.npc.enchanting.EnchantableItemTypes;
@@ -17,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Map;
 import java.util.Set;
 
-public class EnchantingInputMenu extends InventoryWrapper {
+public class EnchantingInputMenu extends AutoCleanInventoryWrapper {
 
     private ItemGenerator confirmGenerator;
     private final Player player;

@@ -6,12 +6,14 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import dev.dpvb.survival.Survival;
+import dev.dpvb.survival.mongo.services.ChestDataService;
 import dev.dpvb.survival.mongo.services.PlayerInfoService;
 import dev.dpvb.survival.mongo.services.PlayerStorageService;
 import org.bson.UuidRepresentation;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -20,8 +22,9 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 public class MongoManager {
 
     private static MongoManager instance;
-    private PlayerInfoService playerInfoService;
-    private PlayerStorageService playerStorageService;
+    private final PlayerInfoService playerInfoService;
+    private final PlayerStorageService playerStorageService;
+    private final ChestDataService chestDataService;
 
     private MongoManager() {
         ConnectionString connString = new ConnectionString(
@@ -46,6 +49,7 @@ public class MongoManager {
 
         playerInfoService = new PlayerInfoService(db);
         playerStorageService = new PlayerStorageService(db);
+        chestDataService = new ChestDataService(db);
     }
 
     public static MongoManager getInstance() {
@@ -62,5 +66,9 @@ public class MongoManager {
 
     public PlayerStorageService getPlayerStorageService() {
         return playerStorageService;
+    }
+
+    public ChestDataService getChestDataService() {
+        return chestDataService;
     }
 }

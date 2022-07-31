@@ -1,14 +1,12 @@
 package dev.dpvb.survival.npc.upgrader.menus;
 
-import dev.dpvb.survival.gui.InventoryWrapper;
+import dev.dpvb.survival.gui.AutoCleanInventoryWrapper;
 import dev.dpvb.survival.npc.NPCManager;
 import dev.dpvb.survival.npc.upgrader.UpgradeCost;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import dev.dpvb.survival.util.item.ItemGenerator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.internal.parser.match.TokenListProducingMatchedTokenConsumer;
 import org.bukkit.*;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -17,11 +15,10 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.w3c.dom.Text;
 
 import java.util.Map;
 
-public class UpgradeMenu extends InventoryWrapper {
+public class UpgradeMenu extends AutoCleanInventoryWrapper {
 
     private final Player player;
     private ItemGenerator upgradeButtonGenerator;
@@ -122,6 +119,7 @@ public class UpgradeMenu extends InventoryWrapper {
 
         // If the inventory is full, drop the Item on the ground.
         givePlayerItem(player, itemInSlot);
+
     }
 
     private void updateUpgradeButton() {

@@ -4,6 +4,7 @@ import cloud.commandframework.CommandTree;
 import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.paper.PaperCommandManager;
+import dev.dpvb.survival.chests.ChestManager;
 import dev.dpvb.survival.commands.Commands;
 import dev.dpvb.survival.events.FirstJoinListener;
 import dev.dpvb.survival.mongo.MongoManager;
@@ -17,7 +18,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.ObjectInputFilter;
 import java.util.function.Function;
 
 public final class Survival extends JavaPlugin {
@@ -35,8 +35,10 @@ public final class Survival extends JavaPlugin {
         MongoManager.getInstance();
         // Load Player Info Statistics from Mongo
         PlayerInfoManager.getInstance().load();
-        // Load all Storage from Mongo
+        // Load all Player Storage from Mongo
         StorageManager.getInstance().load();
+        // Load all Chest Data
+        ChestManager.getInstance().loadLootChests();
         // Setup Commands
         setupCommands();
         // Register Listeners
@@ -96,6 +98,10 @@ public final class Survival extends JavaPlugin {
 
         public static ConfigurationSection getUpgradingSection() {
             return config.getConfigurationSection("upgrades");
+        }
+
+        public static ConfigurationSection getLootSection() {
+            return config.getConfigurationSection("loot");
         }
 
         public static String getMongoConnectionString() {

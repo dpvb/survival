@@ -3,6 +3,57 @@ mongo:
   username: "dummy_username"
   password: "dummy_password"
 
+loot:
+  tier-one:
+    # SWORDS
+    wooden_sword:
+      chance: 0.2
+    stone_sword:
+      chance: 0.1
+    # AXES
+    wooden_axe:
+      chance: 0.1
+    stone_axe:
+      chance: 0.05
+    # ARMOR
+    leather_helmet:
+      chance: 0.2
+    leather_chestplate:
+      chance: 0.15
+    leather_leggings:
+      chance: 0.15
+    leather_boots:
+      chance: 0.2
+    chainmail_chestplate:
+      chance: 0.03
+    chainmail_boots:
+      chance: 0.05
+    # RANGED
+    bow:
+      chance: 0.1
+    arrow:
+      chance: 0.1
+      amount: 8
+    # UTILITY
+    fishing_rod:
+      chance: 0.1
+    # CONSUMABLES
+    bread:
+      chance: 0.1
+      amount: 2
+    carrot:
+      chance: 0.1
+      amount: 3
+    porkchop:
+      chance: 0.1
+      amount: 2
+    apple:
+      chance: 0.1
+      amount: 2
+  tier-two:
+    iron_sword:
+      chance: 0.5
+
 enchanting:
   basic:
     # Weapons
