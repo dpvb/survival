@@ -16,10 +16,11 @@ public class AirdropAnimation extends BukkitRunnable {
     private long counter;
     private long length;
     private int height;
+    private final AirdropManager airdropManager;
 
     public AirdropAnimation(Location location) {
         this.location = location;
-        AirdropManager airdropManager = AirdropManager.getInstance();
+        airdropManager = AirdropManager.getInstance();
         this.height = airdropManager.getAirdropAnimationHeight();
         this.top = location.clone().add(0, height, 0);
         this.world = location.getWorld();
@@ -52,6 +53,8 @@ public class AirdropAnimation extends BukkitRunnable {
                     .receivers(100)
                     .spawn();
             world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 100f, 1f);
+            world.strikeLightningEffect(location);
+            airdropManager.createAirdropChest(location);
             cancel();
         }
     }

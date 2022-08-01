@@ -53,6 +53,15 @@ loot:
   tier-two:
     iron_sword:
       chance: 0.5
+  tier-three:
+    diamond_sword:
+      chance: 0.75
+    diamond_chestplate:
+      chance: 0.5
+    diamond_leggings:
+      chacne: 0.5
+    diamond_axe:
+      chance: 0.65
 
 enchanting:
   basic:

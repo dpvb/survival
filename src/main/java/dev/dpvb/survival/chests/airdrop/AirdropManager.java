@@ -1,7 +1,9 @@
 package dev.dpvb.survival.chests.airdrop;
 
 import com.destroystokyo.paper.ParticleBuilder;
+import dev.dpvb.survival.Survival;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ public class AirdropManager {
     private final Map<Long, List<AirdropParticle>> particleSpawnMap = new HashMap<>();
     private final int airdropAnimationHeight = 200;
     private final int airdropAnimationLength = 200;
+    private final List<AirdropChest> airdropChests = new ArrayList<>();
 
     private AirdropManager() {
 
@@ -57,6 +60,24 @@ public class AirdropManager {
 
             particleSpawnMap.put((long) counter, list);
         }
+    }
+
+    public void startAirdrop(Location location) {
+        new AirdropAnimation(location).runTaskTimer(Survival.getInstance(), 0L, 1L);
+    }
+
+    protected void createAirdropChest(Location location) {
+        airdropChests.add(new AirdropChest(location.getBlock()));
+    }
+
+    public void clearAirdrops() {
+        for (AirdropChest airdropChest : airdropChests) {
+            airdropChest.destroy();
+        }
+    }
+
+    public void removeAirdropFromCache(AirdropChest airdropChest) {
+        airdropChests.remove(airdropChest);
     }
 
     public Map<Long, List<AirdropParticle>> getParticleSpawnMap() {

@@ -33,6 +33,8 @@ public class ChestListener implements Listener {
         // Open the LootChest
         Optional.ofNullable(ChestManager.getInstance().getLootChestMap().get(block.getLocation()))
                 .ifPresent(lc -> lc.open(event.getPlayer()));
+
+
     }
 
 }
