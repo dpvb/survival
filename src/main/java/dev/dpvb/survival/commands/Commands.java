@@ -12,6 +12,8 @@ import dev.dpvb.survival.chests.airdrop.AirdropAnimation;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.mongo.models.PlayerInfo;
 import dev.dpvb.survival.npc.NPCManager;
+import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
+import dev.dpvb.survival.npc.enchanting.BasicEnchanterNPC;
 import dev.dpvb.survival.npc.storage.StorageNPC;
 import dev.dpvb.survival.npc.upgrader.UpgradeNPC;
 import dev.dpvb.survival.stats.PlayerInfoManager;
@@ -37,16 +39,22 @@ public class Commands {
     }
 
     public void initCommands() {
-        // NPC COMMANDS
+        // ------- NPC COMMANDS -------
         manager.command(
                 manager.commandBuilder("survivaladmin", "sa")
                         .literal("npc")
                         .literal("create")
                         .argument(StringArgument.<CommandSender>newBuilder("type")
-                                .withSuggestionsProvider((ctx, str) -> Arrays.asList("enchanter", "storage", "upgrader")))
+                                .withSuggestionsProvider((ctx, str) -> Arrays.asList(
+                                        "basic-enchanter",
+                                        "advanced-enchanter",
+                                        "upgrader",
+                                        "storage")))
                         .senderType(Player.class)
                         .handler(this::npcCreateCommand)
         );
+
+        // ------- OTHER COMMANDS -------
 
         manager.command(
                 manager.commandBuilder("survival")
@@ -90,6 +98,20 @@ public class Commands {
     }
 
     private void npcCreateCommand(@NonNull CommandContext<CommandSender> ctx) {
+        Player player = (Player) ctx.getSender();
+        String type = ctx.get("type");
+        switch (type) {
+            case "basic-enchanter" -> NPCManager.getInstance().addNPC(new BasicEnchanterNPC(player.getLocation()));
+            case "advanced-enchanter" -> NPCManager.getInstance().addNPC(new AdvancedEnchanterNPC(player.getLocation()));
+            case "upgrader" -> NPCManager.getInstance().addNPC(new UpgradeNPC(player.getLocation()));
+            case "storage" -> NPCManager.getInstance().addNPC(new StorageNPC(player.getLocation()));
+            default -> {
+                player.sendMessage("That is not a valid NPC type.");
+                return;
+            }
+        }
+
+        player.sendMessage("You created an NPC.");
     }
 
     private void spawnAirdropCommand(@NonNull CommandContext<CommandSender> ctx) {
