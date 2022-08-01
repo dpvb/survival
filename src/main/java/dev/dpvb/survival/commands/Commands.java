@@ -54,16 +54,7 @@ public class Commands {
                         .handler(this::npcCreateCommand)
         );
 
-        // ------- OTHER COMMANDS -------
-
-        manager.command(
-                manager.commandBuilder("survival")
-                        .literal("test")
-                        .senderType(Player.class)
-                        .permission("survival.test")
-                        .handler(this::testCommand)
-        );
-
+        // ------- TOKEN COMMANDS -------
         manager.command(
                 manager.commandBuilder("survival")
                         .literal("tokens")
@@ -72,13 +63,22 @@ public class Commands {
         );
 
         manager.command(
-                manager.commandBuilder("survivaladmin")
+                manager.commandBuilder("survivaladmin", "sa")
                         .literal("token")
                         .literal("set")
                         .argument(PlayerArgument.of("player"))
                         .argument(IntegerArgument.of("tokens"))
                         .senderType(Player.class)
                         .handler(this::tokenSetCommand)
+        );
+
+        // ------- OTHER COMMANDS -------
+        manager.command(
+                manager.commandBuilder("survival")
+                        .literal("test")
+                        .senderType(Player.class)
+                        .permission("survival.test")
+                        .handler(this::testCommand)
         );
 
         manager.command(
