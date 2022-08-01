@@ -59,7 +59,7 @@ loot:
     diamond_chestplate:
       chance: 0.5
     diamond_leggings:
-      chacne: 0.5
+      chance: 0.5
     diamond_axe:
       chance: 0.65
 
