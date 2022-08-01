@@ -5,6 +5,7 @@ import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.paper.PaperCommandManager;
 import dev.dpvb.survival.chests.ChestManager;
+import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.commands.Commands;
 import dev.dpvb.survival.events.FirstJoinListener;
 import dev.dpvb.survival.mongo.MongoManager;
@@ -31,21 +32,12 @@ public final class Survival extends JavaPlugin {
         instance = this;
         // Setup Config File
         setupConfigFile();
-        // Setup Mongo
-        MongoManager.getInstance();
-        // Load Player Info Statistics from Mongo
-        PlayerInfoManager.getInstance().load();
-        // Load all Player Storage from Mongo
-        StorageManager.getInstance().load();
-        // Load all Chest Data
-        ChestManager.getInstance().loadLootChests();
+        // Setup Managers
+        setupManagers();
         // Setup Commands
         setupCommands();
         // Register Listeners
-        Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
-        Bukkit.getPluginManager().registerEvents(new FirstJoinListener(), this);
-        // Load NPCs
-        Bukkit.getScheduler().runTaskLater(this, NPCManager.getInstance()::loadNPCs, 5);
+        registerListeners();
     }
 
     @Override
@@ -54,6 +46,26 @@ public final class Survival extends JavaPlugin {
         PlayerInfoManager.getInstance().save();
         // Upload Storage to Mongo
         StorageManager.getInstance().save();
+    }
+
+    private void setupManagers() {
+        // Setup Mongo
+        MongoManager.getInstance();
+        // Load Player Info Statistics from Mongo
+        PlayerInfoManager.getInstance().load();
+        // Load all Player Storage from Mongo
+        StorageManager.getInstance().load();
+        // Load all Chest Data
+        ChestManager.getInstance().loadLootChests();
+        // Load Airdrop Information
+        AirdropManager.getInstance().loadAirdropAnimation();
+        // Load NPCs
+        Bukkit.getScheduler().runTaskLater(this, NPCManager.getInstance()::loadNPCs, 5);
+    }
+
+    private void registerListeners() {
+        Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
+        Bukkit.getPluginManager().registerEvents(new FirstJoinListener(), this);
     }
 
     private void setupCommands() {
