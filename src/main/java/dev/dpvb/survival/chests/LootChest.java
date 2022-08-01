@@ -19,10 +19,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class LootChest {
 
-    private Block block;
+    protected Block block;
     private ChestData chestData;
-    private boolean exists;
-    private InventoryWrapper inventory;
+    protected InventoryWrapper inventory;
     private final int respawnTimeMin = 15; // in seconds
     private final int respawnTimeMax = 45; // in seconds
 
@@ -33,7 +32,6 @@ public class LootChest {
     }
 
     public void spawnChest() {
-        exists = true;
         inventory = new LootChestInventory(this).register();
         block.setType(chestData.getTier().getChestMaterial());
         BlockData data = block.getBlockData();
@@ -58,7 +56,6 @@ public class LootChest {
 
     public void destroy() {
         // Destroy the Chest
-        exists = false;
         inventory.unregister();
         BlockData data = block.getBlockData();
         block.setType(Material.AIR);
@@ -79,6 +76,7 @@ public class LootChest {
         // Prep to spawn new Chest
         final int respawnTime = ThreadLocalRandom.current().nextInt(respawnTimeMin, respawnTimeMax);
         Bukkit.getScheduler().runTaskLater(Survival.getInstance(), this::spawnChest, respawnTime * 20L);
+
     }
 
     public InventoryWrapper getInventory() {

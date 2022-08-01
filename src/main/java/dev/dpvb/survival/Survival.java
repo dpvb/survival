@@ -46,6 +46,8 @@ public final class Survival extends JavaPlugin {
         PlayerInfoManager.getInstance().save();
         // Upload Storage to Mongo
         StorageManager.getInstance().save();
+        // Clear all Airdrop Chests
+        AirdropManager.getInstance().clearAirdrops();
     }
 
     private void setupManagers() {

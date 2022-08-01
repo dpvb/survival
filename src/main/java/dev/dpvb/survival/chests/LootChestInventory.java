@@ -1,6 +1,8 @@
 package dev.dpvb.survival.chests;
 
 
+import dev.dpvb.survival.chests.airdrop.AirdropChest;
+import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.gui.InventoryWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
@@ -50,6 +52,9 @@ public class LootChestInventory extends InventoryWrapper {
         if (event.getInventory().getViewers().size() == 1) {
             if (event.getInventory().isEmpty()) {
                 chest.destroy();
+                if (chest instanceof AirdropChest ac) {
+                    AirdropManager.getInstance().removeAirdropFromCache(ac);
+                }
             } else {
                 BlockState state = chest.getBlock().getState();
                 if (state instanceof Lidded lidded) {

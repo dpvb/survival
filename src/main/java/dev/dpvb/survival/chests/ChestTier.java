@@ -14,7 +14,8 @@ import java.util.Set;
 public enum ChestTier {
 
     ONE(Material.CHEST),
-    TWO(Material.ENDER_CHEST);
+    TWO(Material.ENDER_CHEST),
+    THREE(Material.CHEST);
 
     private final Material chestMaterial;
     private final Set<Loot> lootTable;
