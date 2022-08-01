@@ -1,6 +1,7 @@
 package dev.dpvb.survival.commands;
 
 import cloud.commandframework.arguments.standard.IntegerArgument;
+import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.bukkit.parsers.PlayerArgument;
 import cloud.commandframework.context.CommandContext;
@@ -25,10 +26,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Commands {
 
@@ -39,6 +37,17 @@ public class Commands {
     }
 
     public void initCommands() {
+        // NPC COMMANDS
+        manager.command(
+                manager.commandBuilder("survivaladmin", "sa")
+                        .literal("npc")
+                        .literal("create")
+                        .argument(StringArgument.<CommandSender>newBuilder("type")
+                                .withSuggestionsProvider((ctx, str) -> Arrays.asList("enchanter", "storage", "upgrader")))
+                        .senderType(Player.class)
+                        .handler(this::npcCreateCommand)
+        );
+
         manager.command(
                 manager.commandBuilder("survival")
                         .literal("test")
@@ -78,6 +87,9 @@ public class Commands {
                         .senderType(Player.class)
                         .handler(this::spawnAirdropCommand)
         );
+    }
+
+    private void npcCreateCommand(@NonNull CommandContext<CommandSender> ctx) {
     }
 
     private void spawnAirdropCommand(@NonNull CommandContext<CommandSender> ctx) {

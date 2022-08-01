@@ -42,7 +42,7 @@ public class AirdropManager {
                 final double sin = Math.sin(2 * Math.PI * i / numParticles);
                 final double xOff = (radius) * cos;
                 final double zOff = (radius) * sin;
-                ParticleBuilder pb = new ParticleBuilder(Particle.FIREWORKS_SPARK)
+                final ParticleBuilder pb = new ParticleBuilder(Particle.FIREWORKS_SPARK)
                         .count(0)
                         .offset(.2 * cos, 0, .2 * sin);
 

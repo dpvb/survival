@@ -34,7 +34,7 @@ public class AirdropAnimation extends BukkitRunnable {
         List<AirdropParticle> airdropParticles = particleSpawnMap.get(counter);
         Location currLoc = top.clone().add(0, ((double) counter / length) * -height, 0);
         for (AirdropParticle airdropParticle : airdropParticles) {
-            Location spawnLoc = top.clone().add(airdropParticle.getxOff(), airdropParticle.getyOff(), airdropParticle.getzOff());
+            Location spawnLoc = top.clone().add(airdropParticle.getXOff(), airdropParticle.getYOff(), airdropParticle.getZOff());
             airdropParticle.getParticleBuilder()
                     .location(spawnLoc)
                     .receivers(400, 200)

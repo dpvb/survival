@@ -16,15 +16,15 @@ public class AirdropParticle {
         this.particleBuilder = particleBuilder;
     }
 
-    public double getxOff() {
+    public double getXOff() {
         return xOff;
     }
 
-    public double getyOff() {
+    public double getYOff() {
         return yOff;
     }
 
-    public double getzOff() {
+    public double getZOff() {
         return zOff;
     }
 
