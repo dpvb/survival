@@ -6,8 +6,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public enum ChestTier {
@@ -17,7 +19,7 @@ public enum ChestTier {
     ;
 
     private final Material chestMaterial;
-    private final List<Loot> lootTable = new LinkedList<>();
+    private final Set<Loot> lootTable = new HashSet<>();
 
     ChestTier(Material chestMaterial) {
         this.chestMaterial = chestMaterial;
@@ -45,7 +47,7 @@ public enum ChestTier {
         // Iterate keys (material names)
         for (String materialName : tierSection.getKeys(false)) {
             // Attempt to parse Material
-            Material material = null;
+            Material material;
             try {
                 material = Material.valueOf(materialName.toUpperCase());
             } catch (IllegalArgumentException e) {
@@ -95,7 +97,7 @@ public enum ChestTier {
         return chestMaterial;
     }
 
-    public List<Loot> getLootTable() {
+    public Set<Loot> getLootTable() {
         return lootTable;
     }
 }
