@@ -9,21 +9,19 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Lidded;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
-import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class LootChest {
+public class LootChest implements LootableChest {
+    private static final int RESPAWN_TIME_MIN = 15; // in seconds
+    private static final int RESPAWN_TIME_MAX = 45; // in seconds
 
     protected Block block;
     private ChestData chestData;
     protected InventoryWrapper inventory;
-    private final int respawnTimeMin = 15; // in seconds
-    private final int respawnTimeMax = 45; // in seconds
 
     public LootChest(Block block, ChestData chestData) {
         this.block = block;
@@ -39,19 +37,6 @@ public class LootChest {
             dir.setFacing(chestData.getFace());
         }
         block.setBlockData(data);
-    }
-
-    public void open(Player player) {
-        // Open the inventory for the player.
-        player.openInventory(inventory.getInventory());
-
-        // Visually open the block.
-        BlockState state = block.getState();
-        if (state instanceof Lidded lidded) {
-            if (!lidded.isOpen()) {
-                lidded.open();
-            }
-        }
     }
 
     public void destroy() {
@@ -74,16 +59,18 @@ public class LootChest {
 
 
         // Prep to spawn new Chest
-        final int respawnTime = ThreadLocalRandom.current().nextInt(respawnTimeMin, respawnTimeMax);
+        final int respawnTime = ThreadLocalRandom.current().nextInt(RESPAWN_TIME_MIN, RESPAWN_TIME_MAX);
         Bukkit.getScheduler().runTaskLater(Survival.getInstance(), this::spawnChest, respawnTime * 20L);
 
     }
 
-    public InventoryWrapper getInventory() {
+    @Override
+    public @NotNull InventoryWrapper getInventoryWrapper() {
         return inventory;
     }
 
-    public Block getBlock() {
+    @Override
+    public @NotNull Block getBlock() {
         return block;
     }
 
