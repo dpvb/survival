@@ -12,7 +12,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class LootChestInventory extends InventoryWrapper {
@@ -28,7 +27,7 @@ public class LootChestInventory extends InventoryWrapper {
     @Override
     protected Inventory generateInventory() {
         // Create the loot that should be spawned for this item.
-        Set<ItemStack> items = chest.getTier().generateLoot();
+        final var items = chest.getTier().generateLoot();
 
         // Create the Inventory
         Inventory inventory = Bukkit.createInventory(null, size);

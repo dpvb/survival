@@ -69,7 +69,7 @@ public class ChestManager {
                             z,
                             world.getName(),
                             ((Directional) block.getBlockData()).getFacing(),
-                            ChestTier.getTier(block.getType())
+                            ChestTier.getTier(block.getType()) // TODO: Check if airdrops cause a throw here
                     );
 
                     chestDataList.add(chestData);
