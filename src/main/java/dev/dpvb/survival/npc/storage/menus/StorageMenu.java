@@ -38,11 +38,6 @@ public class StorageMenu extends AutoCleanInventoryWrapper {
     }
 
     @Override
-    public void handle(InventoryClickEvent event) {
-        // do nothing
-    }
-
-    @Override
     public void handle(InventoryCloseEvent event) {
         Map<Integer, byte[]> contents = StorageManager.getInstance().getStorageContents(player.getUniqueId());
         for (int i = 0; i < getInventory().getSize(); i++) {

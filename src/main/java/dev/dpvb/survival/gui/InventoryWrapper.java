@@ -21,19 +21,20 @@ public abstract class InventoryWrapper implements Listener {
     protected abstract Inventory generateInventory();
 
     /**
-     * Custom implementation for this Inventory's Click Event.
-     * @param event The {@link InventoryClickEvent} of this {@link Inventory}
+     * Define custom behavior to call during InventoryClickEvent.
+     *
+     * @param event an {@link InventoryClickEvent} of this {@link Inventory}
+     * @implNote This method is defined as no-op by default.
      */
-    public abstract void handle(InventoryClickEvent event);
+    public void handle(InventoryClickEvent event) {} // no-op
 
     /**
-     * Is stubbed in the event we do not need to do anything on the Close Event.
-     * Custom implementation of the Inventory's Close Event
-     * @param event The {@link InventoryCloseEvent} of this {@link Inventory}
+     * Define custom behavior to call during InventoryCloseEvent.
+     *
+     * @param event an {@link InventoryCloseEvent} of this {@link Inventory}
+     * @implNote This method is defined as no-op by default.
      */
-    public void handle(InventoryCloseEvent event) {
-
-    }
+    public void handle(InventoryCloseEvent event) {} // no-op
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event) {

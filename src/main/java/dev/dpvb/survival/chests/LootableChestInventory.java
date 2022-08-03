@@ -37,11 +37,6 @@ public class LootableChestInventory extends InventoryWrapper {
     }
 
     @Override
-    public void handle(InventoryClickEvent event) {
-
-    }
-
-    @Override
     public void handle(InventoryCloseEvent event) {
         if (event.getInventory().getViewers().size() == 1) {
             if (event.getInventory().isEmpty()) {
