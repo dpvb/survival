@@ -56,7 +56,7 @@ public class GameManager {
             if (item == null) {
                 continue;
             }
-            hubWorld.dropItemNaturally(player.getLocation(), item);
+            arenaWorld.dropItemNaturally(player.getLocation(), item);
         }
         player.getInventory().clear();
     }

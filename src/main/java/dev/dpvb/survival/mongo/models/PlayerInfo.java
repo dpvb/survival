@@ -16,9 +16,11 @@ public class PlayerInfo {
 
     }
 
-    public PlayerInfo(final UUID id, final Integer tokens) {
+    public PlayerInfo(final UUID id, final Integer tokens, final Integer kills, final Integer deaths) {
         this.id = id;
         this.tokens = tokens;
+        this.kills = kills;
+        this.deaths = deaths;
     }
 
     public UUID getId() {

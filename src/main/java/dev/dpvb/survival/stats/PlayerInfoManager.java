@@ -53,6 +53,8 @@ public class PlayerInfoManager {
     public void generatePlayerInfo(UUID uuid) {
         map.put(uuid, new PlayerInfo(
                 uuid,
+                0,
+                0,
                 0
         ));
     }
