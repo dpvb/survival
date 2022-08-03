@@ -1,6 +1,6 @@
 package dev.dpvb.survival.mongo.models;
 
-import dev.dpvb.survival.chests.ChestTier;
+import dev.dpvb.survival.chests.tiered.ChestTier;
 import org.bukkit.block.BlockFace;
 
 public class ChestData {

@@ -1,8 +1,9 @@
-package dev.dpvb.survival.chests;
+package dev.dpvb.survival.chests.tiered;
 
 import dev.dpvb.survival.Survival;
+import dev.dpvb.survival.chests.LootSource;
+import dev.dpvb.survival.chests.LootableChest;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -14,23 +15,22 @@ public class LootChest extends LootableChest {
     private static final int RESPAWN_TIME_MIN = 15; // in seconds
     private static final int RESPAWN_TIME_MAX = 45; // in seconds
 
-    public LootChest(@NotNull Block block, Material material, BlockFace facing) {
-        super(block, material, facing);
+    final ChestTier tier;
+
+    public LootChest(@NotNull Block block, ChestTier tier, BlockFace facing) {
+        super(block, tier.getChestMaterial(), facing);
+        this.tier = tier;
         spawnChest();
     }
 
     @Override
     public @NotNull LootSource getLootSource() {
-        return ChestTier.getTier(material);
+        return tier;
     }
 
     @Override
     public Sound getBreakSound() {
-        return switch (material) {
-            case CHEST -> Sound.BLOCK_WOOD_BREAK;
-            case ENDER_CHEST -> Sound.BLOCK_STONE_BREAK;
-            default -> super.getBreakSound();
-        };
+        return tier.getBreakSound();
     }
 
     @Override

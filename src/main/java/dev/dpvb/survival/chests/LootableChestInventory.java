@@ -9,12 +9,12 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class LootChestInventory extends InventoryWrapper {
+public class LootableChestInventory extends InventoryWrapper {
 
     private final LootableChest chest;
     private final int size;
 
-    public LootChestInventory(LootableChest chest) {
+    public LootableChestInventory(LootableChest chest) {
         this.chest = chest;
         this.size = 27;
     }

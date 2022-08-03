@@ -10,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
 
 public interface LootSource {
     @NotNull List<ItemStack> generateLoot();
@@ -82,5 +84,53 @@ public interface LootSource {
      */
     static void loadFromLoot(@NotNull String subsection, @NotNull Collection<Loot> out) {
         loadFrom(Survival.Configuration.getLootSection(), subsection, out);
+    }
+
+    /**
+     * Generate loot from a collection of Loot objects.
+     */
+    enum GenerationFormula {
+        /**
+         * The default formula.
+         */
+        DEFAULT {
+            @Override
+            public void generate(Collection<Loot> in, Collection<ItemStack> out) {
+                for (Loot loot : in) {
+                    double randDouble = ThreadLocalRandom.current().nextDouble();
+                    if (randDouble <= loot.chance()) {
+                        out.add(loot.item());
+                    }
+                }
+            }
+        },
+        ;
+
+        /**
+         * Generate loot from a collection of Loot objects.
+         * <p>
+         * The resulting items are added to the output collection.
+         *
+         * @param in the input collection
+         * @param out the output collection
+         */
+        public abstract void generate(Collection<Loot> in, Collection<ItemStack> out);
+
+        /**
+         * Generate a list of loot items from a collection of Loot objects.
+         * <p>
+         * The supplier is used to create or source the output list. The
+         * resulting items are added to this list.
+         *
+         * @param in an input collection of Loot objects
+         * @param listGenerator a list source
+         * @return a list of loot items
+         * @param <T> the type of the output list
+         */
+        public <T extends List<ItemStack>> T generateAs(Collection<Loot> in, Supplier<T> listGenerator) {
+            T out = listGenerator.get();
+            generate(in, out);
+            return out;
+        }
     }
 }

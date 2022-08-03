@@ -53,7 +53,7 @@ loot:
   tier-two:
     iron_sword:
       chance: 0.5
-  tier-three:
+  airdrop:
     diamond_sword:
       chance: 0.75
     diamond_chestplate:

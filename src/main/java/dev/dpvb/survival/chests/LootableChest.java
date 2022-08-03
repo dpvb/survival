@@ -32,7 +32,7 @@ public abstract class LootableChest {
     }
 
     public void spawnChest() {
-        wrapper = new LootChestInventory(this).register();
+        wrapper = new LootableChestInventory(this).register();
         block.setType(material);
         final var data = block.getBlockData();
         if (data instanceof Directional dir) {

@@ -1,7 +1,6 @@
 package dev.dpvb.survival.chests.airdrop;
 
 import dev.dpvb.survival.Survival;
-import dev.dpvb.survival.chests.ChestTier;
 import dev.dpvb.survival.chests.LootSource;
 import dev.dpvb.survival.chests.LootableChest;
 import org.bukkit.Bukkit;
@@ -26,7 +25,7 @@ public class AirdropChest extends LootableChest implements Listener {
 
     @Override
     public @NotNull LootSource getLootSource() {
-        return ChestTier.THREE;
+        return AirdropManager.getInstance();
     }
 
     @Override

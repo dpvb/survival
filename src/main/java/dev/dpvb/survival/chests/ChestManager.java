@@ -2,6 +2,8 @@ package dev.dpvb.survival.chests;
 
 import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.chests.events.ChestListener;
+import dev.dpvb.survival.chests.tiered.ChestTier;
+import dev.dpvb.survival.chests.tiered.LootChest;
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.mongo.models.ChestData;
 import dev.dpvb.survival.mongo.services.ChestDataService;
@@ -46,7 +48,7 @@ public class ChestManager {
             }
             final var loc = new Location(world, chestData.getX(), chestData.getY(), chestData.getZ());
             final var block = world.getBlockAt(loc);
-            lootChestMap.put(loc, new LootChest(block, chestData.getTier().getChestMaterial(), chestData.getFace()));
+            lootChestMap.put(loc, new LootChest(block, chestData.getTier(), chestData.getFace()));
         }
     }
 
@@ -72,7 +74,7 @@ public class ChestManager {
                             z,
                             world.getName(),
                             ((Directional) block.getBlockData()).getFacing(),
-                            ChestTier.getTier(block.getType())
+                            getTier(block.getType())
                     );
 
                     chestDataList.add(chestData);
@@ -87,5 +89,13 @@ public class ChestManager {
 
     public Map<Location, LootChest> getLootChestMap() {
         return lootChestMap;
+    }
+
+    static ChestTier getTier(Material material) {
+        return switch (material) {
+            case CHEST -> ChestTier.ONE;
+            case ENDER_CHEST -> ChestTier.TWO;
+            default -> throw(new IllegalStateException());
+        };
     }
 }
