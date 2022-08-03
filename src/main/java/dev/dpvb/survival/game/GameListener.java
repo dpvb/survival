@@ -1,5 +1,6 @@
 package dev.dpvb.survival.game;
 
+import dev.dpvb.survival.stats.PlayerInfoManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,7 +32,12 @@ public class GameListener implements Listener {
             return;
         }
 
-        // Give tokens or whatever the heck
+        Player killer = victim.getKiller();
+        if (killer == null) {
+            return;
+        }
+
+        PlayerInfoManager.getInstance().addTokens(killer.getUniqueId(), 1);
     }
 
     @EventHandler
