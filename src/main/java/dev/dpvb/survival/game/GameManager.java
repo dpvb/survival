@@ -14,21 +14,21 @@ import java.util.Set;
 public class GameManager {
 
     private static GameManager instance;
-    protected final World hubWorld;
+    final World hubWorld;
     private final World arenaWorld;
     private final Set<Player> players = new HashSet<>();
 
     private GameManager() {
         // Get the World instances.
-        hubWorld = Bukkit.getWorld("hub");
-        if (hubWorld == null) {
-            Bukkit.getLogger().severe("Survival requires a world named: hub");
-            Bukkit.getPluginManager().disablePlugin(Survival.getInstance());
+        final var hub = Bukkit.getWorld("hub");
+        if (hub == null) {
+            throw new IllegalStateException("Survival requires a world named 'hub'");
+        } else {
+            hubWorld = hub;
         }
         arenaWorld = Bukkit.getWorld("arena");
         if (arenaWorld == null) {
-            Bukkit.getLogger().severe("Survival requires a world named: arena");
-            Bukkit.getPluginManager().disablePlugin(Survival.getInstance());
+            throw new IllegalStateException("Survival requires a world named 'arena'");
         }
         // Initialize Listener
         Bukkit.getPluginManager().registerEvents(new GameListener(this), Survival.getInstance());
@@ -46,17 +46,27 @@ public class GameManager {
         Bukkit.getLogger().info("Player count: " + players.size());
     }
 
-    public void leave(@NotNull Player player) {
+    public boolean playerInGame(Player player) {
+        return players.contains(player);
+    }
+
+    public void dropAndClearInventory(Player player) {
         // Drop the player's inventory
         for (ItemStack item : player.getInventory().getContents()) {
             if (item == null) {
                 continue;
             }
-            arenaWorld.dropItemNaturally(player.getLocation(), item);
+            hubWorld.dropItemNaturally(player.getLocation(), item);
         }
         player.getInventory().clear();
+    }
+
+    public void sendToHub(Player player) {
         // Get the player out of the arena and back to the hub.
         player.teleport(hubWorld.getSpawnLocation());
+    }
+
+    public void remove(@NotNull Player player) {
         // Remove player from the players set
         players.remove(player);
         // Log the leave
@@ -64,13 +74,15 @@ public class GameManager {
         Bukkit.getLogger().info("Player count: " + players.size());
     }
 
-    public boolean playerInGame(Player player) {
-        return players.contains(player);
-    }
-
     public static GameManager getInstance() {
         if (instance == null) {
-            instance = new GameManager();
+            try {
+                instance = new GameManager();
+            } catch (IllegalStateException e) {
+                // explain what's happened
+                Survival.getInstance().getLogger().severe("Failed to initialize GameManager:");
+                throw e; // Bukkit will disable the plugin and log the error message we provided
+            }
         }
 
         return instance;

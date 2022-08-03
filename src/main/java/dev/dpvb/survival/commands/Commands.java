@@ -5,13 +5,9 @@ import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.bukkit.parsers.PlayerArgument;
 import cloud.commandframework.context.CommandContext;
-import com.destroystokyo.paper.ParticleBuilder;
-import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.chests.ChestManager;
-import dev.dpvb.survival.chests.airdrop.AirdropAnimation;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.game.GameManager;
-import dev.dpvb.survival.mongo.models.PlayerInfo;
 import dev.dpvb.survival.npc.NPCManager;
 import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
 import dev.dpvb.survival.npc.enchanting.BasicEnchanterNPC;
@@ -20,13 +16,8 @@ import dev.dpvb.survival.npc.upgrader.UpgradeNPC;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.*;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
@@ -117,7 +108,10 @@ public class Commands {
         Player player = (Player) ctx.getSender();
         GameManager manager = GameManager.getInstance();
         if (manager.playerInGame(player)) {
-            manager.leave(player);
+            // TODO: ask player if they fr, mention extraction
+            manager.dropAndClearInventory(player);
+            manager.sendToHub(player);
+            manager.remove(player);
         } else {
             player.sendMessage("You are not in the game.");
         }
