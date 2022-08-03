@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -13,7 +14,7 @@ import java.util.Set;
 public class GameManager {
 
     private static GameManager instance;
-    private final World hubWorld;
+    protected final World hubWorld;
     private final World arenaWorld;
     private final Set<Player> players = new HashSet<>();
 
@@ -40,15 +41,27 @@ public class GameManager {
         player.teleport(spawnLocation);
         // Add player to the players set
         players.add(player);
+        // Log the join
+        Bukkit.getLogger().info(player.getName() + " joined the arena.");
+        Bukkit.getLogger().info("Player count: " + players.size());
     }
 
     public void leave(@NotNull Player player) {
+        // Drop the player's inventory
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item == null) {
+                continue;
+            }
+            arenaWorld.dropItemNaturally(player.getLocation(), item);
+        }
+        player.getInventory().clear();
         // Get the player out of the arena and back to the hub.
         player.teleport(hubWorld.getSpawnLocation());
-        // Clear the Player's inventory.
-        player.getInventory().clear();
         // Remove player from the players set
         players.remove(player);
+        // Log the leave
+        Bukkit.getLogger().info(player.getName() + " left the arena.");
+        Bukkit.getLogger().info("Player count: " + players.size());
     }
 
     public boolean playerInGame(Player player) {
