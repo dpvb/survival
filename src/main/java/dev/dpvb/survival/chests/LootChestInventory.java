@@ -1,12 +1,7 @@
 package dev.dpvb.survival.chests;
 
-
-import dev.dpvb.survival.chests.airdrop.AirdropChest;
-import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.gui.InventoryWrapper;
 import org.bukkit.Bukkit;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Lidded;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -16,10 +11,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class LootChestInventory extends InventoryWrapper {
 
-    private LootChest chest;
-    private int size;
+    private final LootableChest chest;
+    private final int size;
 
-    public LootChestInventory(LootChest chest) {
+    public LootChestInventory(LootableChest chest) {
         this.chest = chest;
         this.size = 27;
     }
@@ -27,7 +22,7 @@ public class LootChestInventory extends InventoryWrapper {
     @Override
     protected Inventory generateInventory() {
         // Create the loot that should be spawned for this item.
-        final var items = chest.getTier().generateLoot();
+        final var items = chest.getLootSource().generateLoot();
 
         // Create the Inventory
         Inventory inventory = Bukkit.createInventory(null, size);
@@ -51,14 +46,8 @@ public class LootChestInventory extends InventoryWrapper {
         if (event.getInventory().getViewers().size() == 1) {
             if (event.getInventory().isEmpty()) {
                 chest.destroy();
-                if (chest instanceof AirdropChest ac) {
-                    AirdropManager.getInstance().removeAirdropFromCache(ac);
-                }
             } else {
-                BlockState state = chest.getBlock().getState();
-                if (state instanceof Lidded lidded) {
-                    lidded.close();
-                }
+                chest.close();
             }
         }
     }

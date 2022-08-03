@@ -1,58 +1,43 @@
 package dev.dpvb.survival.chests.airdrop;
 
-import com.destroystokyo.paper.ParticleBuilder;
 import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.chests.ChestTier;
-import dev.dpvb.survival.chests.LootChest;
-import dev.dpvb.survival.mongo.models.ChestData;
+import dev.dpvb.survival.chests.LootSource;
+import dev.dpvb.survival.chests.LootableChest;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.jetbrains.annotations.NotNull;
 
-public class AirdropChest extends LootChest implements Listener {
+public class AirdropChest extends LootableChest implements Listener {
 
-    public AirdropChest(Block block) {
-        super(block, new ChestData(
-                block.getX(),
-                block.getY(),
-                block.getZ(),
-                block.getWorld().getName(),
-                BlockFace.NORTH,
-                ChestTier.THREE)
-        );
+    public AirdropChest(@NotNull Block block) {
+        super(block, Material.CHEST, BlockFace.NORTH);
         spawnChest();
         Bukkit.getPluginManager().registerEvents(this, Survival.getInstance());
     }
 
     @Override
+    public @NotNull LootSource getLootSource() {
+        return ChestTier.THREE;
+    }
+
+    @Override
     public void destroy() {
-        // Destroy the Chest
-        inventory.unregister();
+        super.destroy();
+        // Unregister this custom listener
         HandlerList.unregisterAll(this);
-        BlockData data = block.getBlockData();
-        block.setType(Material.AIR);
-
-        // Play Sound
-        block.getLocation().getWorld().playSound(block.getLocation(), Sound.BLOCK_WOOD_BREAK, 1f, 1f);
-
-        // Create Particles
-        new ParticleBuilder(Particle.BLOCK_DUST)
-                .data(data)
-                .location(block.getLocation())
-                .offset(0.5, 0.5, 0.5)
-                .receivers(10)
-                .count(20)
-                .spawn();
+        // Do not allow edits of cache while it is clearing
+        if (!AirdropManager.getInstance().isClearing()) {
+            AirdropManager.getInstance().removeAirdropFromCache(this);
+        }
     }
 
     @EventHandler
@@ -65,7 +50,7 @@ public class AirdropChest extends LootChest implements Listener {
             return;
         }
 
-        if (!event.getClickedBlock().equals(block)) {
+        if (!block.equals(event.getClickedBlock())) {
             return;
         }
 

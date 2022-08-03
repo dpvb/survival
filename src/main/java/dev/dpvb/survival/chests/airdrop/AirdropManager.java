@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AirdropManager {
 
@@ -18,6 +19,7 @@ public class AirdropManager {
     private final int airdropAnimationHeight = 200;
     private final int airdropAnimationLength = 200;
     private final List<AirdropChest> airdropChests = new ArrayList<>();
+    private final AtomicBoolean clearing = new AtomicBoolean();
 
     private AirdropManager() {
 
@@ -71,13 +73,19 @@ public class AirdropManager {
     }
 
     public void clearAirdrops() {
+        clearing.set(true);
         for (AirdropChest airdropChest : airdropChests) {
             airdropChest.destroy();
         }
+        clearing.set(false);
     }
 
     public void removeAirdropFromCache(AirdropChest airdropChest) {
         airdropChests.remove(airdropChest);
+    }
+
+    public boolean isClearing() {
+        return clearing.get();
     }
 
     public Map<Long, List<AirdropParticle>> getParticleSpawnMap() {

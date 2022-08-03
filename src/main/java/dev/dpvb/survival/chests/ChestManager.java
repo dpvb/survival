@@ -38,12 +38,15 @@ public class ChestManager {
     }
 
     public void loadLootChests() {
-        List<ChestData> chestDataList = MongoManager.getInstance().getChestDataService().getAll();
+        final var chestDataList = MongoManager.getInstance().getChestDataService().getAll();
         for (ChestData chestData : chestDataList) {
-            World world = Bukkit.getWorld(chestData.getWorld());
-            Location loc = new Location(world, chestData.getX(), chestData.getY(), chestData.getZ());
-            Block block = world.getBlockAt(loc);
-            lootChestMap.put(loc, new LootChest(block, chestData));
+            final var world = Bukkit.getWorld(chestData.getWorld());
+            if (world == null) {
+                continue;
+            }
+            final var loc = new Location(world, chestData.getX(), chestData.getY(), chestData.getZ());
+            final var block = world.getBlockAt(loc);
+            lootChestMap.put(loc, new LootChest(block, chestData.getTier().getChestMaterial(), chestData.getFace()));
         }
     }
 
@@ -69,7 +72,7 @@ public class ChestManager {
                             z,
                             world.getName(),
                             ((Directional) block.getBlockData()).getFacing(),
-                            ChestTier.getTier(block.getType()) // TODO: Check if airdrops cause a throw here
+                            ChestTier.getTier(block.getType())
                     );
 
                     chestDataList.add(chestData);
