@@ -8,6 +8,7 @@ import dev.dpvb.survival.chests.ChestManager;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.commands.Commands;
 import dev.dpvb.survival.events.FirstJoinListener;
+import dev.dpvb.survival.game.GameManager;
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.npc.listeners.NPCListener;
 import dev.dpvb.survival.npc.NPCManager;
@@ -61,6 +62,8 @@ public final class Survival extends JavaPlugin {
         ChestManager.getInstance().loadLootChests();
         // Load Airdrop Information
         AirdropManager.getInstance().loadAirdropAnimation();
+        // Setup Game Manager
+        GameManager.getInstance();
         // Load NPCs
         Bukkit.getScheduler().runTaskLater(this, NPCManager.getInstance()::loadNPCs, 5);
     }

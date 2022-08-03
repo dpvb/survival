@@ -10,6 +10,7 @@ import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.chests.ChestManager;
 import dev.dpvb.survival.chests.airdrop.AirdropAnimation;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
+import dev.dpvb.survival.game.GameManager;
 import dev.dpvb.survival.mongo.models.PlayerInfo;
 import dev.dpvb.survival.npc.NPCManager;
 import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
@@ -39,6 +40,21 @@ public class Commands {
     }
 
     public void initCommands() {
+        // ------- GAME COMMANDS -------
+        manager.command(
+                manager.commandBuilder("survival")
+                        .literal("join")
+                        .senderType(Player.class)
+                        .handler(this::gameJoinCommand)
+        );
+
+        manager.command(
+                manager.commandBuilder("survival")
+                        .literal("leave")
+                        .senderType(Player.class)
+                        .handler(this::gameLeaveCommand)
+        );
+
         // ------- NPC COMMANDS -------
         manager.command(
                 manager.commandBuilder("survivaladmin", "sa")
@@ -95,6 +111,26 @@ public class Commands {
                         .senderType(Player.class)
                         .handler(this::spawnAirdropCommand)
         );
+    }
+
+    private void gameLeaveCommand(@NonNull CommandContext<CommandSender> ctx) {
+        Player player = (Player) ctx.getSender();
+        GameManager manager = GameManager.getInstance();
+        if (manager.playerInGame(player)) {
+            manager.leave(player);
+        } else {
+            player.sendMessage("You are not in the game.");
+        }
+    }
+
+    private void gameJoinCommand(@NonNull CommandContext<CommandSender> ctx) {
+        Player player = (Player) ctx.getSender();
+        GameManager manager = GameManager.getInstance();
+        if (!manager.playerInGame(player)) {
+            manager.join(player);
+        } else {
+            player.sendMessage("You are already in the game.");
+        }
     }
 
     private void npcCreateCommand(@NonNull CommandContext<CommandSender> ctx) {
