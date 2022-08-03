@@ -9,6 +9,8 @@ public class PlayerInfo {
     @BsonId
     private UUID id;
     private Integer tokens;
+    private Integer kills;
+    private Integer deaths;
 
     public PlayerInfo() {
 
@@ -33,5 +35,21 @@ public class PlayerInfo {
 
     public void setTokens(Integer tokens) {
         this.tokens = tokens;
+    }
+
+    public Integer getKills() {
+        return kills;
+    }
+
+    public void setKills(Integer kills) {
+        this.kills = kills;
+    }
+
+    public Integer getDeaths() {
+        return deaths;
+    }
+
+    public void setDeaths(Integer deaths) {
+        this.deaths = deaths;
     }
 }

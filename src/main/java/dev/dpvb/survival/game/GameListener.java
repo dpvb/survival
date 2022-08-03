@@ -32,12 +32,16 @@ public class GameListener implements Listener {
             return;
         }
 
+        final PlayerInfoManager pim = PlayerInfoManager.getInstance();
+        pim.addDeath(victim.getUniqueId());
+
         Player killer = victim.getKiller();
         if (killer == null) {
             return;
         }
 
-        PlayerInfoManager.getInstance().addTokens(killer.getUniqueId(), 1);
+        pim.addTokens(killer.getUniqueId(), 1);
+        pim.addKill(killer.getUniqueId());
     }
 
     @EventHandler

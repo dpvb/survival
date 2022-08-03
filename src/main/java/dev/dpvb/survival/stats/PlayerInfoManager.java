@@ -76,6 +76,16 @@ public class PlayerInfoManager {
         info.setTokens(info.getTokens() + tokens);
     }
 
+    public void addKill(UUID uuid) {
+        PlayerInfo info = map.get(uuid);
+        info.setKills(info.getKills() + 1);
+    }
+
+    public void addDeath(UUID uuid) {
+        PlayerInfo info = map.get(uuid);
+        info.setDeaths(info.getDeaths() + 1);
+    }
+
     /**
      * Set the Player's tokens to a specific amount.
      * @param uuid The UUID of the Player
