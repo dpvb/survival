@@ -2,32 +2,40 @@ package dev.dpvb.survival.chests.airdrop;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import dev.dpvb.survival.Survival;
+import dev.dpvb.survival.chests.Loot;
+import dev.dpvb.survival.chests.LootSource;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class AirdropManager {
+public class AirdropManager implements LootSource {
 
     private static AirdropManager instance;
     private final Map<Long, List<AirdropParticle>> particleSpawnMap = new HashMap<>();
     private final int airdropAnimationHeight = 200;
     private final int airdropAnimationLength = 200;
     private final List<AirdropChest> airdropChests = new ArrayList<>();
+    private final AtomicBoolean clearing = new AtomicBoolean();
+    private final Set<Loot> lootTable = new HashSet<>();
 
     private AirdropManager() {
-
+        LootSource.loadFromLoot("airdrop", lootTable);
     }
 
-    public static AirdropManager getInstance() {
-        if (instance == null) {
-            instance = new AirdropManager();
-        }
-        return instance;
+    @Override
+    public @NotNull List<ItemStack> generateLoot() {
+        return GenerationFormula.DEFAULT.generateAs(lootTable, LinkedList::new);
     }
 
     public void loadAirdropAnimation() {
@@ -71,13 +79,19 @@ public class AirdropManager {
     }
 
     public void clearAirdrops() {
+        clearing.set(true);
         for (AirdropChest airdropChest : airdropChests) {
             airdropChest.destroy();
         }
+        clearing.set(false);
     }
 
     public void removeAirdropFromCache(AirdropChest airdropChest) {
         airdropChests.remove(airdropChest);
+    }
+
+    public boolean isClearing() {
+        return clearing.get();
     }
 
     public Map<Long, List<AirdropParticle>> getParticleSpawnMap() {
@@ -90,5 +104,12 @@ public class AirdropManager {
 
     public int getAirdropAnimationLength() {
         return airdropAnimationLength;
+    }
+
+    public static AirdropManager getInstance() {
+        if (instance == null) {
+            instance = new AirdropManager();
+        }
+        return instance;
     }
 }
