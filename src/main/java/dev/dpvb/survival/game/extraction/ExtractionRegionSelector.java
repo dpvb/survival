@@ -20,7 +20,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.function.Consumer;
 
-public class RegionSelector implements Listener {
+public class ExtractionRegionSelector implements Listener {
 
     private final Player player;
     private final Consumer<ExtractionRegion> consumer;
@@ -34,7 +34,7 @@ public class RegionSelector implements Listener {
     private int y2;
     private int z2;
 
-    public RegionSelector(Player player, Consumer<ExtractionRegion> consumer) {
+    public ExtractionRegionSelector(Player player, Consumer<ExtractionRegion> consumer) {
         this.player = player;
         this.consumer = consumer;
         player.getInventory().addItem(getTool());
