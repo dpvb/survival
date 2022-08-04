@@ -24,7 +24,7 @@ public class Extraction {
     public Extraction(GameManager manager, Vector corner1, Vector corner2) {
         this.manager = manager;
         this.min = Vector.getMinimum(corner1, corner2);
-        this.max = Vector.getMaximum(corner1, corner2);
+        this.max = Vector.getMaximum(corner1, corner2).add(new Vector(1, 0, 1));
     }
 
     private void process(Map<Player, Vector> vectorMap) {

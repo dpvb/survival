@@ -104,7 +104,7 @@ public class GameManager {
     }
 
     public void removeAllPlayers(boolean clearInventory) {
-        for (Player player : players) {
+        for (Player player : Set.copyOf(players)) {
             if (clearInventory) dropAndClearInventory(player);
             sendToHub(player);
             remove(player);
