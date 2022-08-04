@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -22,6 +23,7 @@ public class GameManager {
     private final World arenaWorld;
     private final Set<Player> players = new HashSet<>();
     private final Set<Extraction> extractions = new HashSet<>();
+    private final Extraction.PollingTask extractionPoller;
 
     private GameManager() {
         // Get the World instances.
@@ -38,6 +40,8 @@ public class GameManager {
 
         // Load the Extractions
         loadExtractions();
+        extractionPoller = new Extraction.PollingTask(this);
+        extractionPoller.runTaskTimer(Survival.getInstance(), 0L, Extraction.getPollingRate());
 
         // Initialize Listener
         Bukkit.getPluginManager().registerEvents(new GameListener(this), Survival.getInstance());
@@ -91,8 +95,8 @@ public class GameManager {
         for (ExtractionRegion region : regions) {
             extractions.add(new Extraction(
                     this,
-                    new Location(arenaWorld, region.getX1(), region.getY1(), region.getZ1()),
-                    new Location(arenaWorld, region.getX2(), region.getY2(), region.getZ2())
+                    new Vector(region.getX1(), region.getY1(), region.getZ1()),
+                    new Vector(region.getX2(), region.getY2(), region.getZ2())
             ));
         }
 
@@ -119,5 +123,13 @@ public class GameManager {
         }
 
         return instance;
+    }
+
+    public Set<Player> getPlayers() {
+        return players;
+    }
+
+    public Set<Extraction> getExtractions() {
+        return extractions;
     }
 }
