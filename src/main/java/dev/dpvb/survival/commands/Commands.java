@@ -9,6 +9,7 @@ import dev.dpvb.survival.chests.ChestManager;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.game.GameManager;
 import dev.dpvb.survival.game.extraction.ExtractionRegionSelector;
+import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.npc.NPCManager;
 import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
 import dev.dpvb.survival.npc.enchanting.BasicEnchanterNPC;
@@ -117,7 +118,8 @@ public class Commands {
     private void setExtractionRegionCommand(@NonNull CommandContext<CommandSender> ctx) {
         Player player = (Player) ctx.getSender();
         new ExtractionRegionSelector(player, region -> {
-            Bukkit.getLogger().info(region.getX1() + " " + region.getY1() + " " + region.getZ1() + " " + region.getX2() + " " + region.getY2() + " " + region.getZ2());
+            MongoManager.getInstance().getExtractionRegionService().create(region);
+            Bukkit.getLogger().info("Uploaded an Extraction Region to Mongo.");
         });
     }
 

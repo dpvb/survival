@@ -49,6 +49,8 @@ public final class Survival extends JavaPlugin {
         StorageManager.getInstance().save();
         // Clear all Airdrop Chests
         AirdropManager.getInstance().clearAirdrops();
+        // Remove all Players from the Arena
+        GameManager.getInstance().removeAllPlayers(false);
     }
 
     private void setupManagers() {

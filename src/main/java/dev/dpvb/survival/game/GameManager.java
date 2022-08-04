@@ -1,6 +1,9 @@
 package dev.dpvb.survival.game;
 
 import dev.dpvb.survival.Survival;
+import dev.dpvb.survival.game.extraction.Extraction;
+import dev.dpvb.survival.mongo.MongoManager;
+import dev.dpvb.survival.mongo.models.ExtractionRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -9,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class GameManager {
@@ -17,6 +21,7 @@ public class GameManager {
     final World hubWorld;
     private final World arenaWorld;
     private final Set<Player> players = new HashSet<>();
+    private final Set<Extraction> extractions = new HashSet<>();
 
     private GameManager() {
         // Get the World instances.
@@ -30,6 +35,10 @@ public class GameManager {
         if (arenaWorld == null) {
             throw new IllegalStateException("Survival requires a world named 'arena'");
         }
+
+        // Load the Extractions
+        loadExtractions();
+
         // Initialize Listener
         Bukkit.getPluginManager().registerEvents(new GameListener(this), Survival.getInstance());
     }
@@ -72,6 +81,30 @@ public class GameManager {
         // Log the leave
         Bukkit.getLogger().info(player.getName() + " left the arena.");
         Bukkit.getLogger().info("Player count: " + players.size());
+    }
+
+    /**
+     * Load Extractions from MongoDB
+     */
+    private void loadExtractions() {
+        final List<ExtractionRegion> regions = MongoManager.getInstance().getExtractionRegionService().getAll();
+        for (ExtractionRegion region : regions) {
+            extractions.add(new Extraction(
+                    this,
+                    new Location(arenaWorld, region.getX1(), region.getY1(), region.getZ1()),
+                    new Location(arenaWorld, region.getX2(), region.getY2(), region.getZ2())
+            ));
+        }
+
+        Bukkit.getLogger().info("Loaded " + extractions.size() + " extraction points in the arena.");
+    }
+
+    public void removeAllPlayers(boolean clearInventory) {
+        for (Player player : players) {
+            if (clearInventory) dropAndClearInventory(player);
+            sendToHub(player);
+            remove(player);
+        }
     }
 
     public static GameManager getInstance() {
