@@ -8,6 +8,7 @@ import cloud.commandframework.context.CommandContext;
 import dev.dpvb.survival.chests.ChestManager;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.game.GameManager;
+import dev.dpvb.survival.game.extraction.RegionSelector;
 import dev.dpvb.survival.npc.NPCManager;
 import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
 import dev.dpvb.survival.npc.enchanting.BasicEnchanterNPC;
@@ -16,6 +17,7 @@ import dev.dpvb.survival.npc.upgrader.UpgradeNPC;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -79,6 +81,14 @@ public class Commands {
                         .handler(this::tokenSetCommand)
         );
 
+        // ------- SETUP COMMANDS -------
+        manager.command(
+                manager.commandBuilder("survivaladmin", "sa")
+                        .literal("setextract")
+                        .senderType(Player.class)
+                        .handler(this::setExtractionRegionCommand)
+        );
+
         // ------- OTHER COMMANDS -------
         manager.command(
                 manager.commandBuilder("survival")
@@ -102,6 +112,13 @@ public class Commands {
                         .senderType(Player.class)
                         .handler(this::spawnAirdropCommand)
         );
+    }
+
+    private void setExtractionRegionCommand(@NonNull CommandContext<CommandSender> ctx) {
+        Player player = (Player) ctx.getSender();
+        new RegionSelector(player, region -> {
+            Bukkit.getLogger().info(region.getX1() + " " + region.getY1() + " " + region.getZ1() + " " + region.getX2() + " " + region.getY2() + " " + region.getZ2());
+        });
     }
 
     private void gameLeaveCommand(@NonNull CommandContext<CommandSender> ctx) {

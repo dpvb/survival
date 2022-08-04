@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.mongo.services.ChestDataService;
+import dev.dpvb.survival.mongo.services.ExtractionRegionService;
 import dev.dpvb.survival.mongo.services.PlayerInfoService;
 import dev.dpvb.survival.mongo.services.PlayerStorageService;
 import org.bson.UuidRepresentation;
@@ -25,6 +26,7 @@ public class MongoManager {
     private final PlayerInfoService playerInfoService;
     private final PlayerStorageService playerStorageService;
     private final ChestDataService chestDataService;
+    private final ExtractionRegionService extractionRegionService;
 
     private MongoManager() {
         ConnectionString connString = new ConnectionString(
@@ -50,6 +52,7 @@ public class MongoManager {
         playerInfoService = new PlayerInfoService(db);
         playerStorageService = new PlayerStorageService(db);
         chestDataService = new ChestDataService(db);
+        extractionRegionService = new ExtractionRegionService(db);
     }
 
     public static MongoManager getInstance() {
@@ -70,5 +73,9 @@ public class MongoManager {
 
     public ChestDataService getChestDataService() {
         return chestDataService;
+    }
+
+    public ExtractionRegionService getExtractionRegionService() {
+        return extractionRegionService;
     }
 }

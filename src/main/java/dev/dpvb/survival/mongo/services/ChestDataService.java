@@ -26,7 +26,7 @@ public class ChestDataService {
     }
 
     public List<ChestData> getAll() {
-        List<ChestData> list  = new ArrayList<>();
+        final List<ChestData> list  = new ArrayList<>();
         final MongoCursor<ChestData> cursor = chestDataCollection.find().cursor();
         while (cursor.hasNext()) {
             list.add(cursor.next());
