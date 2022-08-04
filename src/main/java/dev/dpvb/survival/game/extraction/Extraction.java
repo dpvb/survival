@@ -3,7 +3,6 @@ package dev.dpvb.survival.game.extraction;
 import dev.dpvb.survival.game.GameManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -39,6 +38,7 @@ public class Extraction {
             // They are inside.
             int newTime = extractionMap.getOrDefault(player, 0) + 1;
             if (newTime == EXTRACTION_TIME) {
+                manager.getArenaWorld().strikeLightningEffect(player.getLocation());
                 extractionMap.remove(player);
                 manager.sendToHub(player);
                 manager.remove(player);

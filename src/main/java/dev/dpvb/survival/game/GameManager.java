@@ -132,4 +132,8 @@ public class GameManager {
     public Set<Extraction> getExtractions() {
         return extractions;
     }
+
+    public World getArenaWorld() {
+        return arenaWorld;
+    }
 }
