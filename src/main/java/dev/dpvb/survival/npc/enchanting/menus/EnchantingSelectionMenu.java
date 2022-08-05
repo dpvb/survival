@@ -11,6 +11,8 @@ import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -135,7 +137,13 @@ public class EnchantingSelectionMenu extends AutoCleanInventoryWrapper {
 
         // Give Player Item Back if they put an Item into the Enchanter and closed it.
         givePlayerItem(player, item);
+    }
 
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        if (event.getPlayer().equals(player)) {
+            player.getLocation().getWorld().dropItemNaturally(player.getLocation(), item);
+        }
     }
 
     private void givePlayerItem(HumanEntity player, ItemStack item) {
