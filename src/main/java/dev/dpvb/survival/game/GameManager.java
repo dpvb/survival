@@ -3,7 +3,7 @@ package dev.dpvb.survival.game;
 import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.game.extraction.Extraction;
 import dev.dpvb.survival.mongo.MongoManager;
-import dev.dpvb.survival.mongo.models.ExtractionRegion;
+import dev.dpvb.survival.mongo.models.Region;
 import dev.dpvb.survival.mongo.models.SpawnLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -98,8 +98,8 @@ public class GameManager {
      * Load Extractions from MongoDB
      */
     private void loadExtractions() {
-        final List<ExtractionRegion> regions = MongoManager.getInstance().getExtractionRegionService().getAll();
-        for (ExtractionRegion region : regions) {
+        final List<Region> regions = MongoManager.getInstance().getExtractionRegionService().getAll();
+        for (Region region : regions) {
             extractions.add(new Extraction(
                     this,
                     new Vector(region.getX1(), region.getY1(), region.getZ1()),

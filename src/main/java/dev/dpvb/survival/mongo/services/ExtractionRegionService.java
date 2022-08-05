@@ -3,7 +3,7 @@ package dev.dpvb.survival.mongo.services;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import dev.dpvb.survival.mongo.models.ExtractionRegion;
+import dev.dpvb.survival.mongo.models.Region;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -11,13 +11,13 @@ import java.util.List;
 
 public class ExtractionRegionService {
 
-    private MongoCollection<ExtractionRegion> collection;
+    private MongoCollection<Region> collection;
 
     public ExtractionRegionService(MongoDatabase database) {
-        collection = database.getCollection("extraction-regions", ExtractionRegion.class);
+        collection = database.getCollection("extraction-regions", Region.class);
     }
 
-    public void create(ExtractionRegion region) {
+    public void create(Region region) {
         collection.insertOne(region);
     }
 
@@ -25,9 +25,9 @@ public class ExtractionRegionService {
         collection.deleteMany(new Document());
     }
 
-    public List<ExtractionRegion> getAll() {
-        final List<ExtractionRegion> list = new ArrayList<>();
-        final MongoCursor<ExtractionRegion> cursor = collection.find().cursor();
+    public List<Region> getAll() {
+        final List<Region> list = new ArrayList<>();
+        final MongoCursor<Region> cursor = collection.find().cursor();
         while (cursor.hasNext()) {
             list.add(cursor.next());
         }
