@@ -1,6 +1,6 @@
 package dev.dpvb.survival.mongo.models;
 
-public class ExtractionRegion {
+public class Region {
 
     private int x1;
     private int x2;
@@ -9,11 +9,11 @@ public class ExtractionRegion {
     private int z1;
     private int z2;
 
-    public ExtractionRegion() {
+    public Region() {
 
     }
 
-    public ExtractionRegion(int x1, int y1, int z1, int x2, int y2, int z2) {
+    public Region(int x1, int y1, int z1, int x2, int y2, int z2) {
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;

@@ -1,7 +1,7 @@
 package dev.dpvb.survival.game.extraction;
 
 import dev.dpvb.survival.Survival;
-import dev.dpvb.survival.mongo.models.ExtractionRegion;
+import dev.dpvb.survival.mongo.models.Region;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 public class ExtractionRegionSelector implements Listener {
 
     private final Player player;
-    private final Consumer<ExtractionRegion> consumer;
+    private final Consumer<Region> consumer;
     private static ItemStack selectionTool;
     private static NamespacedKey key;
     private int x1;
@@ -34,7 +34,7 @@ public class ExtractionRegionSelector implements Listener {
     private int y2;
     private int z2;
 
-    public ExtractionRegionSelector(Player player, Consumer<ExtractionRegion> consumer) {
+    public ExtractionRegionSelector(Player player, Consumer<Region> consumer) {
         this.player = player;
         this.consumer = consumer;
         player.getInventory().addItem(getTool());
@@ -69,7 +69,7 @@ public class ExtractionRegionSelector implements Listener {
             // Unregister this listener
             PlayerInteractEvent.getHandlerList().unregister(this);
             // Run consumer
-            consumer.accept(new ExtractionRegion(x1, y1, z1, x2, y2, z2));
+            consumer.accept(new Region(x1, y1, z1, x2, y2, z2));
         }
 
     }
