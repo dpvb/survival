@@ -14,6 +14,7 @@ import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.npc.NPCManager;
 import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
 import dev.dpvb.survival.npc.enchanting.BasicEnchanterNPC;
+import dev.dpvb.survival.npc.join.JoinNPC;
 import dev.dpvb.survival.npc.storage.StorageNPC;
 import dev.dpvb.survival.npc.upgrader.UpgradeNPC;
 import dev.dpvb.survival.stats.PlayerInfoManager;
@@ -60,7 +61,8 @@ public class Commands {
                                         "basic-enchanter",
                                         "advanced-enchanter",
                                         "upgrader",
-                                        "storage")))
+                                        "storage",
+                                        "join")))
                         .senderType(Player.class)
                         .handler(this::npcCreateCommand)
         );
@@ -167,12 +169,12 @@ public class Commands {
             case "advanced-enchanter" -> NPCManager.getInstance().addNPC(new AdvancedEnchanterNPC(player.getLocation()));
             case "upgrader" -> NPCManager.getInstance().addNPC(new UpgradeNPC(player.getLocation()));
             case "storage" -> NPCManager.getInstance().addNPC(new StorageNPC(player.getLocation()));
+            case "join" -> NPCManager.getInstance().addNPC(new JoinNPC(player.getLocation()));
             default -> {
                 player.sendMessage("That is not a valid NPC type.");
                 return;
             }
         }
-
         player.sendMessage("You created an NPC.");
     }
 
