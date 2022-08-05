@@ -4,6 +4,7 @@ import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.game.extraction.Extraction;
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.mongo.models.ExtractionRegion;
+import dev.dpvb.survival.mongo.models.SpawnLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -12,9 +13,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GameManager {
 
@@ -23,6 +26,7 @@ public class GameManager {
     private final World arenaWorld;
     private final Set<Player> players = new HashSet<>();
     private final Set<Extraction> extractions = new HashSet<>();
+    private final List<Location> spawnLocations = new ArrayList<>();
     private final Extraction.PollingTask extractionPoller;
 
     private GameManager() {
@@ -43,13 +47,16 @@ public class GameManager {
         extractionPoller = new Extraction.PollingTask(this);
         extractionPoller.runTaskTimer(Survival.getInstance(), 0L, Extraction.getPollingRate());
 
+        // Load the Spawns
+        loadSpawns();
+
         // Initialize Listener
         Bukkit.getPluginManager().registerEvents(new GameListener(this), Survival.getInstance());
     }
 
     public void join(@NotNull Player player) {
         // Get the spawn location for the Player to spawn at.
-        final Location spawnLocation = arenaWorld.getSpawnLocation();
+        final Location spawnLocation = spawnLocations.get(ThreadLocalRandom.current().nextInt(spawnLocations.size()));
         // Move the player to the spawn location
         player.teleport(spawnLocation);
         // Add player to the players set
@@ -101,6 +108,23 @@ public class GameManager {
         }
 
         Bukkit.getLogger().info("Loaded " + extractions.size() + " extraction points in the arena.");
+    }
+
+    /**
+     * Load Spawns from MongoDB
+     */
+    private void loadSpawns() {
+        final List<SpawnLocation> spawns = MongoManager.getInstance().getSpawnLocationService().getAll();
+        for (SpawnLocation spawn : spawns) {
+            spawnLocations.add(new Location(
+                    arenaWorld,
+                    spawn.getX(),
+                    spawn.getY(),
+                    spawn.getZ()
+            ));
+        }
+
+        Bukkit.getLogger().info("Loaded " + spawnLocations.size() + " spawn points in the arena.");
     }
 
     public void removeAllPlayers(boolean clearInventory) {

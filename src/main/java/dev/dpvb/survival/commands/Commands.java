@@ -9,6 +9,7 @@ import dev.dpvb.survival.chests.ChestManager;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.game.GameManager;
 import dev.dpvb.survival.game.extraction.ExtractionRegionSelector;
+import dev.dpvb.survival.game.spawn.SpawnTool;
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.npc.NPCManager;
 import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
@@ -90,6 +91,13 @@ public class Commands {
                         .handler(this::setExtractionRegionCommand)
         );
 
+        manager.command(
+                manager.commandBuilder("survivaladmin", "sa")
+                        .literal("setspawns")
+                        .senderType(Player.class)
+                        .handler(this::setArenaSpawnsCommand)
+        );
+
         // ------- OTHER COMMANDS -------
         manager.command(
                 manager.commandBuilder("survival")
@@ -113,6 +121,11 @@ public class Commands {
                         .senderType(Player.class)
                         .handler(this::spawnAirdropCommand)
         );
+    }
+
+    private void setArenaSpawnsCommand(@NonNull CommandContext<CommandSender> ctx) {
+        Player player = (Player) ctx.getSender();
+        new SpawnTool(player);
     }
 
     private void setExtractionRegionCommand(@NonNull CommandContext<CommandSender> ctx) {
