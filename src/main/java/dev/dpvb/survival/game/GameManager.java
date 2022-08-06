@@ -23,7 +23,7 @@ public class GameManager {
 
     private static GameManager instance;
     final World hubWorld;
-    private final World arenaWorld;
+    final World arenaWorld;
     private final Set<Player> players = new HashSet<>();
     private final Set<Extraction> extractions = new HashSet<>();
     private final List<Location> spawnLocations = new ArrayList<>();
