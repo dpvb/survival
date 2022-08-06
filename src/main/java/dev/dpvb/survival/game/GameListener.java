@@ -127,4 +127,15 @@ public class GameListener implements Listener {
         }
     }
 
+    // Allow gamers to extinguish fire in the arena.
+    @EventHandler
+    public void onFireExtinguish(BlockBreakEvent event) {
+        final var player = event.getPlayer();
+        if (!manager.playerInGame(player)) return;
+        if (event.getBlock().getType() == Material.FIRE && event.isCancelled()) {
+            // Re-allow "break"
+            event.setCancelled(false);
+        }
+    }
+
 }
