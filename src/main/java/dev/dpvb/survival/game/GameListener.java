@@ -5,7 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -59,6 +61,30 @@ public class GameListener implements Listener {
         }
     }
 
+    // Always prevent block places and block breaks for hub and arena worlds.
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    public void onBlockPlace(BlockPlaceEvent event) {
+        if (event.getPlayer().hasPermission("survival.bypass")) {
+            return;
+        }
+        final var world = event.getBlock().getWorld();
+        if (world == manager.hubWorld || world == manager.arenaWorld) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    public void onBlockPlace(BlockBreakEvent event) {
+        if (event.getPlayer().hasPermission("survival.bypass")) {
+            return;
+        }
+        final var world = event.getBlock().getWorld();
+        if (world == manager.hubWorld || world == manager.arenaWorld) {
+            event.setCancelled(true);
+        }
+    }
+
+    // Allow gamers to "place" TNT in the arena.
     @EventHandler
     public void onTntPlace(BlockPlaceEvent event) {
         final var player = event.getPlayer();
