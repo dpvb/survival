@@ -104,7 +104,7 @@ public class GameListener implements Listener {
             // Prevent actual placement (still use item)
             event.getBlockReplacedState().update(true);
             // spawn TNTPrimed
-            TNTPrimed tnt = manager.getArenaWorld().spawn(event.getBlock().getLocation(), TNTPrimed.class);
+            TNTPrimed tnt = manager.getArenaWorld().spawn(event.getBlock().getLocation().add(0.5d, 0d, 0.5d), TNTPrimed.class);
             tnt.setFuseTicks(50);
         }
     }
