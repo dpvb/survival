@@ -116,4 +116,15 @@ public class GameListener implements Listener {
         event.blockList().clear();
     }
 
+    // Allow gamers to use flint and steel in the arena.
+    @EventHandler
+    public void onFlintAndSteelUse(BlockPlaceEvent event) {
+        final var player = event.getPlayer();
+        if (!manager.playerInGame(player)) return;
+        if (event.getItemInHand().getType() == Material.FLINT_AND_STEEL && event.isCancelled()) {
+            // Re-allow place
+            event.setCancelled(false);
+        }
+    }
+
 }
