@@ -84,16 +84,28 @@ public class GameListener implements Listener {
         }
     }
 
-    // Allow gamers to "place" TNT in the arena.
+    // Allow gamers to place TNT in the arena.
     @EventHandler
-    public void onTntPlace(BlockPlaceEvent event) {
+    public void onTntWouldPlace(BlockPlaceEvent event) {
+        final var player = event.getPlayer();
+        if (!manager.playerInGame(player)) return;
+        if (event.getBlockPlaced().getType() == Material.TNT && event.isCancelled()) {
+            // Re-allow place
+            event.setCancelled(false);
+        }
+    }
+
+    // Change placement into "placement" (spawning of TNTPrimed)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    public void onTntPlacement(BlockPlaceEvent event) {
         final var player = event.getPlayer();
         if (!manager.playerInGame(player)) return;
         if (event.getBlockPlaced().getType() == Material.TNT) {
-            event.getBlock().setType(Material.AIR);
-            // spawn tnt
-            Entity tnt = manager.getArenaWorld().spawn(event.getBlock().getLocation(), TNTPrimed.class);
-            ((TNTPrimed) tnt).setFuseTicks(50);
+            // Prevent actual placement (still use item)
+            event.getBlockReplacedState().update(true);
+            // spawn TNTPrimed
+            TNTPrimed tnt = manager.getArenaWorld().spawn(event.getBlock().getLocation(), TNTPrimed.class);
+            tnt.setFuseTicks(50);
         }
     }
 
