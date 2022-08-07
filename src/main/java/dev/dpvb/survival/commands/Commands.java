@@ -100,6 +100,21 @@ public class Commands {
                         .handler(this::setArenaSpawnsCommand)
         );
 
+        // ------- STATE COMMANDS -------
+        manager.command(
+                manager.commandBuilder("survivaladmin", "sa")
+                        .literal("start")
+                        .permission("survival.admin.start")
+                        .handler(this::startGameCommand)
+        );
+
+        manager.command(
+                manager.commandBuilder("survivaladmin", "sa")
+                        .literal("stop")
+                        .permission("survival.admin.stop")
+                        .handler(this::stopGameCommand)
+        );
+
         // ------- OTHER COMMANDS -------
         manager.command(
                 manager.commandBuilder("survival")
@@ -123,6 +138,24 @@ public class Commands {
                         .senderType(Player.class)
                         .handler(this::spawnAirdropCommand)
         );
+    }
+
+    private void startGameCommand(@NonNull CommandContext<CommandSender> ctx) {
+        if (GameManager.getInstance().isRunning()) {
+            ctx.getSender().sendMessage(Component.text("The game is still running.").color(NamedTextColor.DARK_RED));
+            return;
+        }
+        GameManager.getInstance().start();
+        ctx.getSender().sendMessage(Component.text("Game started.").color(NamedTextColor.GREEN));
+    }
+
+    private void stopGameCommand(@NonNull CommandContext<CommandSender> ctx) {
+        if (!GameManager.getInstance().isRunning()) {
+            ctx.getSender().sendMessage(Component.text("The game is not running.").color(NamedTextColor.YELLOW));
+            return;
+        }
+        GameManager.getInstance().stop();
+        ctx.getSender().sendMessage(Component.text("Game stopped.").color(NamedTextColor.DARK_GREEN));
     }
 
     private void setArenaSpawnsCommand(@NonNull CommandContext<CommandSender> ctx) {
