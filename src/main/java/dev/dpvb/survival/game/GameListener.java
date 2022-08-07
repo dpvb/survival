@@ -2,7 +2,6 @@ package dev.dpvb.survival.game;
 
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
