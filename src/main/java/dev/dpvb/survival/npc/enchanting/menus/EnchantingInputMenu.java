@@ -10,6 +10,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -117,6 +119,16 @@ public class EnchantingInputMenu extends AutoCleanInventoryWrapper {
 
         // If the inventory is full, drop the Item on the ground.
         givePlayerItem(player, item);
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        if (event.getPlayer().equals(player)) {
+            ItemStack itemInSlot = getInventory().getItem(13);
+            if (itemInSlot != null) {
+                player.getLocation().getWorld().dropItemNaturally(player.getLocation(), itemInSlot);
+            }
+        }
     }
 
     private void givePlayerItem(HumanEntity player, ItemStack item) {

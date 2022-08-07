@@ -5,27 +5,24 @@ import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.bukkit.parsers.PlayerArgument;
 import cloud.commandframework.context.CommandContext;
-import com.destroystokyo.paper.ParticleBuilder;
-import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.chests.ChestManager;
-import dev.dpvb.survival.chests.airdrop.AirdropAnimation;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
-import dev.dpvb.survival.mongo.models.PlayerInfo;
+import dev.dpvb.survival.game.GameManager;
+import dev.dpvb.survival.game.extraction.ExtractionRegionSelector;
+import dev.dpvb.survival.game.spawn.SpawnTool;
+import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.npc.NPCManager;
 import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
 import dev.dpvb.survival.npc.enchanting.BasicEnchanterNPC;
+import dev.dpvb.survival.npc.join.JoinNPC;
 import dev.dpvb.survival.npc.storage.StorageNPC;
 import dev.dpvb.survival.npc.upgrader.UpgradeNPC;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
@@ -39,6 +36,21 @@ public class Commands {
     }
 
     public void initCommands() {
+        // ------- GAME COMMANDS -------
+        manager.command(
+                manager.commandBuilder("survival")
+                        .literal("join")
+                        .senderType(Player.class)
+                        .handler(this::gameJoinCommand)
+        );
+
+        manager.command(
+                manager.commandBuilder("survival")
+                        .literal("leave")
+                        .senderType(Player.class)
+                        .handler(this::gameLeaveCommand)
+        );
+
         // ------- NPC COMMANDS -------
         manager.command(
                 manager.commandBuilder("survivaladmin", "sa")
@@ -49,7 +61,8 @@ public class Commands {
                                         "basic-enchanter",
                                         "advanced-enchanter",
                                         "upgrader",
-                                        "storage")))
+                                        "storage",
+                                        "join")))
                         .senderType(Player.class)
                         .handler(this::npcCreateCommand)
         );
@@ -70,6 +83,36 @@ public class Commands {
                         .argument(IntegerArgument.of("tokens"))
                         .senderType(Player.class)
                         .handler(this::tokenSetCommand)
+        );
+
+        // ------- SETUP COMMANDS -------
+        manager.command(
+                manager.commandBuilder("survivaladmin", "sa")
+                        .literal("setextract")
+                        .senderType(Player.class)
+                        .handler(this::setExtractionRegionCommand)
+        );
+
+        manager.command(
+                manager.commandBuilder("survivaladmin", "sa")
+                        .literal("setspawns")
+                        .senderType(Player.class)
+                        .handler(this::setArenaSpawnsCommand)
+        );
+
+        // ------- STATE COMMANDS -------
+        manager.command(
+                manager.commandBuilder("survivaladmin", "sa")
+                        .literal("start")
+                        .permission("survival.admin.start")
+                        .handler(this::startGameCommand)
+        );
+
+        manager.command(
+                manager.commandBuilder("survivaladmin", "sa")
+                        .literal("stop")
+                        .permission("survival.admin.stop")
+                        .handler(this::stopGameCommand)
         );
 
         // ------- OTHER COMMANDS -------
@@ -97,6 +140,62 @@ public class Commands {
         );
     }
 
+    private void startGameCommand(@NonNull CommandContext<CommandSender> ctx) {
+        if (GameManager.getInstance().isRunning()) {
+            ctx.getSender().sendMessage(Component.text("The game is still running.").color(NamedTextColor.DARK_RED));
+            return;
+        }
+        GameManager.getInstance().start();
+        ctx.getSender().sendMessage(Component.text("Game started.").color(NamedTextColor.GREEN));
+    }
+
+    private void stopGameCommand(@NonNull CommandContext<CommandSender> ctx) {
+        if (!GameManager.getInstance().isRunning()) {
+            ctx.getSender().sendMessage(Component.text("The game is not running.").color(NamedTextColor.YELLOW));
+            return;
+        }
+        GameManager.getInstance().stop();
+        ctx.getSender().sendMessage(Component.text("Game stopped.").color(NamedTextColor.DARK_GREEN));
+    }
+
+    private void setArenaSpawnsCommand(@NonNull CommandContext<CommandSender> ctx) {
+        Player player = (Player) ctx.getSender();
+        new SpawnTool(player);
+    }
+
+    private void setExtractionRegionCommand(@NonNull CommandContext<CommandSender> ctx) {
+        Player player = (Player) ctx.getSender();
+        new ExtractionRegionSelector(player, region -> {
+            MongoManager.getInstance().getExtractionRegionService().create(region);
+            Bukkit.getLogger().info("Uploaded an Extraction Region to Mongo.");
+        });
+    }
+
+    private void gameLeaveCommand(@NonNull CommandContext<CommandSender> ctx) {
+        Player player = (Player) ctx.getSender();
+        GameManager manager = GameManager.getInstance();
+        if (manager.playerInGame(player)) {
+            // TODO: ask player if they fr, mention extraction
+            manager.dropAndClearInventory(player);
+            manager.sendToHub(player);
+            manager.remove(player);
+        } else {
+            player.sendMessage("You are not in the game.");
+        }
+    }
+
+    private void gameJoinCommand(@NonNull CommandContext<CommandSender> ctx) {
+        Player player = (Player) ctx.getSender();
+        GameManager manager = GameManager.getInstance();
+        if (!manager.isRunning()) {
+            player.sendMessage("The game is not running.");
+            return;
+        }
+        if (manager.playerInGame(player) || !manager.join(player)) {
+            player.sendMessage("You are already in the game.");
+        }
+    }
+
     private void npcCreateCommand(@NonNull CommandContext<CommandSender> ctx) {
         Player player = (Player) ctx.getSender();
         String type = ctx.get("type");
@@ -105,12 +204,12 @@ public class Commands {
             case "advanced-enchanter" -> NPCManager.getInstance().addNPC(new AdvancedEnchanterNPC(player.getLocation()));
             case "upgrader" -> NPCManager.getInstance().addNPC(new UpgradeNPC(player.getLocation()));
             case "storage" -> NPCManager.getInstance().addNPC(new StorageNPC(player.getLocation()));
+            case "join" -> NPCManager.getInstance().addNPC(new JoinNPC(player.getLocation()));
             default -> {
                 player.sendMessage("That is not a valid NPC type.");
                 return;
             }
         }
-
         player.sendMessage("You created an NPC.");
     }
 

@@ -53,6 +53,8 @@ public class PlayerInfoManager {
     public void generatePlayerInfo(UUID uuid) {
         map.put(uuid, new PlayerInfo(
                 uuid,
+                0,
+                0,
                 0
         ));
     }
@@ -74,6 +76,16 @@ public class PlayerInfoManager {
     public void addTokens(UUID uuid, int tokens) {
         PlayerInfo info = map.get(uuid);
         info.setTokens(info.getTokens() + tokens);
+    }
+
+    public void addKill(UUID uuid) {
+        PlayerInfo info = map.get(uuid);
+        info.setKills(info.getKills() + 1);
+    }
+
+    public void addDeath(UUID uuid) {
+        PlayerInfo info = map.get(uuid);
+        info.setDeaths(info.getDeaths() + 1);
     }
 
     /**

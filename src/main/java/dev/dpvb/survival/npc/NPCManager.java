@@ -5,6 +5,7 @@ import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
 import dev.dpvb.survival.npc.enchanting.BasicEnchanterNPC;
 import dev.dpvb.survival.npc.enchanting.EnchantmentCost;
 import dev.dpvb.survival.npc.enchanting.EnchantableItemTypes;
+import dev.dpvb.survival.npc.join.JoinNPC;
 import dev.dpvb.survival.npc.storage.StorageNPC;
 import dev.dpvb.survival.npc.upgrader.UpgradeCost;
 import dev.dpvb.survival.npc.upgrader.UpgradeNPC;
@@ -62,6 +63,7 @@ public class NPCManager {
                 case "a-ench" -> npcs.add(new AdvancedEnchanterNPC(npc));
                 case "store" -> npcs.add(new StorageNPC(npc));
                 case "upgrade" -> npcs.add(new UpgradeNPC(npc));
+                case "join" -> npcs.add(new JoinNPC(npc));
             }
         }
 
