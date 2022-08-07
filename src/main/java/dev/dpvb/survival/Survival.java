@@ -64,8 +64,8 @@ public final class Survival extends JavaPlugin {
         ChestManager.getInstance().loadLootChests();
         // Load Airdrop Information
         AirdropManager.getInstance().loadAirdropAnimation();
-        // Setup Game Manager
-        GameManager.getInstance();
+        // Setup Game Manager and start game
+        GameManager.getInstance().start();
         // Load NPCs
         Bukkit.getScheduler().runTaskLater(this, NPCManager.getInstance()::loadNPCs, 5);
     }

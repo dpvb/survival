@@ -57,7 +57,7 @@ public class GameListener implements Listener {
         final var player = event.getPlayer();
         if (manager.playerInGame(player)) {
             manager.remove(player);
-            event.setRespawnLocation(manager.hubWorld.getSpawnLocation());
+            event.setRespawnLocation(manager.getHubWorld().getSpawnLocation());
         }
     }
 
@@ -68,7 +68,7 @@ public class GameListener implements Listener {
             return;
         }
         final var world = event.getBlock().getWorld();
-        if (world == manager.hubWorld || world == manager.arenaWorld) {
+        if (world == manager.getHubWorld() || world == manager.getArenaWorld()) {
             event.setCancelled(true);
         }
     }
@@ -79,7 +79,7 @@ public class GameListener implements Listener {
             return;
         }
         final var world = event.getBlock().getWorld();
-        if (world == manager.hubWorld || world == manager.arenaWorld) {
+        if (world == manager.getHubWorld() || world == manager.getArenaWorld()) {
             event.setCancelled(true);
         }
     }

@@ -154,9 +154,11 @@ public class Commands {
     private void gameJoinCommand(@NonNull CommandContext<CommandSender> ctx) {
         Player player = (Player) ctx.getSender();
         GameManager manager = GameManager.getInstance();
-        if (!manager.playerInGame(player)) {
-            manager.join(player);
-        } else {
+        if (!manager.isRunning()) {
+            player.sendMessage("The game is not running.");
+            return;
+        }
+        if (manager.playerInGame(player) || !manager.join(player)) {
             player.sendMessage("You are already in the game.");
         }
     }
