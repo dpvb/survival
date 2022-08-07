@@ -16,7 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.ObjectInputFilter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
