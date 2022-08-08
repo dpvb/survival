@@ -73,8 +73,7 @@ public class GameListener implements Listener {
         if (item == null) return;
         if (!item.hasItemMeta()) return;
         if (!manager.playerInGame(player)) return;
-        //TODO check if this is scuffed? I did this so if the player gets the item from a previous restart they will get it.
-        if (item.getItemMeta().equals(AirdropManager.getInstance().getAirdropItem().getItemMeta())) {
+        if (item.isSimilar(AirdropManager.getInstance().getAirdropItem())) {
             // Remove one airdrop item.
             final var amount = item.getAmount();
             if (amount > 1) {
@@ -85,7 +84,6 @@ public class GameListener implements Listener {
 
             // Start Airdrop.
             AirdropManager.getInstance().startAirdrop(event.getClickedBlock().getLocation().add(0, 1, 0));
-
         }
     }
 
