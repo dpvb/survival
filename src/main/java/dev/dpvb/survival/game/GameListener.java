@@ -1,17 +1,21 @@
 package dev.dpvb.survival.game;
 
+import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import org.bukkit.Material;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 public class GameListener implements Listener {
 
@@ -57,6 +61,31 @@ public class GameListener implements Listener {
         if (manager.playerInGame(player)) {
             manager.remove(player);
             event.setRespawnLocation(manager.getHubWorld().getSpawnLocation());
+        }
+    }
+
+    @EventHandler
+    public void onPlayerRightClickAirdropItem(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (event.getHand() != EquipmentSlot.HAND) return;
+        final var player = event.getPlayer();
+        final var item = event.getItem();
+        if (item == null) return;
+        if (!item.hasItemMeta()) return;
+        if (!manager.playerInGame(player)) return;
+        //TODO check if this is scuffed? I did this so if the player gets the item from a previous restart they will get it.
+        if (item.getItemMeta().equals(AirdropManager.getInstance().getAirdropItem().getItemMeta())) {
+            // Remove one airdrop item.
+            final var amount = item.getAmount();
+            if (amount > 1) {
+                player.getInventory().getItemInMainHand().setAmount(amount - 1);
+            } else {
+                player.getInventory().setItemInMainHand(null);
+            }
+
+            // Start Airdrop.
+            AirdropManager.getInstance().startAirdrop(event.getClickedBlock().getLocation().add(0, 1, 0));
+
         }
     }
 
