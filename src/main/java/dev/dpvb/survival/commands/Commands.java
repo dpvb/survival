@@ -1,11 +1,10 @@
 package dev.dpvb.survival.commands;
 
 import cloud.commandframework.annotations.AnnotationParser;
+import cloud.commandframework.annotations.Argument;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
-import cloud.commandframework.arguments.standard.IntegerArgument;
-import cloud.commandframework.arguments.standard.StringArgument;
-import cloud.commandframework.bukkit.parsers.PlayerArgument;
+import cloud.commandframework.annotations.suggestions.Suggestions;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.meta.SimpleCommandMeta;
@@ -29,13 +28,19 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
 
 public class Commands {
 
     private final PaperCommandManager<CommandSender> manager;
+    final List<String> npcCreateSuggestions = List.of(
+            "basic-enchanter",
+            "advanced-enchanter",
+            "upgrader",
+            "storage",
+            "join"
+    );
 
     public Commands() throws Exception {
         this.manager = PaperCommandManager.createNative(Survival.getInstance(), CommandExecutionCoordinator.simpleCoordinator());
@@ -43,100 +48,6 @@ public class Commands {
 
     public void initCommands() {
         new AnnotationParser<>(manager, CommandSender.class, parameters -> SimpleCommandMeta.empty()).parse(this);
-
-        // ------- NPC COMMANDS -------
-        manager.command(
-                manager.commandBuilder("survivaladmin", "sa")
-                        .literal("npc")
-                        .literal("create")
-                        .argument(StringArgument.<CommandSender>newBuilder("type")
-                                .withSuggestionsProvider((ctx, str) -> Arrays.asList(
-                                        "basic-enchanter",
-                                        "advanced-enchanter",
-                                        "upgrader",
-                                        "storage",
-                                        "join")))
-                        .senderType(Player.class)
-                        .permission("survival.admin.npc.create")
-                        .handler(this::npcCreateCommand)
-        );
-
-        // ------- TOKEN COMMANDS -------
-        manager.command(
-                manager.commandBuilder("survival")
-                        .literal("tokens")
-                        .senderType(Player.class)
-                        .permission("survival.tokens")
-                        .handler(this::tokenCommand)
-        );
-
-        manager.command(
-                manager.commandBuilder("survivaladmin", "sa")
-                        .literal("token")
-                        .literal("set")
-                        .argument(PlayerArgument.of("player"))
-                        .argument(IntegerArgument.of("tokens"))
-                        .permission("survival.admin.token.set")
-                        .handler(this::tokenSetCommand)
-        );
-
-        // ------- SETUP COMMANDS -------
-        manager.command(
-                manager.commandBuilder("survivaladmin", "sa")
-                        .literal("setextract")
-                        .senderType(Player.class)
-                        .permission("survival.admin.extract.set")
-                        .handler(this::setExtractionRegionCommand)
-        );
-
-        manager.command(
-                manager.commandBuilder("survivaladmin", "sa")
-                        .literal("setspawns")
-                        .senderType(Player.class)
-                        .permission("survival.admin.spawn.set")
-                        .handler(this::setArenaSpawnsCommand)
-        );
-
-        // ------- STATE COMMANDS -------
-        manager.command(
-                manager.commandBuilder("survivaladmin", "sa")
-                        .literal("start")
-                        .permission("survival.admin.start")
-                        .handler(this::startGameCommand)
-        );
-
-        manager.command(
-                manager.commandBuilder("survivaladmin", "sa")
-                        .literal("stop")
-                        .permission("survival.admin.stop")
-                        .handler(this::stopGameCommand)
-        );
-
-        // ------- OTHER COMMANDS -------
-        manager.command(
-                manager.commandBuilder("survival")
-                        .literal("test")
-                        .senderType(Player.class)
-                        .permission("survival.test")
-                        .handler(this::testCommand)
-        );
-
-        manager.command(
-                manager.commandBuilder("survivaladmin")
-                        .literal("savechests")
-                        .argument(IntegerArgument.of("radius"))
-                        .senderType(Player.class)
-                        .permission("survival.admin.savechests")
-                        .handler(this::saveChestsCommand)
-        );
-
-        manager.command(
-                manager.commandBuilder("survival")
-                        .literal("spawnairdrop")
-                        .senderType(Player.class)
-                        .permission("survival.spawnairdrop")
-                        .handler(this::spawnAirdropCommand)
-        );
     }
 
     // ------- GAME COMMANDS -------
@@ -167,9 +78,22 @@ public class Commands {
         }
     }
 
-    private void npcCreateCommand(@NonNull CommandContext<CommandSender> ctx) {
-        Player player = (Player) ctx.getSender();
-        String type = ctx.get("type");
+    // ------- NPC COMMANDS -------
+    @Suggestions("npc-type")
+    public List<String> npcCreateSuggestions(CommandContext<Player> sender, String input) {
+        List<String> list = new ArrayList<>(npcCreateSuggestions.size());
+        final var lowerCase = input.toLowerCase();
+        for (String suggestion : npcCreateSuggestions) {
+            if (suggestion.startsWith(lowerCase)) {
+                list.add(suggestion);
+            }
+        }
+        return list;
+    }
+
+    @CommandMethod(value = "survivaladmin|sa npc create <type>", requiredSender = Player.class)
+    @CommandPermission("survival.admin.npc.create")
+    void npcCreateCommand(Player player, @Argument(value = "type", suggestions = "npc-type") String type) {
         switch (type) {
             case "basic-enchanter" -> NPCManager.getInstance().addNPC(new BasicEnchanterNPC(player.getLocation()));
             case "advanced-enchanter" -> NPCManager.getInstance().addNPC(new AdvancedEnchanterNPC(player.getLocation()));
@@ -184,66 +108,78 @@ public class Commands {
         player.sendMessage("You created an NPC.");
     }
 
-    private void tokenCommand(@NonNull CommandContext<CommandSender> ctx) {
-        Player player = (Player) ctx.getSender();
+    // ------- TOKEN COMMANDS -------
+    @CommandMethod(value = "survival tokens", requiredSender = Player.class)
+    @CommandPermission("survival.tokens")
+    void tokenCommand(Player player) {
         int tokens = PlayerInfoManager.getInstance().getTokens(player.getUniqueId());
 
         player.sendMessage(Component.text("You have " + tokens + " tokens.").color(NamedTextColor.YELLOW));
     }
 
-    private void tokenSetCommand(@NonNull CommandContext<CommandSender> ctx) {
-        Player player = ctx.get("player"); // Added as a required argument, so it is always non-null
-        int tokens = ctx.get("tokens");
-
+    @CommandMethod(value = "survivaladmin|sa token set <player> <tokens>")
+    @CommandPermission("survival.admin.token.set")
+    void tokenSetCommand(CommandSender sender, @Argument("player") Player player, @Argument("tokens") int tokens) {
         PlayerInfoManager.getInstance().setTokens(player.getUniqueId(), tokens);
-        ctx.getSender().sendMessage(Component.text("Set " + player.getName() + "'s token count to " + tokens).color(NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text("Set " + player.getName() + "'s token count to " + tokens).color(NamedTextColor.YELLOW));
     }
 
-    private void setExtractionRegionCommand(@NonNull CommandContext<CommandSender> ctx) {
-        Player player = (Player) ctx.getSender();
+    // ------- SETUP COMMANDS -------
+    @CommandMethod(value = "survivaladmin|sa setextract", requiredSender = Player.class)
+    @CommandPermission("survival.admin.extract.set")
+    void setExtractionRegionCommand(Player player) {
         new ExtractionRegionSelector(player, region -> {
             MongoManager.getInstance().getExtractionRegionService().create(region);
             Bukkit.getLogger().info("Uploaded an Extraction Region to Mongo.");
         });
     }
 
-    private void setArenaSpawnsCommand(@NonNull CommandContext<CommandSender> ctx) {
-        Player player = (Player) ctx.getSender();
+    @CommandMethod(value = "survivaladmin|sa setspawns", requiredSender = Player.class)
+    @CommandPermission("survival.admin.spawn.set")
+    void setArenaSpawnsCommand(Player player) {
         new SpawnTool(player);
     }
 
-    private void startGameCommand(@NonNull CommandContext<CommandSender> ctx) {
+    // ------- STATE COMMANDS -------
+    @CommandMethod(value = "survivaladmin|sa start")
+    @CommandPermission("survival.admin.start")
+    void startGameCommand(CommandSender sender) {
         if (GameManager.getInstance().isRunning()) {
-            ctx.getSender().sendMessage(Component.text("The game is still running.").color(NamedTextColor.DARK_RED));
+            sender.sendMessage(Component.text("The game is still running.").color(NamedTextColor.DARK_RED));
             return;
         }
         GameManager.getInstance().start();
-        ctx.getSender().sendMessage(Component.text("Game started.").color(NamedTextColor.GREEN));
+        sender.sendMessage(Component.text("Game started.").color(NamedTextColor.GREEN));
     }
 
-    private void stopGameCommand(@NonNull CommandContext<CommandSender> ctx) {
+    @CommandMethod(value = "survivaladmin|sa stop")
+    @CommandPermission("survival.admin.stop")
+    void stopGameCommand(CommandSender sender) {
         if (!GameManager.getInstance().isRunning()) {
-            ctx.getSender().sendMessage(Component.text("The game is not running.").color(NamedTextColor.YELLOW));
+            sender.sendMessage(Component.text("The game is not running.").color(NamedTextColor.YELLOW));
             return;
         }
         GameManager.getInstance().stop();
-        ctx.getSender().sendMessage(Component.text("Game stopped.").color(NamedTextColor.DARK_GREEN));
+        sender.sendMessage(Component.text("Game stopped.").color(NamedTextColor.DARK_GREEN));
     }
 
-    private void testCommand(final @NonNull CommandContext<CommandSender> ctx) {
-        Player player = (Player) ctx.getSender();
+    // ------- OTHER COMMANDS -------
+    @CommandMethod(value = "survival test", requiredSender = Player.class)
+    @CommandPermission("survival.test")
+    void testCommand(Player player) {
         NPCManager.getInstance().addNPC(new UpgradeNPC(player.getLocation()));
     }
 
-    private void saveChestsCommand(@NonNull CommandContext<CommandSender> ctx) {
-        Player player = (Player) ctx.getSender();
-        int radius = ctx.get("radius");
+    @CommandMethod(value = "survivaladmin|sa savechests <radius>", requiredSender = Player.class)
+    @CommandPermission("survival.admin.savechests")
+    void saveChestsCommand(Player player, @Argument("radius") int radius) {
         ChestManager.getInstance().saveChestsToMongo(player.getLocation(), radius);
         player.sendMessage("Saved chests.");
     }
 
-    private void spawnAirdropCommand(@NonNull CommandContext<CommandSender> ctx) {
-        Player player = (Player) ctx.getSender();
+    @CommandMethod(value = "survival spawnairdrop", requiredSender = Player.class)
+    @CommandPermission("survival.spawnairdrop")
+    void spawnAirdropCommand(Player player) {
         AirdropManager.getInstance().startAirdrop(player.getLocation());
     }
 
