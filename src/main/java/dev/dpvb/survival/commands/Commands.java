@@ -181,10 +181,4 @@ public class Commands {
         player.sendMessage("Saved chests.");
     }
 
-    @CommandMethod(value = "survival spawnairdrop", requiredSender = Player.class)
-    @CommandPermission("survival.spawnairdrop")
-    void spawnAirdropCommand(Player player) {
-        AirdropManager.getInstance().startAirdrop(player.getLocation());
-    }
-
 }
