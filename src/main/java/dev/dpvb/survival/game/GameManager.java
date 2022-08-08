@@ -1,6 +1,7 @@
 package dev.dpvb.survival.game;
 
 import dev.dpvb.survival.Survival;
+import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.game.extraction.Extraction;
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.mongo.models.Region;
@@ -87,6 +88,9 @@ public class GameManager {
             // Reset game data
             extractions.clear();
             spawnLocations.clear();
+
+            // Remove Airdrops from the Arena
+            AirdropManager.getInstance().clearAirdrops();
 
             // Set state
             state.set(false);
