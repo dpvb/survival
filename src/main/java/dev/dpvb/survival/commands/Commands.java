@@ -1,10 +1,14 @@
 package dev.dpvb.survival.commands;
 
+import cloud.commandframework.annotations.AnnotationParser;
+import cloud.commandframework.annotations.CommandMethod;
+import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.bukkit.parsers.PlayerArgument;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
+import cloud.commandframework.meta.SimpleCommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
 import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.chests.ChestManager;
@@ -38,22 +42,7 @@ public class Commands {
     }
 
     public void initCommands() {
-        // ------- GAME COMMANDS -------
-        manager.command(
-                manager.commandBuilder("survival")
-                        .literal("join")
-                        .senderType(Player.class)
-                        .permission("survival.join")
-                        .handler(this::gameJoinCommand)
-        );
-
-        manager.command(
-                manager.commandBuilder("survival")
-                        .literal("leave")
-                        .senderType(Player.class)
-                        .permission("survival.leave")
-                        .handler(this::gameLeaveCommand)
-        );
+        new AnnotationParser<>(manager, CommandSender.class, parameters -> SimpleCommandMeta.empty()).parse(this);
 
         // ------- NPC COMMANDS -------
         manager.command(
@@ -150,8 +139,10 @@ public class Commands {
         );
     }
 
-    private void gameJoinCommand(@NonNull CommandContext<CommandSender> ctx) {
-        Player player = (Player) ctx.getSender();
+    // ------- GAME COMMANDS -------
+    @CommandMethod(value = "survival join", requiredSender = Player.class)
+    @CommandPermission("survival.join")
+    void gameJoinCommand(Player player) {
         GameManager manager = GameManager.getInstance();
         if (!manager.isRunning()) {
             player.sendMessage("The game is not running.");
@@ -162,8 +153,9 @@ public class Commands {
         }
     }
 
-    private void gameLeaveCommand(@NonNull CommandContext<CommandSender> ctx) {
-        Player player = (Player) ctx.getSender();
+    @CommandMethod(value = "survival leave", requiredSender = Player.class)
+    @CommandPermission("survival.leave")
+    void gameLeaveCommand(Player player) {
         GameManager manager = GameManager.getInstance();
         if (manager.playerInGame(player)) {
             // TODO: ask player if they fr, mention extraction
