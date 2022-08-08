@@ -4,8 +4,13 @@ import com.destroystokyo.paper.ParticleBuilder;
 import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.chests.Loot;
 import dev.dpvb.survival.chests.LootSource;
+import dev.dpvb.survival.util.item.ItemGenerator;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +33,7 @@ public class AirdropManager implements LootSource {
     private final List<AirdropChest> airdropChests = new ArrayList<>();
     private final AtomicBoolean clearing = new AtomicBoolean();
     private final Set<Loot> lootTable = new HashSet<>();
+    private final ItemStack airdropItem = generateItem();
 
     private AirdropManager() {
         LootSource.loadFromLoot("airdrop", lootTable);
@@ -88,6 +94,18 @@ public class AirdropManager implements LootSource {
 
     public void removeAirdropFromCache(AirdropChest airdropChest) {
         airdropChests.remove(airdropChest);
+    }
+
+    private ItemStack generateItem() {
+        return new ItemGenerator()
+                .setDisplayName(Component.text("AIRDROP").decorate(TextDecoration.BOLD).color(NamedTextColor.GOLD))
+                .addLoreLine(Component.text("Place in Arena to").decorate(TextDecoration.ITALIC).color(NamedTextColor.GRAY))
+                .addLoreLine(Component.text("call an Airdrop.").decorate(TextDecoration.ITALIC).color(NamedTextColor.GRAY))
+                .build(Material.TRIPWIRE_HOOK);
+    }
+
+    public ItemStack getAirdropItem() {
+        return airdropItem;
     }
 
     public boolean isClearing() {

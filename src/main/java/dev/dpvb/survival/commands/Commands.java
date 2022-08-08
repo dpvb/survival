@@ -167,7 +167,7 @@ public class Commands {
     @CommandMethod(value = "survival test", requiredSender = Player.class)
     @CommandPermission("survival.test")
     void testCommand(Player player) {
-        NPCManager.getInstance().addNPC(new UpgradeNPC(player.getLocation()));
+        player.getInventory().addItem(AirdropManager.getInstance().getAirdropItem());
     }
 
     @CommandMethod(value = "survivaladmin|sa savechests <radius>", requiredSender = Player.class)
