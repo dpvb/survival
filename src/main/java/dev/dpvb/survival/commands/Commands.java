@@ -2,9 +2,11 @@ package dev.dpvb.survival.commands;
 
 import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
-import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.bukkit.parsers.PlayerArgument;
 import cloud.commandframework.context.CommandContext;
+import cloud.commandframework.execution.CommandExecutionCoordinator;
+import cloud.commandframework.paper.PaperCommandManager;
+import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.chests.ChestManager;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.game.GameManager;
@@ -29,10 +31,10 @@ import java.util.*;
 
 public class Commands {
 
-    private final BukkitCommandManager<CommandSender> manager;
+    private final PaperCommandManager<CommandSender> manager;
 
-    public Commands(BukkitCommandManager<CommandSender> manager) {
-        this.manager = manager;
+    public Commands() throws Exception {
+        this.manager = PaperCommandManager.createNative(Survival.getInstance(), CommandExecutionCoordinator.simpleCoordinator());
     }
 
     public void initCommands() {
@@ -41,6 +43,7 @@ public class Commands {
                 manager.commandBuilder("survival")
                         .literal("join")
                         .senderType(Player.class)
+                        .permission("survival.join")
                         .handler(this::gameJoinCommand)
         );
 
@@ -48,6 +51,7 @@ public class Commands {
                 manager.commandBuilder("survival")
                         .literal("leave")
                         .senderType(Player.class)
+                        .permission("survival.leave")
                         .handler(this::gameLeaveCommand)
         );
 
@@ -64,6 +68,7 @@ public class Commands {
                                         "storage",
                                         "join")))
                         .senderType(Player.class)
+                        .permission("survival.admin.npc.create")
                         .handler(this::npcCreateCommand)
         );
 
@@ -72,6 +77,7 @@ public class Commands {
                 manager.commandBuilder("survival")
                         .literal("tokens")
                         .senderType(Player.class)
+                        .permission("survival.tokens")
                         .handler(this::tokenCommand)
         );
 
@@ -81,7 +87,7 @@ public class Commands {
                         .literal("set")
                         .argument(PlayerArgument.of("player"))
                         .argument(IntegerArgument.of("tokens"))
-                        .senderType(Player.class)
+                        .permission("survival.admin.token.set")
                         .handler(this::tokenSetCommand)
         );
 
@@ -90,6 +96,7 @@ public class Commands {
                 manager.commandBuilder("survivaladmin", "sa")
                         .literal("setextract")
                         .senderType(Player.class)
+                        .permission("survival.admin.extract.set")
                         .handler(this::setExtractionRegionCommand)
         );
 
@@ -97,6 +104,7 @@ public class Commands {
                 manager.commandBuilder("survivaladmin", "sa")
                         .literal("setspawns")
                         .senderType(Player.class)
+                        .permission("survival.admin.spawn.set")
                         .handler(this::setArenaSpawnsCommand)
         );
 
@@ -129,6 +137,7 @@ public class Commands {
                         .literal("savechests")
                         .argument(IntegerArgument.of("radius"))
                         .senderType(Player.class)
+                        .permission("survival.admin.savechests")
                         .handler(this::saveChestsCommand)
         );
 
@@ -136,39 +145,21 @@ public class Commands {
                 manager.commandBuilder("survival")
                         .literal("spawnairdrop")
                         .senderType(Player.class)
+                        .permission("survival.spawnairdrop")
                         .handler(this::spawnAirdropCommand)
         );
     }
 
-    private void startGameCommand(@NonNull CommandContext<CommandSender> ctx) {
-        if (GameManager.getInstance().isRunning()) {
-            ctx.getSender().sendMessage(Component.text("The game is still running.").color(NamedTextColor.DARK_RED));
+    private void gameJoinCommand(@NonNull CommandContext<CommandSender> ctx) {
+        Player player = (Player) ctx.getSender();
+        GameManager manager = GameManager.getInstance();
+        if (!manager.isRunning()) {
+            player.sendMessage("The game is not running.");
             return;
         }
-        GameManager.getInstance().start();
-        ctx.getSender().sendMessage(Component.text("Game started.").color(NamedTextColor.GREEN));
-    }
-
-    private void stopGameCommand(@NonNull CommandContext<CommandSender> ctx) {
-        if (!GameManager.getInstance().isRunning()) {
-            ctx.getSender().sendMessage(Component.text("The game is not running.").color(NamedTextColor.YELLOW));
-            return;
+        if (manager.playerInGame(player) || !manager.join(player)) {
+            player.sendMessage("You are already in the game.");
         }
-        GameManager.getInstance().stop();
-        ctx.getSender().sendMessage(Component.text("Game stopped.").color(NamedTextColor.DARK_GREEN));
-    }
-
-    private void setArenaSpawnsCommand(@NonNull CommandContext<CommandSender> ctx) {
-        Player player = (Player) ctx.getSender();
-        new SpawnTool(player);
-    }
-
-    private void setExtractionRegionCommand(@NonNull CommandContext<CommandSender> ctx) {
-        Player player = (Player) ctx.getSender();
-        new ExtractionRegionSelector(player, region -> {
-            MongoManager.getInstance().getExtractionRegionService().create(region);
-            Bukkit.getLogger().info("Uploaded an Extraction Region to Mongo.");
-        });
     }
 
     private void gameLeaveCommand(@NonNull CommandContext<CommandSender> ctx) {
@@ -181,18 +172,6 @@ public class Commands {
             manager.remove(player);
         } else {
             player.sendMessage("You are not in the game.");
-        }
-    }
-
-    private void gameJoinCommand(@NonNull CommandContext<CommandSender> ctx) {
-        Player player = (Player) ctx.getSender();
-        GameManager manager = GameManager.getInstance();
-        if (!manager.isRunning()) {
-            player.sendMessage("The game is not running.");
-            return;
-        }
-        if (manager.playerInGame(player) || !manager.join(player)) {
-            player.sendMessage("You are already in the game.");
         }
     }
 
@@ -213,9 +192,55 @@ public class Commands {
         player.sendMessage("You created an NPC.");
     }
 
-    private void spawnAirdropCommand(@NonNull CommandContext<CommandSender> ctx) {
+    private void tokenCommand(@NonNull CommandContext<CommandSender> ctx) {
         Player player = (Player) ctx.getSender();
-        AirdropManager.getInstance().startAirdrop(player.getLocation());
+        int tokens = PlayerInfoManager.getInstance().getTokens(player.getUniqueId());
+
+        player.sendMessage(Component.text("You have " + tokens + " tokens.").color(NamedTextColor.YELLOW));
+    }
+
+    private void tokenSetCommand(@NonNull CommandContext<CommandSender> ctx) {
+        Player player = ctx.get("player"); // Added as a required argument, so it is always non-null
+        int tokens = ctx.get("tokens");
+
+        PlayerInfoManager.getInstance().setTokens(player.getUniqueId(), tokens);
+        ctx.getSender().sendMessage(Component.text("Set " + player.getName() + "'s token count to " + tokens).color(NamedTextColor.YELLOW));
+    }
+
+    private void setExtractionRegionCommand(@NonNull CommandContext<CommandSender> ctx) {
+        Player player = (Player) ctx.getSender();
+        new ExtractionRegionSelector(player, region -> {
+            MongoManager.getInstance().getExtractionRegionService().create(region);
+            Bukkit.getLogger().info("Uploaded an Extraction Region to Mongo.");
+        });
+    }
+
+    private void setArenaSpawnsCommand(@NonNull CommandContext<CommandSender> ctx) {
+        Player player = (Player) ctx.getSender();
+        new SpawnTool(player);
+    }
+
+    private void startGameCommand(@NonNull CommandContext<CommandSender> ctx) {
+        if (GameManager.getInstance().isRunning()) {
+            ctx.getSender().sendMessage(Component.text("The game is still running.").color(NamedTextColor.DARK_RED));
+            return;
+        }
+        GameManager.getInstance().start();
+        ctx.getSender().sendMessage(Component.text("Game started.").color(NamedTextColor.GREEN));
+    }
+
+    private void stopGameCommand(@NonNull CommandContext<CommandSender> ctx) {
+        if (!GameManager.getInstance().isRunning()) {
+            ctx.getSender().sendMessage(Component.text("The game is not running.").color(NamedTextColor.YELLOW));
+            return;
+        }
+        GameManager.getInstance().stop();
+        ctx.getSender().sendMessage(Component.text("Game stopped.").color(NamedTextColor.DARK_GREEN));
+    }
+
+    private void testCommand(final @NonNull CommandContext<CommandSender> ctx) {
+        Player player = (Player) ctx.getSender();
+        NPCManager.getInstance().addNPC(new UpgradeNPC(player.getLocation()));
     }
 
     private void saveChestsCommand(@NonNull CommandContext<CommandSender> ctx) {
@@ -225,29 +250,9 @@ public class Commands {
         player.sendMessage("Saved chests.");
     }
 
-    private void tokenCommand(@NonNull CommandContext<CommandSender> ctx) {
+    private void spawnAirdropCommand(@NonNull CommandContext<CommandSender> ctx) {
         Player player = (Player) ctx.getSender();
-        int tokens = PlayerInfoManager.getInstance().getTokens(player.getUniqueId());
-
-        player.sendMessage(Component.text("You have " + tokens + " tokens.").color(NamedTextColor.YELLOW));
+        AirdropManager.getInstance().startAirdrop(player.getLocation());
     }
-
-    private void tokenSetCommand(@NonNull CommandContext<CommandSender> ctx) {
-        Player player = ctx.get("player");
-        int tokens = ctx.get("tokens");
-
-        if (player == null) {
-            return;
-        }
-
-        PlayerInfoManager.getInstance().setTokens(player.getUniqueId(), tokens);
-        ctx.getSender().sendMessage(Component.text("Set " + player.getName() + "'s token count to " + tokens).color(NamedTextColor.YELLOW));
-    }
-
-    private void testCommand(final @NonNull CommandContext<CommandSender> ctx) {
-        Player player = (Player) ctx.getSender();
-        NPCManager.getInstance().addNPC(new UpgradeNPC(player.getLocation()));
-    }
-
 
 }

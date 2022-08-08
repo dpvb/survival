@@ -1,9 +1,5 @@
 package dev.dpvb.survival;
 
-import cloud.commandframework.CommandTree;
-import cloud.commandframework.bukkit.BukkitCommandManager;
-import cloud.commandframework.execution.CommandExecutionCoordinator;
-import cloud.commandframework.paper.PaperCommandManager;
 import dev.dpvb.survival.chests.ChestManager;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.commands.Commands;
@@ -15,17 +11,13 @@ import dev.dpvb.survival.npc.NPCManager;
 import dev.dpvb.survival.npc.storage.StorageManager;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.function.Function;
-
 public final class Survival extends JavaPlugin {
 
     private static Survival instance;
-    private BukkitCommandManager<CommandSender> manager;
 
     @Override
     public void onEnable() {
@@ -76,23 +68,14 @@ public final class Survival extends JavaPlugin {
     }
 
     private void setupCommands() {
-        final Function<CommandTree<CommandSender>, CommandExecutionCoordinator<CommandSender>> executionCoordinatorFunction =
-                CommandExecutionCoordinator.simpleCoordinator();
-        final Function<CommandSender, CommandSender> mapperFunction = Function.identity();
+        final Commands commands;
         try {
-            this.manager = new PaperCommandManager<>(
-                    this,
-                    executionCoordinatorFunction,
-                    mapperFunction,
-                    mapperFunction
-            );
+            commands = new Commands();
         } catch (final Exception e) {
             this.getLogger().severe("Failed to initialize the command manager.");
-            this.getServer().getPluginManager().disablePlugin(this);
-            return;
+            throw new IllegalStateException(e);
         }
-
-        new Commands(manager).initCommands();
+        commands.initCommands();
     }
 
     private void setupConfigFile() {
