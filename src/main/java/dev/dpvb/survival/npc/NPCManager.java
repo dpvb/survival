@@ -7,6 +7,8 @@ import dev.dpvb.survival.npc.enchanting.EnchantmentCost;
 import dev.dpvb.survival.npc.enchanting.EnchantableItemTypes;
 import dev.dpvb.survival.npc.join.JoinNPC;
 import dev.dpvb.survival.npc.storage.StorageNPC;
+import dev.dpvb.survival.npc.tokentrader.TokenTraderNPC;
+import dev.dpvb.survival.npc.tokentrader.TokenTraderShopItem;
 import dev.dpvb.survival.npc.upgrader.UpgradeCost;
 import dev.dpvb.survival.npc.upgrader.UpgradeNPC;
 import net.citizensnpcs.api.CitizensAPI;
@@ -16,10 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class NPCManager {
 
@@ -28,6 +27,7 @@ public class NPCManager {
     private Map<EnchantableItemTypes, Set<EnchantmentCost>> basicEnchantments;
     private Map<EnchantableItemTypes, Set<EnchantmentCost>> advancedEnchantments;
     private Map<Material, UpgradeCost> upgrades;
+    private List<TokenTraderShopItem> tokenTraderItems;
 
     private NPCManager() {
         npcs = new HashSet<>();
@@ -55,6 +55,9 @@ public class NPCManager {
         // Load Upgrade Configuration for Upgrade NPCs
         upgrades = loadUpgrades(Survival.Configuration.getUpgradingSection());
 
+        // Load TokenTrader Configuration for TokenTrader NPCs
+        tokenTraderItems = loadTokenTraderItems(Survival.Configuration.getTokenTraderSection());
+
         // Create AbstractNPC instances.
         for (NPC npc : CitizensAPI.getNPCRegistry()) {
             switch (npc.getName().split(" ")[0]) {
@@ -63,6 +66,7 @@ public class NPCManager {
                 case "store" -> npcs.add(new StorageNPC(npc));
                 case "upgrade" -> npcs.add(new UpgradeNPC(npc));
                 case "join" -> npcs.add(new JoinNPC(npc));
+                case "t-trader" -> npcs.add(new TokenTraderNPC(npc));
             }
         }
 
@@ -132,6 +136,26 @@ public class NPCManager {
         return upgrades;
     }
 
+    private List<TokenTraderShopItem> loadTokenTraderItems(ConfigurationSection section) {
+        List<TokenTraderShopItem> items = new ArrayList<>();
+        for (String itemName : section.getKeys(false)) {
+            if (!TokenTraderShopItem.VALID_ITEMS.contains(itemName)) {
+                Bukkit.getLogger().severe("TokenTrader configuration is incorrect. " + itemName + " is not a valid shop item entry.");
+            }
+
+            String displayMaterialName = section.getString(itemName + ".display-material");
+            Material displayMaterial = Material.valueOf(displayMaterialName.toUpperCase());
+            if (displayMaterial == null) {
+                 Bukkit.getLogger().severe("TokenTrader configuration is incorrect. " + displayMaterialName + " is an invalid Material.");
+            }
+
+            int price = section.getInt(itemName + ".price");
+            items.add(new TokenTraderShopItem(itemName, price, displayMaterial));
+        }
+
+        return items;
+    }
+
     public Set<AbstractNPC> getNPCs() {
         return npcs;
     }
@@ -146,5 +170,9 @@ public class NPCManager {
 
     public Map<Material, UpgradeCost> getUpgrades() {
         return upgrades;
+    }
+
+    public List<TokenTraderShopItem> getTokenTraderItems() {
+        return tokenTraderItems;
     }
 }

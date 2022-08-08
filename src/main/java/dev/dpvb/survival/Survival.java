@@ -106,6 +106,10 @@ public final class Survival extends JavaPlugin {
             return config.getConfigurationSection("loot");
         }
 
+        public static ConfigurationSection getTokenTraderSection() {
+            return config.getConfigurationSection("token-trader");
+        }
+
         public static String getMongoConnectionString() {
             return config.getString("mongo.connection-string");
         }

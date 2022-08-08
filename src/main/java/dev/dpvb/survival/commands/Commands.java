@@ -21,6 +21,7 @@ import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
 import dev.dpvb.survival.npc.enchanting.BasicEnchanterNPC;
 import dev.dpvb.survival.npc.join.JoinNPC;
 import dev.dpvb.survival.npc.storage.StorageNPC;
+import dev.dpvb.survival.npc.tokentrader.TokenTraderNPC;
 import dev.dpvb.survival.npc.upgrader.UpgradeNPC;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import net.kyori.adventure.text.Component;
@@ -28,6 +29,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.yaml.snakeyaml.tokens.Token;
 
 import java.util.*;
 
@@ -39,7 +41,8 @@ public class Commands {
             "advanced-enchanter",
             "upgrader",
             "storage",
-            "join"
+            "join",
+            "token-trader"
     );
 
     public Commands() throws Exception {
@@ -100,6 +103,7 @@ public class Commands {
             case "upgrader" -> NPCManager.getInstance().addNPC(new UpgradeNPC(player.getLocation()));
             case "storage" -> NPCManager.getInstance().addNPC(new StorageNPC(player.getLocation()));
             case "join" -> NPCManager.getInstance().addNPC(new JoinNPC(player.getLocation()));
+            case "token-trader" -> NPCManager.getInstance().addNPC(new TokenTraderNPC(player.getLocation()));
             default -> {
                 player.sendMessage("That is not a valid NPC type.");
                 return;
