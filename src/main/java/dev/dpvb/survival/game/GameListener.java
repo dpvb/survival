@@ -2,7 +2,9 @@ package dev.dpvb.survival.game;
 
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.stats.PlayerInfoManager;
+import dev.dpvb.survival.util.messages.Messages;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -73,6 +75,11 @@ public class GameListener implements Listener {
         if (item == null) return;
         if (!item.hasItemMeta()) return;
         if (!manager.playerInGame(player)) return;
+        Block clickedBlock = event.getClickedBlock();
+        if (!manager.getArenaWorld().getHighestBlockAt(clickedBlock.getLocation()).equals(clickedBlock)) {
+            Messages.AIRDROP_INCORRECT_PLACEMENT.send(player);
+            return;
+        }
         if (item.isSimilar(AirdropManager.getInstance().getAirdropItem())) {
             // Remove one airdrop item.
             final var amount = item.getAmount();
