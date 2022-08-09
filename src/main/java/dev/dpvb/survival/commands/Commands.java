@@ -25,6 +25,7 @@ import dev.dpvb.survival.npc.upgrader.UpgradeNPC;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -54,7 +55,7 @@ public class Commands {
                 30L,
                 TimeUnit.SECONDS,
                 this::confirmLeave,
-                player -> player.sendMessage(Component.text("Please run the command again.").color(NamedTextColor.DARK_GRAY))
+                player -> player.sendMessage(Component.text("Please run the command again.").color(NamedTextColor.DARK_RED))
         );
     }
 
@@ -89,34 +90,35 @@ public class Commands {
     @Confirmation
     void gameLeaveCommand(Player player) {
         GameManager manager = GameManager.getInstance();
+        // no-op if the player is not in the game
         if (manager.playerInGame(player)) {
-            // TODO: ask player if they fr, mention extraction
             manager.dropAndClearInventory(player);
             manager.sendToHub(player);
             manager.remove(player);
-        } else {
-            player.sendMessage("You are not in the game.");
         }
     }
 
     private void confirmLeave(CommandPostprocessingContext<CommandSender> context) {
         final var player = (Player) context.getCommandContext().getSender();
         if (GameManager.getInstance().playerInGame(player)) {
+            // Ask player if they really, truly want to leave, mentioning the advantages of extracting
             player.sendMessage(
-                    Component.text("The best way to leave the game is to ").applyFallbackStyle(Style.style(NamedTextColor.RED))
+                    Component.text("The best way to leave the game is to ").applyFallbackStyle(Style.style(NamedTextColor.GRAY))
                             .append(Component.text("extract").decorate(TextDecoration.BOLD))
-                            .append(Component.text("; that way, you keep your items.").color(NamedTextColor.GRAY))
+                            .append(Component.text("; that way, you keep your items.").decorate(TextDecoration.ITALIC))
             );
             player.sendMessage(
                     Component.text("Are you sure you want to leave?")
                             .color(NamedTextColor.YELLOW)
                             .append(Component.space())
-                            .append(Component.text("Yes")
+                            .append(Component.text("[Yes]")
                                     .color(NamedTextColor.RED)
                                     .decorate(TextDecoration.BOLD)
+                                    .hoverEvent(HoverEvent.showText(Component.text("Click to leave.")))
                                     .clickEvent(ClickEvent.runCommand("/confirm leave"))
-                            ));
-            player.sendMessage(Component.text("Your items will drop and remain here... hopefully.").decorate(TextDecoration.ITALIC).color(NamedTextColor.GRAY));
+                            )
+            );
+            player.sendMessage(Component.text("Your items will drop and remain here... hopefully.").decorate(TextDecoration.ITALIC).color(NamedTextColor.RED));
         } else {
             player.sendMessage("You are not in the game.");
         }
