@@ -95,7 +95,8 @@ public class GameListener implements Listener {
         if (item == null) return;
         if (!item.hasItemMeta()) return;
         if (!manager.playerInGame(player)) return;
-        Block clickedBlock = event.getClickedBlock();
+        final var clickedBlock = event.getClickedBlock();
+        //noinspection ConstantConditions (We know there is a block)
         if (!manager.getArenaWorld().getHighestBlockAt(clickedBlock.getLocation()).equals(clickedBlock)) {
             Messages.AIRDROP_INCORRECT_PLACEMENT.send(player);
             return;
@@ -110,7 +111,7 @@ public class GameListener implements Listener {
             }
 
             // Start Airdrop.
-            AirdropManager.getInstance().startAirdrop(event.getClickedBlock().getLocation().add(0, 1, 0));
+            AirdropManager.getInstance().startAirdrop(clickedBlock.getLocation().add(0, 1, 0));
         }
     }
 
