@@ -4,6 +4,7 @@ import dev.dpvb.survival.chests.ChestManager;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.commands.Commands;
 import dev.dpvb.survival.events.FirstJoinListener;
+import dev.dpvb.survival.events.ServerPingListener;
 import dev.dpvb.survival.game.GameManager;
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.npc.listeners.NPCListener;
@@ -92,6 +93,7 @@ public final class Survival extends JavaPlugin {
     private void registerListeners() {
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         Bukkit.getPluginManager().registerEvents(new FirstJoinListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ServerPingListener(), this);
     }
 
     public static Survival getInstance() {
