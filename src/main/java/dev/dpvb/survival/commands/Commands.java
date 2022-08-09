@@ -9,7 +9,7 @@ import cloud.commandframework.extra.confirmation.CommandConfirmationManager;
 import cloud.commandframework.meta.SimpleCommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
 import dev.dpvb.survival.Survival;
-import dev.dpvb.survival.chests.ChestManager;
+import dev.dpvb.survival.chests.tiered.ChestManager;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.game.GameManager;
 import dev.dpvb.survival.game.extraction.ExtractionRegionSelector;

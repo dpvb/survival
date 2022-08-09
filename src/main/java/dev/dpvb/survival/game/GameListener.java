@@ -1,6 +1,7 @@
 package dev.dpvb.survival.game;
 
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
+import dev.dpvb.survival.chests.tiered.ChestManager;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import dev.dpvb.survival.util.messages.Messages;
 import org.bukkit.Material;
@@ -25,6 +26,25 @@ public class GameListener implements Listener {
 
     public GameListener(GameManager manager) {
         this.manager = manager;
+    }
+
+    // Handle loot chests (route player to virtual inventory)
+    @EventHandler
+    public void onLootChestOpen(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        final var block = event.getClickedBlock();
+        //noinspection ConstantConditions (We know there is a block)
+        switch (block.getType()) {
+            case CHEST, ENDER_CHEST -> {
+                if (block.getWorld() != manager.getArenaWorld()) return;
+                final var lootChest = ChestManager.getInstance().getLootChestMap().get(block.getLocation());
+                if (lootChest != null) {
+                    event.setCancelled(true);
+                    lootChest.open(event.getPlayer());
+                }
+            }
+        }
     }
 
     @EventHandler
@@ -75,7 +95,8 @@ public class GameListener implements Listener {
         if (item == null) return;
         if (!item.hasItemMeta()) return;
         if (!manager.playerInGame(player)) return;
-        Block clickedBlock = event.getClickedBlock();
+        final var clickedBlock = event.getClickedBlock();
+        //noinspection ConstantConditions (We know there is a block)
         if (!manager.getArenaWorld().getHighestBlockAt(clickedBlock.getLocation()).equals(clickedBlock)) {
             Messages.AIRDROP_INCORRECT_PLACEMENT.send(player);
             return;
@@ -90,7 +111,7 @@ public class GameListener implements Listener {
             }
 
             // Start Airdrop.
-            AirdropManager.getInstance().startAirdrop(event.getClickedBlock().getLocation().add(0, 1, 0));
+            AirdropManager.getInstance().startAirdrop(clickedBlock.getLocation().add(0, 1, 0));
         }
     }
 
