@@ -10,6 +10,9 @@ import dev.dpvb.survival.npc.listeners.NPCListener;
 import dev.dpvb.survival.npc.NPCManager;
 import dev.dpvb.survival.npc.storage.StorageManager;
 import dev.dpvb.survival.stats.PlayerInfoManager;
+import dev.dpvb.survival.util.messages.Messages;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,6 +28,8 @@ public final class Survival extends JavaPlugin {
         instance = this;
         // Setup Config File
         setupConfigFile();
+        // Setup Messages
+        setupMessages();
         // Setup Managers
         setupManagers();
         // Setup Commands
@@ -45,6 +50,17 @@ public final class Survival extends JavaPlugin {
         GameManager.getInstance().removeAllPlayers(false);
     }
 
+    private void setupConfigFile() {
+        saveDefaultConfig();
+        Configuration.config = getConfig();
+    }
+
+    private void setupMessages() {
+        Messages.setBuilder(MiniMessage.builder()
+                .tags(TagResolver.standard())
+                .build());
+    }
+
     private void setupManagers() {
         // Setup Mongo
         MongoManager.getInstance();
@@ -62,11 +78,6 @@ public final class Survival extends JavaPlugin {
         Bukkit.getScheduler().runTaskLater(this, NPCManager.getInstance()::loadNPCs, 5);
     }
 
-    private void registerListeners() {
-        Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
-        Bukkit.getPluginManager().registerEvents(new FirstJoinListener(), this);
-    }
-
     private void setupCommands() {
         final Commands commands;
         try {
@@ -78,9 +89,9 @@ public final class Survival extends JavaPlugin {
         commands.initCommands();
     }
 
-    private void setupConfigFile() {
-        saveDefaultConfig();
-        Configuration.config = getConfig();
+    private void registerListeners() {
+        Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
+        Bukkit.getPluginManager().registerEvents(new FirstJoinListener(), this);
     }
 
     public static Survival getInstance() {
