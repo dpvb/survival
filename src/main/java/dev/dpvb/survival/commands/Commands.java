@@ -224,4 +224,10 @@ public class Commands {
         player.sendMessage("Saved chests.");
     }
 
+    @CommandMethod(value = "survivaladmin|sa cleardrops")
+    @CommandPermission("survival.admin.cleardrops")
+    void clearItemDrops(CommandSender sender) {
+        GameManager.getInstance().clearDropsOnGround();
+    }
+
 }
