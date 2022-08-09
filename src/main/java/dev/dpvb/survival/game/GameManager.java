@@ -2,6 +2,7 @@ package dev.dpvb.survival.game;
 
 import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
+import dev.dpvb.survival.chests.tiered.ChestManager;
 import dev.dpvb.survival.game.extraction.Extraction;
 import dev.dpvb.survival.game.tasks.ClearDrops;
 import dev.dpvb.survival.mongo.MongoManager;
@@ -51,6 +52,9 @@ public class GameManager {
         synchronized (state) {
             if (state.get()) throw new IllegalStateException("Game is running");
 
+            // Load all Chest Data
+            ChestManager.getInstance().loadLootChests();
+
             // Load the Extractions
             loadExtractions();
 
@@ -83,6 +87,9 @@ public class GameManager {
             if (!state.get()) return;
             // Remove all Players from the Arena (free extraction, basically)
             removeAllPlayers(false);
+
+            // Clear chest data
+            ChestManager.getInstance().getLootChestMap().clear();
 
             // Stop polling and clear task instance; unregister listener
             extractionPoller.cancel();

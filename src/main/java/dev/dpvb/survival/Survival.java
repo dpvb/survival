@@ -1,6 +1,5 @@
 package dev.dpvb.survival;
 
-import dev.dpvb.survival.chests.tiered.ChestManager;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.commands.Commands;
 import dev.dpvb.survival.events.FirstJoinListener;
@@ -69,8 +68,6 @@ public final class Survival extends JavaPlugin {
         PlayerInfoManager.getInstance().load();
         // Load all Player Storage from Mongo
         StorageManager.getInstance().load();
-        // Load all Chest Data
-        ChestManager.getInstance().loadLootChests();
         // Load Airdrop Information
         AirdropManager.getInstance().loadAirdropAnimation();
         // Setup Game Manager and start game
