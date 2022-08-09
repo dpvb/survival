@@ -3,23 +3,23 @@ package dev.dpvb.survival.game;
 import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.game.extraction.Extraction;
+import dev.dpvb.survival.game.tasks.ClearDrops;
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.mongo.models.Region;
 import dev.dpvb.survival.mongo.models.SpawnLocation;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import javax.swing.*;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -34,6 +34,7 @@ public class GameManager {
     private final World hubWorld;
     private final World arenaWorld;
     private Extraction.PollingTask extractionPoller;
+    private ClearDrops clearDropsTask;
 
     private GameManager(World hubWorld, World arenaWorld) {
         this.hubWorld = hubWorld;
@@ -59,6 +60,9 @@ public class GameManager {
 
             // Load the Spawns
             loadSpawns();
+
+            // Initialize Tasks
+            initTasks();
 
             // Register Listener
             Bukkit.getPluginManager().registerEvents(listener, Survival.getInstance());
@@ -91,6 +95,9 @@ public class GameManager {
 
             // Remove Airdrops from the Arena
             AirdropManager.getInstance().clearAirdrops();
+
+            // Cleanup Tasks
+            cleanupTasks();
 
             // Set state
             state.set(false);
@@ -213,6 +220,29 @@ public class GameManager {
             sendToHub(player);
             remove(player);
         }
+    }
+
+    public void clearDropsOnGround() {
+        Collection<Item> items = arenaWorld.getEntitiesByClass(Item.class);
+        for (Item item : items) {
+            item.remove();
+        }
+        Bukkit.getLogger().info("Removed " + items.size() + " item drops from the arena.");
+    }
+
+    public void broadcast(Component message) {
+        for (Player player : players) {
+            player.sendMessage(message);
+        }
+    }
+
+    private void initTasks() {
+        clearDropsTask = new ClearDrops(this);
+        clearDropsTask.runTaskTimer(Survival.getInstance(), 20L * 1800, 20L * 1800);
+    }
+
+    private void cleanupTasks() {
+        clearDropsTask.cancel();
     }
 
     public static GameManager getInstance() {
