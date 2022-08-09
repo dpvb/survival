@@ -1,12 +1,11 @@
 package dev.dpvb.survival.commands;
 
-import cloud.commandframework.annotations.AnnotationParser;
-import cloud.commandframework.annotations.Argument;
-import cloud.commandframework.annotations.CommandMethod;
-import cloud.commandframework.annotations.CommandPermission;
+import cloud.commandframework.annotations.*;
 import cloud.commandframework.annotations.suggestions.Suggestions;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
+import cloud.commandframework.extra.confirmation.CommandConfirmationManager;
+import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.meta.SimpleCommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
 import dev.dpvb.survival.Survival;
@@ -25,17 +24,20 @@ import dev.dpvb.survival.npc.tokentrader.TokenTraderNPC;
 import dev.dpvb.survival.npc.upgrader.UpgradeNPC;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.yaml.snakeyaml.tokens.Token;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Commands {
 
     private final PaperCommandManager<CommandSender> manager;
+    private final CommandConfirmationManager<CommandSender> confirmationManager;
     final List<String> npcCreateSuggestions = List.of(
             "basic-enchanter",
             "advanced-enchanter",
@@ -47,6 +49,31 @@ public class Commands {
 
     public Commands() throws Exception {
         this.manager = PaperCommandManager.createNative(Survival.getInstance(), CommandExecutionCoordinator.simpleCoordinator());
+        this.confirmationManager = new CommandConfirmationManager<>(
+                30L,
+                TimeUnit.SECONDS,
+                context -> {
+                    final var sender = context.getCommandContext().getSender();
+                    sender.sendMessage(
+                            Component.text("Are you sure you want to leave?")
+                                    .color(NamedTextColor.YELLOW)
+                                    .append(Component.space())
+                                    .append(Component.text("Yes").color(NamedTextColor.RED)
+                                            .clickEvent(ClickEvent.runCommand("/confirm"))
+                                    ));
+                    sender.sendMessage(Component.text("Your items will drop and remain here...hopefully.").decorate(TextDecoration.ITALIC).color(NamedTextColor.GRAY));
+                },
+                player -> {
+                    // no-op
+                }
+        );
+        confirmationManager.registerConfirmationProcessor(manager);
+        manager.command(
+                manager.commandBuilder("confirm")
+                        .meta(CommandMeta.DESCRIPTION, "Confirm a command")
+                        .handler(confirmationManager.createConfirmationExecutionHandler())
+                        .build()
+        );
     }
 
     public void initCommands() {
@@ -69,6 +96,7 @@ public class Commands {
 
     @CommandMethod(value = "survival leave", requiredSender = Player.class)
     @CommandPermission("survival.leave")
+    @Confirmation
     void gameLeaveCommand(Player player) {
         GameManager manager = GameManager.getInstance();
         if (manager.playerInGame(player)) {
