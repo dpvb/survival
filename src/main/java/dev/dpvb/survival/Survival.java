@@ -1,6 +1,6 @@
 package dev.dpvb.survival;
 
-import dev.dpvb.survival.chests.ChestManager;
+import dev.dpvb.survival.chests.tiered.ChestManager;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.commands.Commands;
 import dev.dpvb.survival.events.FirstJoinListener;

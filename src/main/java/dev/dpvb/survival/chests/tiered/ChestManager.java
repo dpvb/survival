@@ -1,9 +1,5 @@
-package dev.dpvb.survival.chests;
+package dev.dpvb.survival.chests.tiered;
 
-import dev.dpvb.survival.Survival;
-import dev.dpvb.survival.chests.events.ChestListener;
-import dev.dpvb.survival.chests.tiered.ChestTier;
-import dev.dpvb.survival.chests.tiered.LootChest;
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.mongo.models.ChestData;
 import dev.dpvb.survival.mongo.services.ChestDataService;
@@ -26,9 +22,6 @@ public class ChestManager {
 
     private ChestManager() {
         lootChestMap = new HashMap<>();
-
-        // Register Chest Listener
-        Bukkit.getPluginManager().registerEvents(new ChestListener(), Survival.getInstance());
     }
 
     public static ChestManager getInstance() {
