@@ -4,8 +4,8 @@ import cloud.commandframework.annotations.*;
 import cloud.commandframework.annotations.suggestions.Suggestions;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
+import cloud.commandframework.execution.postprocessor.CommandPostprocessingContext;
 import cloud.commandframework.extra.confirmation.CommandConfirmationManager;
-import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.meta.SimpleCommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
 import dev.dpvb.survival.Survival;
@@ -26,6 +26,7 @@ import dev.dpvb.survival.stats.PlayerInfoManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -37,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 public class Commands {
 
     private final PaperCommandManager<CommandSender> manager;
-    private final CommandConfirmationManager<CommandSender> confirmationManager;
+    private final CommandConfirmationManager<CommandSender> leaveConfirmationManager;
     final List<String> npcCreateSuggestions = List.of(
             "basic-enchanter",
             "advanced-enchanter",
@@ -49,35 +50,24 @@ public class Commands {
 
     public Commands() throws Exception {
         this.manager = PaperCommandManager.createNative(Survival.getInstance(), CommandExecutionCoordinator.simpleCoordinator());
-        this.confirmationManager = new CommandConfirmationManager<>(
+        this.leaveConfirmationManager = new CommandConfirmationManager<>(
                 30L,
                 TimeUnit.SECONDS,
-                context -> {
-                    final var sender = context.getCommandContext().getSender();
-                    sender.sendMessage(
-                            Component.text("Are you sure you want to leave?")
-                                    .color(NamedTextColor.YELLOW)
-                                    .append(Component.space())
-                                    .append(Component.text("Yes").color(NamedTextColor.RED)
-                                            .clickEvent(ClickEvent.runCommand("/confirm"))
-                                    ));
-                    sender.sendMessage(Component.text("Your items will drop and remain here...hopefully.").decorate(TextDecoration.ITALIC).color(NamedTextColor.GRAY));
-                },
-                player -> {
-                    // no-op
-                }
-        );
-        confirmationManager.registerConfirmationProcessor(manager);
-        manager.command(
-                manager.commandBuilder("confirm")
-                        .meta(CommandMeta.DESCRIPTION, "Confirm a command")
-                        .handler(confirmationManager.createConfirmationExecutionHandler())
-                        .build()
+                this::confirmLeave,
+                player -> player.sendMessage(Component.text("Please run the command again.").color(NamedTextColor.DARK_GRAY))
         );
     }
 
     public void initCommands() {
         new AnnotationParser<>(manager, CommandSender.class, parameters -> SimpleCommandMeta.empty()).parse(this);
+        leaveConfirmationManager.registerConfirmationProcessor(manager);
+        manager.command(
+                manager.commandBuilder("confirm")
+                        .literal("leave")
+                        .handler(leaveConfirmationManager.createConfirmationExecutionHandler())
+                        .hidden()
+                        .build()
+        );
     }
 
     // ------- GAME COMMANDS -------
@@ -104,6 +94,29 @@ public class Commands {
             manager.dropAndClearInventory(player);
             manager.sendToHub(player);
             manager.remove(player);
+        } else {
+            player.sendMessage("You are not in the game.");
+        }
+    }
+
+    private void confirmLeave(CommandPostprocessingContext<CommandSender> context) {
+        final var player = (Player) context.getCommandContext().getSender();
+        if (GameManager.getInstance().playerInGame(player)) {
+            player.sendMessage(
+                    Component.text("The best way to leave the game is to ").applyFallbackStyle(Style.style(NamedTextColor.RED))
+                            .append(Component.text("extract").decorate(TextDecoration.BOLD))
+                            .append(Component.text("; that way, you keep your items.").color(NamedTextColor.GRAY))
+            );
+            player.sendMessage(
+                    Component.text("Are you sure you want to leave?")
+                            .color(NamedTextColor.YELLOW)
+                            .append(Component.space())
+                            .append(Component.text("Yes")
+                                    .color(NamedTextColor.RED)
+                                    .decorate(TextDecoration.BOLD)
+                                    .clickEvent(ClickEvent.runCommand("/confirm leave"))
+                            ));
+            player.sendMessage(Component.text("Your items will drop and remain here... hopefully.").decorate(TextDecoration.ITALIC).color(NamedTextColor.GRAY));
         } else {
             player.sendMessage("You are not in the game.");
         }
