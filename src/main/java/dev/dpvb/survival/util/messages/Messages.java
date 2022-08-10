@@ -6,11 +6,11 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public enum Messages {
 
-    NOT_INGAME("<red>You are not in game."),
+    NOT_IN_GAME("<red>You are not in game."),
     AIRDROP_INCORRECT_PLACEMENT("<red>Airdrop needs empty space above to drop!");
 
-    private String message;
     private static MiniMessage mm;
+    final String message;
 
     Messages(String message) {
         this.message = message;
