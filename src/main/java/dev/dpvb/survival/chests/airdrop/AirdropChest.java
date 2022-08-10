@@ -52,6 +52,7 @@ public class AirdropChest extends LootableChest implements Listener {
         if (!block.equals(event.getClickedBlock())) {
             return;
         }
+        event.setCancelled(true);
 
         open(event.getPlayer());
     }
