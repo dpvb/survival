@@ -46,6 +46,7 @@ public class SpawnTool implements Listener {
         if (!itemInMainHand.hasItemMeta()) return;
         final ItemMeta meta = itemInMainHand.getItemMeta();
         if (!meta.getPersistentDataContainer().has(key, PersistentDataType.STRING)) return;
+        //noinspection ConstantConditions (we know there is a block)
         spawnLocations.add(event.getClickedBlock().getLocation());
         player.sendMessage("Added a spawn location.");
     }

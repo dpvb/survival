@@ -7,7 +7,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -48,8 +47,9 @@ public class ExtractionRegionSelector implements Listener {
         if (!itemInMainHand.hasItemMeta()) return;
         final ItemMeta meta = itemInMainHand.getItemMeta();
         if (!meta.getPersistentDataContainer().has(key, PersistentDataType.STRING)) return;
-        Block b = event.getClickedBlock();
+        final var b = event.getClickedBlock();
         if (!firstSelected) {
+            //noinspection ConstantConditions (we know there is a block)
             x1 = b.getX();
             y1 = b.getY();
             z1 = b.getZ();
@@ -57,6 +57,7 @@ public class ExtractionRegionSelector implements Listener {
             player.sendMessage("You have set the first corner.");
         } else {
             final int x2, y2, z2;
+            //noinspection ConstantConditions (we know there is a block)
             x2 = b.getX();
             y2 = b.getY();
             z2 = b.getZ();

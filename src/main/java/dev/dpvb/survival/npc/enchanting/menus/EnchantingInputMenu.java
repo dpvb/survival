@@ -63,7 +63,7 @@ public class EnchantingInputMenu extends AutoCleanInventoryWrapper {
                 for (EnchantableItemTypes itemType : EnchantableItemTypes.values()) {
                     if (itemType.test(clickedItem.getType())) {
                         ItemStack itemInEnchanter = event.getInventory().getItem(13);
-                        event.getClickedInventory().setItem(clickedSlot, itemInEnchanter);
+                        event.getView().getBottomInventory().setItem(clickedSlot, itemInEnchanter);
                         event.getInventory().setItem(13, clickedItem);
                         updateConfirmButtonMaterial(true);
                     }

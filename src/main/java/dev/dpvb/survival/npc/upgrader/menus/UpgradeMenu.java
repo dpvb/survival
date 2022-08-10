@@ -63,7 +63,7 @@ public class UpgradeMenu extends AutoCleanInventoryWrapper {
                 int clickedSlot = event.getSlot();
                 if (upgrades.containsKey(clickedItem.getType())) {
                     ItemStack itemInEnchanter = event.getInventory().getItem(13);
-                    event.getClickedInventory().setItem(clickedSlot, itemInEnchanter);
+                    event.getView().getBottomInventory().setItem(clickedSlot, itemInEnchanter);
                     event.getInventory().setItem(13, clickedItem);
                     itemInSlot = clickedItem;
                     updateUpgradeButton();
@@ -80,11 +80,13 @@ public class UpgradeMenu extends AutoCleanInventoryWrapper {
                     updateUpgradeButton();
                 }
             }
-
+            // TODO: convert to else if
             // Check if they clicked the Upgrade button
             if (event.getSlot() == 26) {
                 ItemStack clickedItem = event.getCurrentItem();
+                //noinspection ConstantConditions (We put that item there)
                 if (clickedItem.getType() == Material.LIME_STAINED_GLASS_PANE) {
+                    //noinspection ConstantConditions (We will have already set this field)
                     UpgradeCost upgradeCost = upgrades.get(itemInSlot.getType());
 
                     // Get the Item for the Player
