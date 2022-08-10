@@ -4,8 +4,8 @@ import org.bukkit.Material;
 
 public class UpgradeCost {
 
-    private Material to;
-    private int price;
+    private final Material to;
+    private final int price;
 
     public UpgradeCost(Material to, int price) {
         this.to = to;

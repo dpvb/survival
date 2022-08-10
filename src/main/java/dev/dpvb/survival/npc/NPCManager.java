@@ -23,7 +23,7 @@ import java.util.*;
 public class NPCManager {
 
     private static NPCManager instance;
-    private Set<AbstractNPC> npcs;
+    private final Set<AbstractNPC> npcs;
     private Map<EnchantableItemTypes, Set<EnchantmentCost>> basicEnchantments;
     private Map<EnchantableItemTypes, Set<EnchantmentCost>> advancedEnchantments;
     private Map<Material, UpgradeCost> upgrades;

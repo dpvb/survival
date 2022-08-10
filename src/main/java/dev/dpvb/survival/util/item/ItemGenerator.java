@@ -13,15 +13,10 @@ import java.util.*;
 public class ItemGenerator {
 
     private Component displayName;
-    private List<Component> lore;
-    private Map<Enchantment, Integer> enchantments;
+    private final List<Component> lore = new ArrayList<>();
+    private final Map<Enchantment, Integer> enchantments = new HashMap<>();
     private int amount = 1;
     private boolean hideEnchantments = false;
-
-    public ItemGenerator() {
-        lore = new ArrayList<>();
-        enchantments = new HashMap<>();
-    }
 
     public ItemGenerator setDisplayName(String displayName) {
         return setDisplayName(Component.text(displayName));

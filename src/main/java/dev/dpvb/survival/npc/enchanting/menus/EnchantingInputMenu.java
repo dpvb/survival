@@ -24,7 +24,7 @@ public class EnchantingInputMenu extends AutoCleanInventoryWrapper {
 
     private ItemGenerator confirmGenerator;
     private final Player player;
-    private Map<EnchantableItemTypes, Set<EnchantmentCost>> enchantments;
+    private final Map<EnchantableItemTypes, Set<EnchantmentCost>> enchantments;
 
     public EnchantingInputMenu(Player player, Map<EnchantableItemTypes, Set<EnchantmentCost>> enchantments) {
         this.player = player;

@@ -13,7 +13,7 @@ public class PlayerInfoManager {
 
     private static PlayerInfoManager instance;
 
-    private Map<UUID, PlayerInfo> map;
+    private final Map<UUID, PlayerInfo> map;
 
     private PlayerInfoManager() {
         map = new HashMap<>();
