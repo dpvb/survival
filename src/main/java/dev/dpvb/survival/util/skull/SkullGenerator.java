@@ -29,7 +29,7 @@ public class SkullGenerator {
         return instance;
     }
 
-    private ItemStack generateSkull(String texture) {
+    private ItemStack generateSkull(@SuppressWarnings("SameParameterValue") String texture) {
         ItemStack is = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) is.getItemMeta();
 
