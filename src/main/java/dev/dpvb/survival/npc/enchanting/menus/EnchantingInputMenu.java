@@ -24,7 +24,6 @@ public class EnchantingInputMenu extends AutoCleanInventoryWrapper {
 
     private ItemGenerator confirmGenerator;
     private final Player player;
-    private ItemStack enchantingItem;
     private Map<EnchantableItemTypes, Set<EnchantmentCost>> enchantments;
 
     public EnchantingInputMenu(Player player, Map<EnchantableItemTypes, Set<EnchantmentCost>> enchantments) {
@@ -87,7 +86,7 @@ public class EnchantingInputMenu extends AutoCleanInventoryWrapper {
                 //noinspection ConstantConditions
                 if (clickedItem.getType() == Material.LIME_STAINED_GLASS_PANE) {
                     // Get the Enchanting Item
-                    enchantingItem = getInventory().getItem(13);
+                    final var enchantingItem = getInventory().getItem(13);
 
                     // Play a sound for the Player
                     player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BIT, SoundCategory.MASTER, 1f, 1f);

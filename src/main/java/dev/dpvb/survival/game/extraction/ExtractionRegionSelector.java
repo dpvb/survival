@@ -30,9 +30,6 @@ public class ExtractionRegionSelector implements Listener {
     private int y1;
     private int z1;
     private boolean firstSelected = false;
-    private int x2;
-    private int y2;
-    private int z2;
 
     public ExtractionRegionSelector(Player player, Consumer<Region> consumer) {
         this.player = player;
@@ -59,6 +56,7 @@ public class ExtractionRegionSelector implements Listener {
             firstSelected = true;
             player.sendMessage("You have set the first corner.");
         } else {
+            final int x2, y2, z2;
             x2 = b.getX();
             y2 = b.getY();
             z2 = b.getZ();
