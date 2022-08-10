@@ -94,6 +94,7 @@ public class TokenTraderMenu extends AutoCleanInventoryWrapper {
                     }
 
                     // Perform Action based on the type.
+                    //noinspection SwitchStatementWithTooFewBranches - left open for expansion
                     switch (item.getShopItemName()) {
                         case "airdrop" -> givePlayerItem(player, AirdropManager.getInstance().getAirdropItem());
                     }
