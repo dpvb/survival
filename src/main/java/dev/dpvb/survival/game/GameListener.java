@@ -47,6 +47,19 @@ public class GameListener implements Listener {
     }
 
     @EventHandler
+    public void onInteractTrapdoor(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (!manager.playerInGame(event.getPlayer())) return;
+        final var type = event.getClickedBlock().getType();
+        final String[] s = type.name().split("_");
+        if (s[s.length - 1].equals("TRAPDOOR")) {
+            event.setCancelled(true);
+        }
+    }
+
+    // Handling Player Death
+    @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         // Check if player died while in game.
         final var victim = event.getPlayer();
