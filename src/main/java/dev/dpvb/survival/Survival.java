@@ -3,6 +3,7 @@ package dev.dpvb.survival;
 import dev.dpvb.survival.chests.airdrop.AirdropManager;
 import dev.dpvb.survival.commands.Commands;
 import dev.dpvb.survival.events.FirstJoinListener;
+import dev.dpvb.survival.events.PlayerJoinQuitMessageListener;
 import dev.dpvb.survival.events.ServerPingListener;
 import dev.dpvb.survival.game.GameManager;
 import dev.dpvb.survival.mongo.MongoManager;
@@ -90,6 +91,7 @@ public final class Survival extends JavaPlugin {
     private void registerListeners() {
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         Bukkit.getPluginManager().registerEvents(new FirstJoinListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerJoinQuitMessageListener(), this);
         Bukkit.getPluginManager().registerEvents(new ServerPingListener(), this);
     }
 
