@@ -5,7 +5,6 @@ import dev.dpvb.survival.chests.tiered.ChestManager;
 import dev.dpvb.survival.stats.PlayerInfoManager;
 import dev.dpvb.survival.util.messages.Messages;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
