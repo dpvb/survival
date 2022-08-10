@@ -69,7 +69,11 @@ public class PlayerInfoManager {
     }
 
     /**
-     * Changes the token amount by the amount specified by the tokens argument.
+     * Add a number of tokens to the player.
+     * <p>
+     * Changes the token amount by the amount specified by <code>tokens</code>
+     * (positive or negative).
+     *
      * @param uuid The UUID of the Player
      * @param tokens The amount of tokens to add.
      */
