@@ -11,8 +11,6 @@ import org.bson.UuidRepresentation;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bukkit.Bukkit;
-import org.bukkit.block.Chest;
-import org.bukkit.entity.Player;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -42,7 +40,8 @@ public class MongoManager {
                 .uuidRepresentation(UuidRepresentation.STANDARD)
                 .build();
 
-        MongoClient mongoClient = MongoClients.create(clientSettings);
+        //noinspection resource
+        MongoClient mongoClient = MongoClients.create(clientSettings); // TODO: consider starting this client on-demand
         MongoDatabase db = mongoClient.getDatabase("survival-db");
 
         Bukkit.getLogger().info("Database connected.");

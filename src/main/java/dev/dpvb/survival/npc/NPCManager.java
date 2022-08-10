@@ -23,7 +23,7 @@ import java.util.*;
 public class NPCManager {
 
     private static NPCManager instance;
-    private Set<AbstractNPC> npcs;
+    private final Set<AbstractNPC> npcs;
     private Map<EnchantableItemTypes, Set<EnchantmentCost>> basicEnchantments;
     private Map<EnchantableItemTypes, Set<EnchantmentCost>> advancedEnchantments;
     private Map<Material, UpgradeCost> upgrades;
@@ -89,6 +89,7 @@ public class NPCManager {
     }
 
     private Map<EnchantableItemTypes, Set<EnchantmentCost>> loadEnchantments(ConfigurationSection section) {
+        if (section == null) return Map.of(); // TODO: log?
         Map<EnchantableItemTypes, Set<EnchantmentCost>> enchantments = new HashMap<>();
         Set<String> types = section.getKeys(false);
         for (String type : types) {
@@ -119,15 +120,19 @@ public class NPCManager {
     private Map<Material, UpgradeCost> loadUpgrades(ConfigurationSection section) {
         Map<Material, UpgradeCost> upgrades = new HashMap<>();
         for (String materialName : section.getKeys(false)) {
-            Material material = Material.valueOf(materialName.toUpperCase());
-            if (material == null) {
+            Material material, toMaterial;
+            try {
+                material = Material.valueOf(materialName.toUpperCase());
+                String toMaterialName = section.getString(materialName + ".to");
+                if (toMaterialName == null) {
+                    Bukkit.getLogger().warning("No upgrade 'to' material specified for " + materialName + ".");
+                    continue;
+                }
+                toMaterial = Material.valueOf(toMaterialName.toUpperCase());
+            } catch (IllegalArgumentException e) {
                 Bukkit.getLogger().severe("Upgrade configuration is incorrect. " + materialName + " is an invalid Material.");
-            }
-
-            String toMaterialName = section.getString(materialName + ".to");
-            Material toMaterial = Material.valueOf(toMaterialName.toUpperCase());
-            if (toMaterial == null) {
-                Bukkit.getLogger().severe("Upgrade configuration is incorrect. " + toMaterialName + " is an invalid Material.");
+                Bukkit.getLogger().severe(e::getMessage);
+                continue;
             }
 
             int price = section.getInt(materialName + ".price");
@@ -144,9 +149,17 @@ public class NPCManager {
             }
 
             String displayMaterialName = section.getString(itemName + ".display-material");
-            Material displayMaterial = Material.valueOf(displayMaterialName.toUpperCase());
-            if (displayMaterial == null) {
-                 Bukkit.getLogger().severe("TokenTrader configuration is incorrect. " + displayMaterialName + " is an invalid Material.");
+            if (displayMaterialName == null) {
+                Bukkit.getLogger().warning("Missing display material for " + itemName + ". Skipping.");
+                continue;
+            }
+            Material displayMaterial;
+            try {
+                displayMaterial = Material.valueOf(displayMaterialName.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                Bukkit.getLogger().severe("TokenTrader configuration is incorrect. " + displayMaterialName + " is an invalid Material.");
+                Bukkit.getLogger().severe(e::getMessage);
+                continue;
             }
 
             int price = section.getInt(itemName + ".price");

@@ -13,7 +13,7 @@ public class PlayerInfoManager {
 
     private static PlayerInfoManager instance;
 
-    private Map<UUID, PlayerInfo> map;
+    private final Map<UUID, PlayerInfo> map;
 
     private PlayerInfoManager() {
         map = new HashMap<>();
@@ -69,7 +69,11 @@ public class PlayerInfoManager {
     }
 
     /**
-     * Changes the token amount by the amount specified by the tokens argument.
+     * Add a number of tokens to the player.
+     * <p>
+     * Changes the token amount by the amount specified by <code>tokens</code>
+     * (positive or negative).
+     *
      * @param uuid The UUID of the Player
      * @param tokens The amount of tokens to add.
      */

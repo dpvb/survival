@@ -15,10 +15,9 @@ public class SkullGenerator {
 
     private static SkullGenerator instance;
 
-    private Map<String, ItemStack> skullMap;
+    private final Map<String, ItemStack> skullMap = new HashMap<>();
 
     private SkullGenerator() {
-        skullMap = new HashMap<>();
         skullMap.put("right-arrow", generateSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ=="));
     }
 
@@ -30,7 +29,7 @@ public class SkullGenerator {
         return instance;
     }
 
-    private ItemStack generateSkull(String texture) {
+    private ItemStack generateSkull(@SuppressWarnings("SameParameterValue") String texture) {
         ItemStack is = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) is.getItemMeta();
 

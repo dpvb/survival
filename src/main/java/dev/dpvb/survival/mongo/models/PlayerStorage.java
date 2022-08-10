@@ -5,6 +5,7 @@ import org.bson.codecs.pojo.annotations.BsonId;
 import java.util.Map;
 import java.util.UUID;
 
+@SuppressWarnings("unused") // Mongo model
 public class PlayerStorage {
 
     @BsonId

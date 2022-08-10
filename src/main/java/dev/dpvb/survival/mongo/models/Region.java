@@ -1,5 +1,6 @@
 package dev.dpvb.survival.mongo.models;
 
+@SuppressWarnings("unused") // Mongo model
 public class Region {
 
     private int x1;

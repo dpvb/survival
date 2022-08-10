@@ -10,23 +10,23 @@ import java.util.Map;
 public class AirdropAnimation extends BukkitRunnable {
 
     private final Location location;
+    private final int height;
+    private final long length;
     private final Location top;
     private final World world;
     private final Map<Long, List<AirdropParticle>> particleSpawnMap;
     private long counter;
-    private long length;
-    private int height;
     private final AirdropManager airdropManager;
 
     public AirdropAnimation(Location location) {
         this.location = location;
         airdropManager = AirdropManager.getInstance();
         this.height = airdropManager.getAirdropAnimationHeight();
+        this.length = airdropManager.getAirdropAnimationLength();
         this.top = location.clone().add(0, height, 0);
         this.world = location.getWorld();
         this.particleSpawnMap = airdropManager.getParticleSpawnMap();
         this.counter = 0;
-        this.length = airdropManager.getAirdropAnimationLength();
     }
 
     @Override

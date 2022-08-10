@@ -3,6 +3,7 @@ package dev.dpvb.survival.mongo.models;
 import dev.dpvb.survival.chests.tiered.ChestTier;
 import org.bukkit.block.BlockFace;
 
+@SuppressWarnings("unused") // Mongo model
 public class ChestData {
 
     private int x;
