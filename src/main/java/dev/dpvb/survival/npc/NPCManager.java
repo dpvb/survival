@@ -89,6 +89,7 @@ public class NPCManager {
     }
 
     private Map<EnchantableItemTypes, Set<EnchantmentCost>> loadEnchantments(ConfigurationSection section) {
+        if (section == null) return Map.of(); // TODO: log?
         Map<EnchantableItemTypes, Set<EnchantmentCost>> enchantments = new HashMap<>();
         Set<String> types = section.getKeys(false);
         for (String type : types) {
