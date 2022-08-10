@@ -43,6 +43,8 @@ public class ChestManager {
             final var block = world.getBlockAt(loc);
             lootChestMap.put(loc, new LootChest(block, chestData.getTier(), chestData.getFace()));
         }
+
+        Bukkit.getLogger().info("Loaded " + lootChestMap.size() + " loot chests in the arena.");
     }
 
     public void saveChestsToMongo(Location origin, int radius) {
