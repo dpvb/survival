@@ -88,10 +88,10 @@ public class UpgradeMenu extends AutoCleanInventoryWrapper {
                     UpgradeCost upgradeCost = upgrades.get(itemInSlot.getType());
 
                     // Get the Item for the Player
-                    itemInSlot.setType(upgradeCost.getTo());
+                    itemInSlot.setType(upgradeCost.to());
 
                     // Deduct Tokens
-                    PlayerInfoManager.getInstance().addTokens(player.getUniqueId(), -upgradeCost.getPrice());
+                    PlayerInfoManager.getInstance().addTokens(player.getUniqueId(), -upgradeCost.price());
 
                     // Play a sound for the Player
                     player.playSound(player, Sound.BLOCK_ANVIL_USE, SoundCategory.MASTER, 1f, 1f);
@@ -141,7 +141,7 @@ public class UpgradeMenu extends AutoCleanInventoryWrapper {
                     .build(Material.RED_STAINED_GLASS_PANE);
         } else {
             int playerTokens = PlayerInfoManager.getInstance().getTokens(player.getUniqueId());
-            int price = upgrades.get(itemInSlot.getType()).getPrice();
+            int price = upgrades.get(itemInSlot.getType()).price();
 
             if (price > playerTokens) {
                 item = upgradeButtonGenerator
