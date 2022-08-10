@@ -40,7 +40,8 @@ public class MongoManager {
                 .uuidRepresentation(UuidRepresentation.STANDARD)
                 .build();
 
-        MongoClient mongoClient = MongoClients.create(clientSettings);
+        //noinspection resource
+        MongoClient mongoClient = MongoClients.create(clientSettings); // TODO: consider starting this client on-demand
         MongoDatabase db = mongoClient.getDatabase("survival-db");
 
         Bukkit.getLogger().info("Database connected.");
