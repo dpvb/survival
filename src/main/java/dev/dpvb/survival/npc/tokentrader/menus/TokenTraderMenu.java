@@ -41,14 +41,14 @@ public class TokenTraderMenu extends AutoCleanInventoryWrapper {
 
         for (int i = 0; i < items.size(); i++) {
             final TokenTraderShopItem item = items.get(i);
-            final String displayName = item.getShopItemName().toUpperCase();
+            final String displayName = item.shopItemName().toUpperCase();
             final int toPlace = i + 4 - ((items.size() - 1) / 2);
-            final TextColor priceColor = item.getCost() > tokens ? NamedTextColor.RED : NamedTextColor.GREEN;
+            final TextColor priceColor = item.cost() > tokens ? NamedTextColor.RED : NamedTextColor.GREEN;
 
             inventory.setItem(toPlace, new ItemGenerator()
                     .setDisplayName(Component.text(displayName).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD))
-                    .addLoreLine(Component.text("Price: " + item.getCost()).color(priceColor))
-                    .build(item.getDisplayMaterial())
+                    .addLoreLine(Component.text("Price: " + item.cost()).color(priceColor))
+                    .build(item.displayMaterial())
             );
         }
 
@@ -86,21 +86,21 @@ public class TokenTraderMenu extends AutoCleanInventoryWrapper {
 
             // They must have clicked on one of the Shop Items. Let's check which one.
             for (TokenTraderShopItem item : items) {
-                if (clickedItem.getType() == item.getDisplayMaterial()) {
+                if (clickedItem.getType() == item.displayMaterial()) {
                     // Check if they can afford the item.
-                    if (item.getCost() > pim.getTokens(player.getUniqueId())) {
+                    if (item.cost() > pim.getTokens(player.getUniqueId())) {
                         event.setCancelled(true);
                         return;
                     }
 
                     // Perform Action based on the type.
                     //noinspection SwitchStatementWithTooFewBranches - left open for expansion
-                    switch (item.getShopItemName()) {
+                    switch (item.shopItemName()) {
                         case "airdrop" -> givePlayerItem(player, AirdropManager.getInstance().getAirdropItem());
                     }
 
                     // Deduct Tokens
-                    pim.addTokens(player.getUniqueId(), -item.getCost());
+                    pim.addTokens(player.getUniqueId(), -item.cost());
 
                     // Play a sound for the Player
                     player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BIT, SoundCategory.MASTER, 1f, 1f);
