@@ -46,14 +46,14 @@ public class GameListener implements Listener {
         }
     }
 
+    // Disable Trapdoor Usage in Game
     @EventHandler
     public void onInteractTrapdoor(PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (!manager.playerInGame(event.getPlayer())) return;
         final var type = event.getClickedBlock().getType();
-        final String[] s = type.name().split("_");
-        if (s[s.length - 1].equals("TRAPDOOR")) {
+        if (type.name().contains("TRAPDOOR")) {
             event.setCancelled(true);
         }
     }
