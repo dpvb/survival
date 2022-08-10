@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
+@SuppressWarnings("unused") // Builder, has optional operations
 public class ItemGenerator {
 
     private Component displayName;

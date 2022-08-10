@@ -27,6 +27,7 @@ public class PlayerInfo {
         return id;
     }
 
+    @SuppressWarnings("unused") // Mongo model
     public void setId(UUID uuid) {
         this.id = uuid;
     }
