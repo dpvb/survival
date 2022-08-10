@@ -153,15 +153,5 @@ public class EnchantingSelectionMenu extends AutoCleanInventoryWrapper {
         }
     }
 
-    private class PendingEnchant {
-
-        protected final int level;
-        protected final EnchantmentCost ec;
-
-        public PendingEnchant(EnchantmentCost ec, int level) {
-            this.ec = ec;
-            this.level = level;
-        }
-
-    }
+    private record PendingEnchant(EnchantmentCost ec, int level) {}
 }
