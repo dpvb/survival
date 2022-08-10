@@ -23,7 +23,7 @@ public class AirdropAnimation extends BukkitRunnable {
         airdropManager = AirdropManager.getInstance();
         this.height = airdropManager.getAirdropAnimationHeight();
         this.length = airdropManager.getAirdropAnimationLength();
-        this.top = location.clone().add(0, height, 0);
+        this.top = location.clone().add(0.5, height, 0.5);
         this.world = location.getWorld();
         this.particleSpawnMap = airdropManager.getParticleSpawnMap();
         this.counter = 0;
