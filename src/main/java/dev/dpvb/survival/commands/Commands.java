@@ -15,6 +15,7 @@ import dev.dpvb.survival.game.GameManager;
 import dev.dpvb.survival.game.extraction.ExtractionRegionSelector;
 import dev.dpvb.survival.game.spawn.SpawnTool;
 import dev.dpvb.survival.mongo.MongoManager;
+import dev.dpvb.survival.mongo.models.PlayerInfo;
 import dev.dpvb.survival.npc.NPCManager;
 import dev.dpvb.survival.npc.enchanting.AdvancedEnchanterNPC;
 import dev.dpvb.survival.npc.enchanting.BasicEnchanterNPC;
@@ -23,6 +24,7 @@ import dev.dpvb.survival.npc.storage.StorageNPC;
 import dev.dpvb.survival.npc.tokentrader.TokenTraderNPC;
 import dev.dpvb.survival.npc.upgrader.UpgradeNPC;
 import dev.dpvb.survival.stats.PlayerInfoManager;
+import dev.dpvb.survival.util.messages.Message;
 import dev.dpvb.survival.util.messages.Messages;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -150,6 +152,20 @@ public class Commands {
             }
         }
         Messages.NPC_CREATED.send(player);
+    }
+
+    // ------- STAT COMMANDS -------
+    @CommandMethod(value = "survival topkills")
+    @CommandPermission("survival.topkills")
+    void topKillsCommand(CommandSender sender) {
+        final List<PlayerInfo> topKills = PlayerInfoManager.getInstance().getTopKills(5);
+        Message.mini("<st><bold><gray>----------------------------").send(sender);
+        Message.mini("<gold><bold>           TOP KILLS").send(sender);
+        for (int i = 0; i < topKills.size(); i++) {
+            final PlayerInfo pi = topKills.get(i);
+            Message.mini("<bold><yellow>#" + (i + 1) + " <gold>" + Bukkit.getOfflinePlayer(pi.getId()).getName() + " <gray>> <gold>" + pi.getKills()).send(sender);
+        }
+        Message.mini("<st><bold><gray>----------------------------").send(sender);
     }
 
     // ------- TOKEN COMMANDS -------
