@@ -4,10 +4,8 @@ import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.mongo.models.PlayerInfo;
 import dev.dpvb.survival.mongo.services.PlayerInfoService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PlayerInfoManager {
 
@@ -108,5 +106,13 @@ public class PlayerInfoManager {
      */
     public int getTokens(UUID uuid) {
         return map.get(uuid).getTokens();
+    }
+
+    public List<PlayerInfo> getTopKills(int amount) {
+        amount = Math.min(amount, map.size());
+        return map.values().stream()
+                .sorted((p1, p2) -> p2.getKills().compareTo(p1.getKills()))
+                .limit(amount)
+                .collect(Collectors.toList());
     }
 }
