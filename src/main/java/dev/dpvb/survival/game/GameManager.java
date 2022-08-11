@@ -132,7 +132,7 @@ public class GameManager {
                 spawnPlayer(gamer);
                 // Log the join
                 Messages.STANDARD_JOIN_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
-                Bukkit.getLogger().info("Player count: " + players.size());
+                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).send(Bukkit.getConsoleSender());
             } else {
                 Messages.ALREADY_IN_GAME.send(gamer);
             }
@@ -155,7 +155,7 @@ public class GameManager {
                 if (sendToHub) sendToHub(gamer);
                 // Log the leave
                 Messages.STANDARD_LEAVE_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
-                Bukkit.getLogger().info("Player count: " + players.size());
+                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).send(Bukkit.getConsoleSender());
             }
         });
     }
@@ -177,7 +177,7 @@ public class GameManager {
                 }
                 // Log the join
                 Messages.ADMIN_JOIN_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
-                Bukkit.getLogger().info("Player count: " + players.size());
+                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).send(Bukkit.getConsoleSender());
             } else {
                 Messages.ALREADY_IN_GAME.send(gamer);
             }
@@ -196,7 +196,7 @@ public class GameManager {
                 Messages.ADMIN_LEAVE_SELF.send(gamer);
                 // Log the leave
                 Messages.ADMIN_LEAVE_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
-                Bukkit.getLogger().info("Player count: " + players.size());
+                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).send(Bukkit.getConsoleSender());
             } else {
                 Messages.NOT_IN_GAME.send(gamer);
             }
@@ -270,7 +270,7 @@ public class GameManager {
             ));
         }
 
-        Bukkit.getLogger().info("Loaded " + extractions.size() + " extraction points in the arena.");
+        Messages.LOADED_EXTRACTIONS_LOG_.replace("{count}", extractions.size() + "").send(Bukkit.getConsoleSender());
     }
 
     /**
@@ -290,7 +290,7 @@ public class GameManager {
             ));
         }
 
-        Bukkit.getLogger().info("Loaded " + spawnLocations.size() + " spawn points in the arena.");
+        Messages.LOADED_SPAWNS_LOG_.replace("{count}", spawnLocations.size() + "").send(Bukkit.getConsoleSender());
     }
 
     public void removeAllPlayers(boolean clearInventory) {
@@ -306,7 +306,8 @@ public class GameManager {
         for (Item item : items) {
             item.remove();
         }
-        Bukkit.getLogger().info("Removed " + items.size() + " item drops from the arena.");
+
+        Messages.CLEARED_ITEM_DROPS_LOG_.replace("{count}", items.size() + "").send(Bukkit.getConsoleSender());
     }
 
     public void broadcast(Component message) {
