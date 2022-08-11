@@ -8,6 +8,7 @@ import dev.dpvb.survival.game.tasks.ClearDrops;
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.mongo.models.Region;
 import dev.dpvb.survival.mongo.models.SpawnLocation;
+import dev.dpvb.survival.util.messages.Messages;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiConsumer;
 
 public class GameManager {
 
@@ -121,25 +123,84 @@ public class GameManager {
      * Make a player join the game.
      *
      * @param player a player
-     * @return true unless the player is already in the game
      * @throws IllegalStateException if the game is not running
      */
-    public boolean join(@NotNull Player player) throws IllegalStateException {
-        if (!state.get()) {
-            throw new IllegalStateException("Game is not running");
-        }
-        synchronized (players) {
-            // Add player to the players set
-            final boolean added = players.add(player);
+    public void join(@NotNull Player player) throws IllegalStateException {
+        add(player, (added, gamer) -> {
             if (added) {
                 // Teleport them to a random spawn location
-                spawnPlayer(player);
+                spawnPlayer(gamer);
                 // Log the join
-                Bukkit.getLogger().info(player.getName() + " joined the arena.");
+                Messages.STANDARD_JOIN_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
+                Bukkit.getLogger().info("Player count: " + players.size());
+            } else {
+                Messages.ALREADY_IN_GAME.send(gamer);
+            }
+        });
+    }
+
+    /**
+     * Make a player leave the game.
+     *
+     * @param player a player
+     * @param dropAndClearInventory whether to drop the player's inventory
+     * @param sendToHub whether to send the player to the hub
+     * @implNote This method will no-op if the game is not running or if
+     * <code>player</code> was not in the game.
+     */
+    public void leave(@NotNull Player player, boolean dropAndClearInventory, boolean sendToHub) {
+        remove(player, (removed, gamer) -> {
+            if (removed) {
+                if (dropAndClearInventory) dropAndClearInventory(gamer);
+                if (sendToHub) sendToHub(gamer);
+                // Log the leave
+                Messages.STANDARD_LEAVE_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
                 Bukkit.getLogger().info("Player count: " + players.size());
             }
-            return added;
-        }
+        });
+    }
+
+    /**
+     * Add an admin to the game.
+     *
+     * @param player a player
+     * @throws IllegalStateException if the game is not running
+     * @implNote Logged.
+     */
+    public void adminJoin(@NotNull Player player) throws IllegalStateException {
+        add(player, (added, gamer) -> {
+            if (added) {
+                Messages.ADMIN_JOIN_SELF.send(gamer);
+                // Take them to the arena if needed
+                if (gamer.getWorld() != arenaWorld) {
+                    spawnPlayer(gamer);
+                }
+                // Log the join
+                Messages.ADMIN_JOIN_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
+                Bukkit.getLogger().info("Player count: " + players.size());
+            } else {
+                Messages.ALREADY_IN_GAME.send(gamer);
+            }
+        });
+    }
+
+    /**
+     * Remove an admin from the game.
+     *
+     * @param player a player
+     * @implNote Logged.
+     */
+    public void adminLeave(@NotNull Player player) {
+        remove(player, (removed, gamer) -> {
+            if (removed) {
+                Messages.ADMIN_LEAVE_SELF.send(gamer);
+                // Log the leave
+                Messages.ADMIN_LEAVE_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
+                Bukkit.getLogger().info("Player count: " + players.size());
+            } else {
+                Messages.NOT_IN_GAME.send(gamer);
+            }
+        });
     }
 
     void spawnPlayer(Player player) {
@@ -153,31 +214,43 @@ public class GameManager {
         return players.contains(player);
     }
 
-    public void dropAndClearInventory(Player player) {
-        // Drop the player's inventory
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item == null) {
-                continue;
-            }
-            // fix bug where items are dropped at nonsense coordinates in the arena world (wrong world context)
-            player.getWorld().dropItemNaturally(player.getLocation(), item);
-        }
-        player.getInventory().clear();
-    }
-
     public void sendToHub(Player player) {
         // Get the player out of the arena and back to the hub.
         player.teleport(hubWorld.getSpawnLocation());
     }
 
-    public void remove(@NotNull Player player) {
+    /**
+     * Add a player directly to the game.
+     *
+     * @param player a player
+     * @param runSync a function to accept the results of the add operation
+     * @throws IllegalStateException if the game is not running
+     */
+    public void add(@NotNull Player player, @NotNull BiConsumer<Boolean, Player> runSync) throws IllegalStateException {
+        if (!state.get()) {
+            throw new IllegalStateException("Game is not running");
+        }
+        synchronized (players) {
+            runSync.accept(players.add(player), player);
+        }
+    }
+
+    /**
+     * Remove a player directly from the game.
+     *
+     * @param player a player
+     * @param runSync a function to accept the results of the remove operation
+     * @implNote This method will no-op if the game is not running;
+     * specifically, <code>runSync</code> will not be called.
+     */
+    public void remove(@NotNull Player player, @NotNull BiConsumer<Boolean, Player> runSync) {
+        if (!state.get()) {
+            // no-op
+            return;
+        }
         synchronized (players) {
             // Remove player from the players set
-            if (players.remove(player)) {
-                // Log the leave
-                Bukkit.getLogger().info(player.getName() + " left the arena.");
-                Bukkit.getLogger().info("Player count: " + players.size());
-            }
+            runSync.accept(players.remove(player), player);
         }
     }
 
@@ -224,7 +297,7 @@ public class GameManager {
         for (Player player : Set.copyOf(players)) {
             if (clearInventory) dropAndClearInventory(player);
             sendToHub(player);
-            remove(player);
+            leave(player, false, true); // free extraction
         }
     }
 
@@ -291,5 +364,16 @@ public class GameManager {
 
     public World getArenaWorld() {
         return arenaWorld;
+    }
+
+    public static void dropAndClearInventory(Player player) {
+        // Drop the player's inventory
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item == null) {
+                continue;
+            }
+            player.getWorld().dropItemNaturally(player.getLocation(), item);
+        }
+        player.getInventory().clear();
     }
 }

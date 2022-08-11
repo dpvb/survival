@@ -23,6 +23,7 @@ import dev.dpvb.survival.npc.storage.StorageNPC;
 import dev.dpvb.survival.npc.tokentrader.TokenTraderNPC;
 import dev.dpvb.survival.npc.upgrader.UpgradeNPC;
 import dev.dpvb.survival.stats.PlayerInfoManager;
+import dev.dpvb.survival.util.messages.Messages;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -80,9 +81,7 @@ public class Commands {
             player.sendMessage("The game is not running.");
             return;
         }
-        if (manager.playerInGame(player) || !manager.join(player)) {
-            player.sendMessage("You are already in the game.");
-        }
+        manager.join(player);
     }
 
     @CommandMethod(value = "survival leave", requiredSender = Player.class)
@@ -92,9 +91,7 @@ public class Commands {
         GameManager manager = GameManager.getInstance();
         // no-op if the player is not in the game
         if (manager.playerInGame(player)) {
-            manager.dropAndClearInventory(player);
-            manager.sendToHub(player);
-            manager.remove(player);
+            manager.leave(player, true, true);
         }
     }
 
@@ -120,7 +117,7 @@ public class Commands {
             );
             player.sendMessage(Component.text("Your items will drop and remain here... hopefully.").decorate(TextDecoration.ITALIC).color(NamedTextColor.RED));
         } else {
-            player.sendMessage("You are not in the game.");
+            Messages.NOT_IN_GAME.send(player);
         }
     }
 
@@ -203,7 +200,7 @@ public class Commands {
     @CommandPermission("survival.admin.stop")
     void stopGameCommand(CommandSender sender) {
         if (!GameManager.getInstance().isRunning()) {
-            sender.sendMessage(Component.text("The game is not running.").color(NamedTextColor.YELLOW));
+            Messages.GAME_NOT_RUNNING.send(sender);
             return;
         }
         GameManager.getInstance().stop();
@@ -228,6 +225,30 @@ public class Commands {
     @CommandPermission("survival.admin.cleardrops")
     void clearItemDrops(CommandSender sender) {
         GameManager.getInstance().clearDropsOnGround();
+    }
+
+    @CommandMethod(value = "survivaladmin|sa join", requiredSender = Player.class)
+    @CommandPermission("survival.admin.join")
+    @CommandDescription("Tool to 'join' the game without respawn (unless necessary).")
+    void adminJoin(Player player) {
+        GameManager manager = GameManager.getInstance();
+        if (!manager.isRunning()) {
+            Messages.GAME_NOT_RUNNING.send(player);
+            return;
+        }
+        manager.adminJoin(player);
+    }
+
+    @CommandMethod(value = "survivaladmin|sa leave", requiredSender = Player.class)
+    @CommandPermission("survival.admin.leave")
+    @CommandDescription("Tool to 'leave' the game without teleporting to the hub or dropping inventory.")
+    void adminLeave(Player player) {
+        GameManager manager = GameManager.getInstance();
+        if (!manager.isRunning()) {
+            Messages.GAME_NOT_RUNNING.send(player);
+            return;
+        }
+        manager.adminLeave(player);
     }
 
 }
