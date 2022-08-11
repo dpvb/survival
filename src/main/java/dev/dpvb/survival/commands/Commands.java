@@ -159,13 +159,13 @@ public class Commands {
     @CommandPermission("survival.topkills")
     void topKillsCommand(CommandSender sender) {
         final List<PlayerInfo> topKills = PlayerInfoManager.getInstance().getTopKills(5);
-        Message.mini("<st><bold><gray>----------------------------").send(sender);
+        Message.mini("<st><bold><gray>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯").send(sender);
         Message.mini("<gold><bold>           TOP KILLS").send(sender);
         for (int i = 0; i < topKills.size(); i++) {
             final PlayerInfo pi = topKills.get(i);
             Message.mini("<bold><yellow>#" + (i + 1) + " <gold>" + Bukkit.getOfflinePlayer(pi.getId()).getName() + " <gray>> <gold>" + pi.getKills()).send(sender);
         }
-        Message.mini("<st><bold><gray>----------------------------").send(sender);
+        Message.mini("<st><bold><gray>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯").send(sender);
     }
 
     // ------- TOKEN COMMANDS -------
