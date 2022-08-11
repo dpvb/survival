@@ -52,6 +52,7 @@ public class GameListener implements Listener {
         if (event.getHand() != EquipmentSlot.HAND) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (!manager.playerInGame(event.getPlayer())) return;
+        //noinspection ConstantConditions (there is a block)
         final var type = event.getClickedBlock().getType();
         if (type.name().contains("TRAPDOOR")) {
             event.setCancelled(true);
@@ -83,9 +84,7 @@ public class GameListener implements Listener {
     public void onPlayerDisconnect(PlayerQuitEvent event) {
         final var player = event.getPlayer();
         if (manager.playerInGame(player)) {
-            manager.dropAndClearInventory(player);
-            manager.sendToHub(player);
-            manager.remove(player);
+            manager.leave(player, true, true);
         }
     }
 
@@ -93,7 +92,7 @@ public class GameListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         final var player = event.getPlayer();
         if (manager.playerInGame(player)) {
-            manager.remove(player);
+            manager.leave(player, false, false);
             event.setRespawnLocation(manager.getHubWorld().getSpawnLocation());
         }
     }

@@ -40,8 +40,7 @@ public class Extraction {
             if (newTime == EXTRACTION_TIME) {
                 manager.getArenaWorld().strikeLightningEffect(player.getLocation());
                 extractionMap.remove(player);
-                manager.sendToHub(player);
-                manager.remove(player);
+                manager.leave(player, false, true);
                 player.sendActionBar(Component.text("Extracted").color(NamedTextColor.RED).decorate(TextDecoration.BOLD));
             } else {
                 extractionMap.put(player, newTime);

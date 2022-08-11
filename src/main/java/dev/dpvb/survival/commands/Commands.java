@@ -91,9 +91,7 @@ public class Commands {
         GameManager manager = GameManager.getInstance();
         // no-op if the player is not in the game
         if (manager.playerInGame(player)) {
-            manager.dropAndClearInventory(player);
-            manager.sendToHub(player);
-            manager.remove(player);
+            manager.leave(player, true, true);
         }
     }
 

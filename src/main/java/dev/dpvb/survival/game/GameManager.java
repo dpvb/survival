@@ -139,6 +139,34 @@ public class GameManager {
         });
     }
 
+    /**
+     * Make a player leave the game.
+     *
+     * @param player a player
+     * @param dropAndClearInventory whether to drop the player's inventory
+     * @param sendToHub whether to send the player to the hub
+     * @implNote This method will no-op if the game is not running or if
+     * <code>player</code> was not in the game.
+     */
+    public void leave(@NotNull Player player, boolean dropAndClearInventory, boolean sendToHub) {
+        remove(player, (removed, gamer) -> {
+            if (removed) {
+                if (dropAndClearInventory) dropAndClearInventory(gamer);
+                if (sendToHub) sendToHub(gamer);
+                // Log the leave
+                Messages.STANDARD_LEAVE_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
+                Bukkit.getLogger().info("Player count: " + players.size());
+            }
+        });
+    }
+
+    /**
+     * Add an admin to the game.
+     *
+     * @param player a player
+     * @throws IllegalStateException if the game is not running
+     * @implNote Logged.
+     */
     public void adminJoin(@NotNull Player player) throws IllegalStateException {
         add(player, (added, gamer) -> {
             if (added) {
@@ -156,6 +184,12 @@ public class GameManager {
         });
     }
 
+    /**
+     * Remove an admin from the game.
+     *
+     * @param player a player
+     * @implNote Logged.
+     */
     public void adminLeave(@NotNull Player player) {
         remove(player, (removed, gamer) -> {
             if (removed) {
@@ -180,18 +214,6 @@ public class GameManager {
         return players.contains(player);
     }
 
-    public void dropAndClearInventory(Player player) {
-        // Drop the player's inventory
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item == null) {
-                continue;
-            }
-            // fix bug where items are dropped at nonsense coordinates in the arena world (wrong world context)
-            player.getWorld().dropItemNaturally(player.getLocation(), item);
-        }
-        player.getInventory().clear();
-    }
-
     public void sendToHub(Player player) {
         // Get the player out of the arena and back to the hub.
         player.teleport(hubWorld.getSpawnLocation());
@@ -211,14 +233,6 @@ public class GameManager {
         synchronized (players) {
             runSync.accept(players.add(player), player);
         }
-    }
-
-    public void remove(@NotNull Player player) {
-        remove(player, (removed, gamer) -> {
-            // Log the leave
-            Messages.STANDARD_LEAVE_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
-            Bukkit.getLogger().info("Player count: " + players.size());
-        });
     }
 
     /**
@@ -283,7 +297,7 @@ public class GameManager {
         for (Player player : Set.copyOf(players)) {
             if (clearInventory) dropAndClearInventory(player);
             sendToHub(player);
-            remove(player);
+            leave(player, false, true); // free extraction
         }
     }
 
@@ -350,5 +364,16 @@ public class GameManager {
 
     public World getArenaWorld() {
         return arenaWorld;
+    }
+
+    public static void dropAndClearInventory(Player player) {
+        // Drop the player's inventory
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item == null) {
+                continue;
+            }
+            player.getWorld().dropItemNaturally(player.getLocation(), item);
+        }
+        player.getInventory().clear();
     }
 }
