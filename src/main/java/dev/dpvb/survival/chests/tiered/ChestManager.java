@@ -3,6 +3,7 @@ package dev.dpvb.survival.chests.tiered;
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.mongo.models.ChestData;
 import dev.dpvb.survival.mongo.services.ChestDataService;
+import dev.dpvb.survival.util.messages.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,7 +45,7 @@ public class ChestManager {
             lootChestMap.put(loc, new LootChest(block, chestData.getTier(), chestData.getFace()));
         }
 
-        Bukkit.getLogger().info("Loaded " + lootChestMap.size() + " loot chests in the arena.");
+        Messages.LOADED_LOOTCHESTS_LOG_.replace("{count}", lootChestMap.size() + "").send(Bukkit.getConsoleSender());
     }
 
     public void saveChestsToMongo(Location origin, int radius) {
