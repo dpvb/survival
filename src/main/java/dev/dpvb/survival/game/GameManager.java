@@ -126,17 +126,12 @@ public class GameManager {
      * @throws IllegalStateException if the game is not running
      */
     public void join(@NotNull Player player) throws IllegalStateException {
-        if (!state.get()) {
-            throw new IllegalStateException("Game is not running");
-        }
         add(player, (added, gamer) -> {
             if (added) {
                 // Teleport them to a random spawn location
                 spawnPlayer(gamer);
                 // Log the join
-                final var console = Bukkit.getConsoleSender();
-                console.sendMessage(Messages.STANDARD_JOIN_LOG_.get()
-                        .replaceText(b -> b.match("{player}").replacement(gamer.getName())));
+                Messages.STANDARD_JOIN_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
                 Bukkit.getLogger().info("Player count: " + players.size());
             } else {
                 Messages.ALREADY_IN_GAME.send(gamer);
@@ -144,10 +139,7 @@ public class GameManager {
         });
     }
 
-    public void adminJoin(@NotNull Player player) {
-        if (!state.get()) {
-            throw new IllegalStateException("Game is not running");
-        }
+    public void adminJoin(@NotNull Player player) throws IllegalStateException {
         add(player, (added, gamer) -> {
             if (added) {
                 Messages.ADMIN_JOIN_SELF.send(gamer);
@@ -160,6 +152,19 @@ public class GameManager {
                 Bukkit.getLogger().info("Player count: " + players.size());
             } else {
                 Messages.ALREADY_IN_GAME.send(gamer);
+            }
+        });
+    }
+
+    public void adminLeave(@NotNull Player player) {
+        remove(player, (removed, gamer) -> {
+            if (removed) {
+                Messages.ADMIN_LEAVE_SELF.send(gamer);
+                // Log the leave
+                Messages.ADMIN_LEAVE_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
+                Bukkit.getLogger().info("Player count: " + players.size());
+            } else {
+                Messages.NOT_IN_GAME.send(gamer);
             }
         });
     }
@@ -192,6 +197,13 @@ public class GameManager {
         player.teleport(hubWorld.getSpawnLocation());
     }
 
+    /**
+     * Add a player directly to the game.
+     *
+     * @param player a player
+     * @param runSync a function to accept the results of the add operation
+     * @throws IllegalStateException if the game is not running
+     */
     public void add(@NotNull Player player, @NotNull BiConsumer<Boolean, Player> runSync) throws IllegalStateException {
         if (!state.get()) {
             throw new IllegalStateException("Game is not running");
@@ -204,11 +216,19 @@ public class GameManager {
     public void remove(@NotNull Player player) {
         remove(player, (removed, gamer) -> {
             // Log the leave
-            Bukkit.getLogger().info(gamer.getName() + " left the arena.");
+            Messages.STANDARD_LEAVE_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
             Bukkit.getLogger().info("Player count: " + players.size());
         });
     }
 
+    /**
+     * Remove a player directly from the game.
+     *
+     * @param player a player
+     * @param runSync a function to accept the results of the remove operation
+     * @implNote This method will no-op if the game is not running;
+     * specifically, <code>runSync</code> will not be called.
+     */
     public void remove(@NotNull Player player, @NotNull BiConsumer<Boolean, Player> runSync) {
         if (!state.get()) {
             // no-op

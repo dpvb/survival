@@ -246,12 +246,11 @@ public class Commands {
     @CommandDescription("Tool to 'leave' the game without teleporting to the hub or dropping inventory.")
     void adminLeave(Player player) {
         GameManager manager = GameManager.getInstance();
-        if (manager.playerInGame(player)) {
-            manager.remove(player);
-            Messages.ADMIN_LEAVE_SELF.send(player);
-        } else {
-            Messages.NOT_IN_GAME.send(player);
+        if (!manager.isRunning()) {
+            Messages.GAME_NOT_RUNNING.send(player);
+            return;
         }
+        manager.adminLeave(player);
     }
 
 }
