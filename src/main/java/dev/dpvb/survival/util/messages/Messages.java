@@ -38,7 +38,7 @@ public enum Messages implements Message {
         Messages.mm = mm;
     }
 
-    public static Component build(String message) {
+    static Component build(String message) {
         return mm.deserialize(message);
     }
 
