@@ -78,7 +78,7 @@ public class Commands {
     void gameJoinCommand(Player player) {
         GameManager manager = GameManager.getInstance();
         if (!manager.isRunning()) {
-            player.sendMessage("The game is not running.");
+            Messages.GAME_NOT_RUNNING.send(player);
             return;
         }
         manager.join(player);
@@ -145,11 +145,11 @@ public class Commands {
             case "join" -> NPCManager.getInstance().addNPC(new JoinNPC(player.getLocation()));
             case "token-trader" -> NPCManager.getInstance().addNPC(new TokenTraderNPC(player.getLocation()));
             default -> {
-                player.sendMessage("That is not a valid NPC type.");
+                Messages.INVALID_NPC_TYPE.send(player);
                 return;
             }
         }
-        player.sendMessage("You created an NPC.");
+        Messages.NPC_CREATED.send(player);
     }
 
     // ------- TOKEN COMMANDS -------
@@ -157,15 +157,14 @@ public class Commands {
     @CommandPermission("survival.tokens")
     void tokenCommand(Player player) {
         int tokens = PlayerInfoManager.getInstance().getTokens(player.getUniqueId());
-
-        player.sendMessage(Component.text("You have " + tokens + " tokens.").color(NamedTextColor.YELLOW));
+        Messages.TOKEN_AMOUNT_SELF.replace("{tokens}", "" + tokens).send(player);
     }
 
     @CommandMethod(value = "survivaladmin|sa token set <player> <tokens>")
     @CommandPermission("survival.admin.token.set")
     void tokenSetCommand(CommandSender sender, @Argument("player") Player player, @Argument("tokens") int tokens) {
         PlayerInfoManager.getInstance().setTokens(player.getUniqueId(), tokens);
-        sender.sendMessage(Component.text("Set " + player.getName() + "'s token count to " + tokens).color(NamedTextColor.YELLOW));
+        Messages.SET_TOKEN_AMOUNT.replace("{player}", player.getName()).replace("{tokens}", "" + tokens).send(sender);
     }
 
     // ------- SETUP COMMANDS -------
@@ -189,11 +188,11 @@ public class Commands {
     @CommandPermission("survival.admin.start")
     void startGameCommand(CommandSender sender) {
         if (GameManager.getInstance().isRunning()) {
-            sender.sendMessage(Component.text("The game is still running.").color(NamedTextColor.DARK_RED));
+            Messages.GAME_RUNNING.send(sender);
             return;
         }
         GameManager.getInstance().start();
-        sender.sendMessage(Component.text("Game started.").color(NamedTextColor.GREEN));
+        Messages.GAME_STARTED.send(sender);
     }
 
     @CommandMethod(value = "survivaladmin|sa stop")
@@ -204,7 +203,7 @@ public class Commands {
             return;
         }
         GameManager.getInstance().stop();
-        sender.sendMessage(Component.text("Game stopped.").color(NamedTextColor.DARK_GREEN));
+        Messages.GAME_STOPPED.send(sender);
     }
 
     // ------- OTHER COMMANDS -------
@@ -218,7 +217,7 @@ public class Commands {
     @CommandPermission("survival.admin.savechests")
     void saveChestsCommand(Player player, @Argument("radius") int radius) {
         ChestManager.getInstance().saveChestsToMongo(player.getLocation(), radius);
-        player.sendMessage("Saved chests.");
+        Messages.SAVED_CHESTS.send(player);
     }
 
     @CommandMethod(value = "survivaladmin|sa cleardrops")
