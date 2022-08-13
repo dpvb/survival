@@ -9,6 +9,7 @@ import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.mongo.models.Region;
 import dev.dpvb.survival.mongo.models.SpawnLocation;
 import dev.dpvb.survival.util.messages.Messages;
+import net.kyori.adventure.audience.ForwardingAudience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,7 +26,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
-public class GameManager {
+public class GameManager implements ForwardingAudience {
 
     private static GameManager instance;
     private final Set<Player> players = new HashSet<>();
@@ -347,6 +348,11 @@ public class GameManager {
         }
 
         return instance;
+    }
+
+    @Override
+    public @NotNull Iterable<Player> audiences() {
+        return List.copyOf(players);
     }
 
     public Set<Player> getPlayers() {
