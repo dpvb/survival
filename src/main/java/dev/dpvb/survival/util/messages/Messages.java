@@ -1,8 +1,8 @@
 package dev.dpvb.survival.util.messages;
 
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.jetbrains.annotations.NotNull;
 
 public enum Messages implements Message {
 
@@ -21,14 +21,19 @@ public enum Messages implements Message {
     ADMIN_JOIN_LOG_("<green>{player} <gray>joined the game as an admin."),
     ADMIN_LEAVE_LOG_("<green>{player} <gray>left the game as an admin."),
     PLAYER_COUNT_LOG_("<gray>Player count: <green>{count}"),
-    LOADED_EXTRACTIONS_LOG_("<gray>Loaded <green>{count} <gray>extraction points in the arena."),
-    LOADED_LOOTCHESTS_LOG_("<gray>Loaded <green>{count} <gray>lootchests in the arena."),
-    LOADED_SPAWNS_LOG_("<gray>Loaded <green>{count} <gray>spawnpoints in the arena."),
-    CLEARED_ITEM_DROPS_LOG_("<gray>Cleared <green>{count} <gray>item drops from the ground."),
+    @Counting("extraction_points")
+    LOADED_EXTRACTIONS_LOG_("<gray>Loaded <green>{count}</green> extraction point(s) in the arena."),
+    @Counting("lootchests")
+    LOADED_LOOTCHESTS_LOG_("<gray>Loaded <green>{count}</green> lootchest(s) in the arena."),
+    @Counting("spawnpoints")
+    LOADED_SPAWNS_LOG_("<gray>Loaded <green>{count}</green> spawnpoint(s) in the arena."),
+    @Counting("item_drops")
+    CLEARED_ITEM_DROPS_LOG_("<gray>Cleared <green>{count}</green> item drop(s) from the ground."),
     ADMIN_JOIN_SELF("<gray>You have been added to the game."),
     ADMIN_LEAVE_SELF("<gray>You have been removed from the game."),
-    TOKEN_AMOUNT_SELF("<gray>You have <green>{tokens} <gray>tokens."),
-    SET_TOKEN_AMOUNT("<gray>Set <green>{player}'s <gray>token count to <green>{tokens}<gray>.")
+    @Counting("tokens")
+    TOKEN_AMOUNT_SELF("<gray>You have <green>{tokens}</green> token(s)."),
+    SET_TOKEN_AMOUNT("<gray>Set <green>{player}'s</green> token count to <green>{tokens}</green>.")
     ;
 
     private static MiniMessage mm;
@@ -39,20 +44,15 @@ public enum Messages implements Message {
     }
 
     @Override
-    public Component get() {
+    public @NotNull Component asComponent() {
         return build(message);
-    }
-
-    public void send(Audience audience) {
-        audience.sendMessage(get());
     }
 
     public static void setBuilder(MiniMessage mm) {
         Messages.mm = mm;
     }
 
-    static Component build(String message) {
+    static Component build(@NotNull String message) {
         return mm.deserialize(message);
     }
-
 }
