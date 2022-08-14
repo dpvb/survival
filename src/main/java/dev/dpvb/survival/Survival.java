@@ -5,6 +5,7 @@ import dev.dpvb.survival.commands.Commands;
 import dev.dpvb.survival.events.FirstJoinListener;
 import dev.dpvb.survival.events.PlayerJoinQuitMessageListener;
 import dev.dpvb.survival.events.ServerPingListener;
+import dev.dpvb.survival.events.SpawnPlayerOnJoinListener;
 import dev.dpvb.survival.game.GameManager;
 import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.npc.listeners.NPCListener;
@@ -93,6 +94,7 @@ public final class Survival extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new FirstJoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinQuitMessageListener(), this);
         Bukkit.getPluginManager().registerEvents(new ServerPingListener(), this);
+        Bukkit.getPluginManager().registerEvents(new SpawnPlayerOnJoinListener(), this);
     }
 
     public static Survival getInstance() {
