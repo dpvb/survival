@@ -311,12 +311,6 @@ public class GameManager implements ForwardingAudience {
         Messages.CLEARED_ITEM_DROPS_LOG_.replace("{count}", items.size() + "").send(Bukkit.getConsoleSender());
     }
 
-    public void broadcast(Component message) {
-        for (Player player : players) {
-            player.sendMessage(message);
-        }
-    }
-
     private void initTasks() {
         clearDropsTask = new ClearDrops(this);
         clearDropsTask.runTaskTimer(Survival.getInstance(), 20L * 1800, 20L * 1800);

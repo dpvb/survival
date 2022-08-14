@@ -33,7 +33,9 @@ public enum Messages implements Message {
     ADMIN_LEAVE_SELF("<gray>You have been removed from the game."),
     @Counting("tokens")
     TOKEN_AMOUNT_SELF("<gray>You have <green>{tokens}</green> token(s)."),
-    SET_TOKEN_AMOUNT("<gray>Set <green>{player}'s</green> token count to <green>{tokens}</green>.")
+    SET_TOKEN_AMOUNT("<gray>Set <green>{player}'s</green> token count to <green>{tokens}</green>."),
+    CLEARING_DROPS_WARNING("<red>Item drops will be despawned in 30 seconds."),
+    DESPAWNED_DROPS("<red>Item drops despawned."),
     ;
 
     private static MiniMessage mm;
