@@ -45,7 +45,7 @@ public class ChestManager {
             lootChestMap.put(loc, new LootChest(block, chestData.getTier(), chestData.getFace()));
         }
 
-        Messages.LOADED_LOOTCHESTS_LOG_.replace("{count}", lootChestMap.size() + "").send(Bukkit.getConsoleSender());
+        Messages.LOADED_LOOTCHESTS_LOG_.counted(lootChestMap.size()).send(Bukkit.getConsoleSender());
     }
 
     public void saveChestsToMongo(Location origin, int radius) {

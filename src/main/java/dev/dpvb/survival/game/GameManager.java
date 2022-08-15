@@ -10,7 +10,6 @@ import dev.dpvb.survival.mongo.models.Region;
 import dev.dpvb.survival.mongo.models.SpawnLocation;
 import dev.dpvb.survival.util.messages.Messages;
 import net.kyori.adventure.audience.ForwardingAudience;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -271,7 +270,7 @@ public class GameManager implements ForwardingAudience {
             ));
         }
 
-        Messages.LOADED_EXTRACTIONS_LOG_.replace("{count}", extractions.size() + "").send(Bukkit.getConsoleSender());
+        Messages.LOADED_EXTRACTIONS_LOG_.counted(extractions.size()).send(Bukkit.getConsoleSender());
     }
 
     /**
@@ -291,7 +290,7 @@ public class GameManager implements ForwardingAudience {
             ));
         }
 
-        Messages.LOADED_SPAWNS_LOG_.replace("{count}", spawnLocations.size() + "").send(Bukkit.getConsoleSender());
+        Messages.LOADED_SPAWNS_LOG_.counted(spawnLocations.size()).send(Bukkit.getConsoleSender());
     }
 
     public void removeAllPlayers(boolean clearInventory) {
@@ -308,7 +307,7 @@ public class GameManager implements ForwardingAudience {
             item.remove();
         }
 
-        Messages.CLEARED_ITEM_DROPS_LOG_.replace("{count}", items.size() + "").send(Bukkit.getConsoleSender());
+        Messages.CLEARED_ITEM_DROPS_LOG_.counted(items.size()).send(Bukkit.getConsoleSender());
     }
 
     private void initTasks() {

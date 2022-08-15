@@ -4,7 +4,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.jetbrains.annotations.NotNull;
 
-public enum Messages implements Message {
+import java.util.EnumMap;
+import java.util.Map;
+
+public enum Messages implements CountableMessage {
 
     NOT_IN_GAME("<red>You are not in the game."),
     ALREADY_IN_GAME("<red>You are already in the game."),
@@ -21,24 +24,60 @@ public enum Messages implements Message {
     ADMIN_JOIN_LOG_("<green>{player} <gray>joined the game as an admin."),
     ADMIN_LEAVE_LOG_("<green>{player} <gray>left the game as an admin."),
     PLAYER_COUNT_LOG_("<gray>Player count: <green>{count}"),
-    @Counting("extraction_points")
-    LOADED_EXTRACTIONS_LOG_("<gray>Loaded <green>{count}</green> extraction point(s) in the arena."),
-    @Counting("lootchests")
-    LOADED_LOOTCHESTS_LOG_("<gray>Loaded <green>{count}</green> lootchest(s) in the arena."),
-    @Counting("spawnpoints")
-    LOADED_SPAWNS_LOG_("<gray>Loaded <green>{count}</green> spawnpoint(s) in the arena."),
-    @Counting("item_drops")
-    CLEARED_ITEM_DROPS_LOG_("<gray>Cleared <green>{count}</green> item drop(s) from the ground."),
+    @Counting(value = "extraction_points",
+            zero = "<yellow>no extraction points</yellow>",
+            one = "<green>{count}</green> extraction point",
+            many = "<green>{count}</green> extraction points")
+    LOADED_EXTRACTIONS_LOG_("<gray>Loaded {extraction_points} in the arena."),
+    @Counting(value = "lootchests",
+            zero = "<yellow>no extraction points</yellow>",
+            one = "<green>{count}</green> extraction point",
+            many = "<green>{count}</green> extraction points")
+    LOADED_LOOTCHESTS_LOG_("<gray>Loaded {lootchests} in the arena."),
+    @Counting(value = "spawnpoints",
+            zero = "<yellow>no spawnpoints</yellow>",
+            one = "<green>{count}</green> spawnpoint",
+            many = "<green>{count}</green> spawnpoints")
+    LOADED_SPAWNS_LOG_("<gray>Loaded {spawnpoints} in the arena."),
+    @Counting(value = "drops",
+            zero = "<yellow>no item drops</yellow>",
+            one = "<green>{count}</green> item drop",
+            many = "<green>{count}</green> item drops")
+    CLEARED_ITEM_DROPS_LOG_("<gray>Cleared {drops} from the ground."),
     ADMIN_JOIN_SELF("<gray>You have been added to the game."),
     ADMIN_LEAVE_SELF("<gray>You have been removed from the game."),
-    @Counting("tokens")
-    TOKEN_AMOUNT_SELF("<gray>You have <green>{tokens}</green> token(s)."),
+    @Counting(value = "tokens",
+            zero = "<yellow>no tokens</yellow>",
+            one = "<green>{count}</green> token",
+            many = "<green>{count}</green> tokens")
+    TOKEN_AMOUNT_SELF("<gray>You have {tokens}."),
     SET_TOKEN_AMOUNT("<gray>Set <green>{player}'s</green> token count to <green>{tokens}</green>."),
     CLEARING_DROPS_WARNING("<red>Item drops will be despawned in 30 seconds."),
     DESPAWNED_DROPS("<red>Item drops despawned."),
     ;
 
+    private static final Map<Messages, Counting.Counted[]> COUNTING;
     private static MiniMessage mm;
+
+    static {
+        COUNTING = new EnumMap<>(Messages.class);
+        for (Messages m : values()) {
+            final Counting[] arr;
+            try {
+                arr = Messages.class.getDeclaredField(m.name()).getDeclaredAnnotationsByType(Counting.class);
+            } catch (NoSuchFieldException e) {
+                throw new IllegalStateException(e);
+            }
+            if (arr.length > 0) {
+                final Counting.Counted[] counters = new Counting.Counted[arr.length];
+                for (int i = 0; i < arr.length; i++) {
+                    counters[i] = new Counting.Counted(arr[i]);
+                }
+                COUNTING.put(m, counters);
+            }
+        }
+    }
+
     final String message;
 
     Messages(String message) {
@@ -48,6 +87,40 @@ public enum Messages implements Message {
     @Override
     public @NotNull Component asComponent() {
         return build(message);
+    }
+
+    @Override
+    public Message counted(@NotNull Number... amounts) {
+        if (amounts.length == 0) return this;
+        final var counters = COUNTING.get(this);
+        if (counters == null) return this; // graceful
+        final var sb = new StringBuilder(message);
+        int c = 0;
+        for (Counting.Counted counter : counters) {
+            int source = counter.arg();
+            if (source == -1) {
+                // use c
+                if (c < amounts.length) {
+                    source = c;
+                } else {
+                    // amounts is too short, try next counter
+                    continue;
+                }
+            }
+            final var placeholder = "{" + counter.placeholder() + "}";
+            int index = sb.indexOf(placeholder);
+            while (index != -1) {
+                sb.delete(index, index + placeholder.length());
+                final var process = counter.process(amounts[source]);
+                if (process.contains(placeholder)) {
+                    throw new IllegalStateException("Replacements cannot contain their placeholder!");
+                }
+                sb.insert(index, process);
+                index = sb.indexOf(placeholder);
+            }
+            ++c;
+        }
+        return Message.mini(sb.toString());
     }
 
     public static void setBuilder(MiniMessage mm) {
