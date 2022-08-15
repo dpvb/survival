@@ -50,8 +50,8 @@ public enum Messages implements CountableMessage {
             zero = "<yellow>no tokens</yellow>",
             one = "<green>{count}</green> token",
             many = "<green>{count}</green> tokens")
-    TOKEN_AMOUNT_SELF("<gray>You have {tokens}."),
-    SET_TOKEN_AMOUNT("<gray>Set <green>{player}'s</green> token count to <green>{tokens}</green>."),
+    TOKEN_AMOUNT_SELF_("<gray>You have {tokens}."),
+    SET_TOKEN_AMOUNT__("<gray>Set <green>{player}'s</green> token count to <green>{tokens}</green>."),
     CLEARING_DROPS_WARNING("<red>Item drops will be despawned in 30 seconds."),
     DESPAWNED_DROPS("<red>Item drops despawned."),
     ;

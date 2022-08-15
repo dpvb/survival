@@ -131,8 +131,8 @@ public class GameManager implements ForwardingAudience {
                 // Teleport them to a random spawn location
                 spawnPlayer(gamer);
                 // Log the join
-                Messages.STANDARD_JOIN_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
-                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).send(Bukkit.getConsoleSender());
+                Messages.STANDARD_JOIN_LOG_.replace("{player}", gamer.getName()).sendConsole();
+                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).sendConsole();
             } else {
                 Messages.ALREADY_IN_GAME.send(gamer);
             }
@@ -154,8 +154,8 @@ public class GameManager implements ForwardingAudience {
                 if (dropAndClearInventory) dropAndClearInventory(gamer);
                 if (sendToHub) sendToHub(gamer);
                 // Log the leave
-                Messages.STANDARD_LEAVE_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
-                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).send(Bukkit.getConsoleSender());
+                Messages.STANDARD_LEAVE_LOG_.replace("{player}", gamer.getName()).sendConsole();
+                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).sendConsole();
             }
         });
     }
@@ -176,8 +176,8 @@ public class GameManager implements ForwardingAudience {
                     spawnPlayer(gamer);
                 }
                 // Log the join
-                Messages.ADMIN_JOIN_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
-                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).send(Bukkit.getConsoleSender());
+                Messages.ADMIN_JOIN_LOG_.replace("{player}", gamer.getName()).sendConsole();
+                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).sendConsole();
             } else {
                 Messages.ALREADY_IN_GAME.send(gamer);
             }
@@ -195,8 +195,8 @@ public class GameManager implements ForwardingAudience {
             if (removed) {
                 Messages.ADMIN_LEAVE_SELF.send(gamer);
                 // Log the leave
-                Messages.ADMIN_LEAVE_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
-                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).send(Bukkit.getConsoleSender());
+                Messages.ADMIN_LEAVE_LOG_.replace("{player}", gamer.getName()).sendConsole();
+                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).sendConsole();
             } else {
                 Messages.NOT_IN_GAME.send(gamer);
             }
@@ -270,7 +270,7 @@ public class GameManager implements ForwardingAudience {
             ));
         }
 
-        Messages.LOADED_EXTRACTIONS_LOG_.counted(extractions.size()).send(Bukkit.getConsoleSender());
+        Messages.LOADED_EXTRACTIONS_LOG_.counted(extractions.size()).sendConsole();
     }
 
     /**
@@ -290,7 +290,7 @@ public class GameManager implements ForwardingAudience {
             ));
         }
 
-        Messages.LOADED_SPAWNS_LOG_.counted(spawnLocations.size()).send(Bukkit.getConsoleSender());
+        Messages.LOADED_SPAWNS_LOG_.counted(spawnLocations.size()).sendConsole();
     }
 
     public void removeAllPlayers(boolean clearInventory) {
@@ -307,7 +307,7 @@ public class GameManager implements ForwardingAudience {
             item.remove();
         }
 
-        Messages.CLEARED_ITEM_DROPS_LOG_.counted(items.size()).send(Bukkit.getConsoleSender());
+        Messages.CLEARED_ITEM_DROPS_LOG_.counted(items.size()).sendConsole();
     }
 
     private void initTasks() {

@@ -3,17 +3,25 @@ package dev.dpvb.survival.util.messages;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface Message extends ComponentLike {
-    /**ss
+    /**
      * Send this message to an audience.
      *
      * @param audience the audience to send the message to
      */
     default void send(Audience audience) {
         audience.sendMessage(asComponent());
+    }
+
+    /**
+     * Send this message to the console.
+     */
+    default void sendConsole() {
+        send(Bukkit.getConsoleSender());
     }
 
     /**
