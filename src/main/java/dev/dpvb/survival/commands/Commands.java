@@ -173,14 +173,14 @@ public class Commands {
     @CommandPermission("survival.tokens")
     void tokenCommand(Player player) {
         int tokens = PlayerInfoManager.getInstance().getTokens(player.getUniqueId());
-        Messages.TOKEN_AMOUNT_SELF.replace("{tokens}", "" + tokens).send(player);
+        Messages.TOKEN_AMOUNT_SELF_.counted(tokens).send(player);
     }
 
     @CommandMethod(value = "survivaladmin|sa token set <player> <tokens>")
     @CommandPermission("survival.admin.token.set")
     void tokenSetCommand(CommandSender sender, @Argument("player") Player player, @Argument("tokens") int tokens) {
         PlayerInfoManager.getInstance().setTokens(player.getUniqueId(), tokens);
-        Messages.SET_TOKEN_AMOUNT.replace("{player}", player.getName()).replace("{tokens}", "" + tokens).send(sender);
+        Messages.SET_TOKEN_AMOUNT__.replace("{player}", player.getName()).replace("{tokens}", "" + tokens).send(sender);
     }
 
     // ------- SETUP COMMANDS -------

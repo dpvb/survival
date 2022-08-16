@@ -2,8 +2,7 @@ package dev.dpvb.survival.game.tasks;
 
 import dev.dpvb.survival.Survival;
 import dev.dpvb.survival.game.GameManager;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import dev.dpvb.survival.util.messages.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -17,12 +16,12 @@ public class ClearDrops extends BukkitRunnable {
 
     @Override
     public void run() {
-        manager.broadcast(Component.text("Item drops will be despawned in 30 seconds.").color(NamedTextColor.RED));
+        manager.sendMessage(Messages.CLEARING_DROPS_WARNING);
         Bukkit.getScheduler().runTaskLater(Survival.getInstance(), this::despawnItems, 20L * 30);
     }
 
     private void despawnItems() {
         manager.clearDropsOnGround();
-        manager.broadcast(Component.text("Item drops despawned.").color(NamedTextColor.RED));
+        manager.sendMessage(Messages.DESPAWNED_DROPS);
     }
 }

@@ -68,6 +68,8 @@ public class GameListener implements Listener {
         //noinspection ConstantConditions (there is a block)
         if (event.getClickedBlock().getType() == Material.BARREL) {
             event.setCancelled(true);
+            Messages.CANNOT_INTERACT.send(event.getPlayer());
+            // TODO: Add particle effect
         }
     }
 

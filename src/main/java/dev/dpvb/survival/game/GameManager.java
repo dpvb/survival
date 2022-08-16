@@ -9,7 +9,7 @@ import dev.dpvb.survival.mongo.MongoManager;
 import dev.dpvb.survival.mongo.models.Region;
 import dev.dpvb.survival.mongo.models.SpawnLocation;
 import dev.dpvb.survival.util.messages.Messages;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.audience.ForwardingAudience;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -25,7 +25,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
-public class GameManager {
+public class GameManager implements ForwardingAudience {
 
     private static GameManager instance;
     private final Set<Player> players = new HashSet<>();
@@ -131,8 +131,8 @@ public class GameManager {
                 // Teleport them to a random spawn location
                 spawnPlayer(gamer);
                 // Log the join
-                Messages.STANDARD_JOIN_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
-                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).send(Bukkit.getConsoleSender());
+                Messages.STANDARD_JOIN_LOG_.replace("{player}", gamer.getName()).sendConsole();
+                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).sendConsole();
             } else {
                 Messages.ALREADY_IN_GAME.send(gamer);
             }
@@ -154,8 +154,8 @@ public class GameManager {
                 if (dropAndClearInventory) dropAndClearInventory(gamer);
                 if (sendToHub) sendToHub(gamer);
                 // Log the leave
-                Messages.STANDARD_LEAVE_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
-                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).send(Bukkit.getConsoleSender());
+                Messages.STANDARD_LEAVE_LOG_.replace("{player}", gamer.getName()).sendConsole();
+                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).sendConsole();
             }
         });
     }
@@ -176,8 +176,8 @@ public class GameManager {
                     spawnPlayer(gamer);
                 }
                 // Log the join
-                Messages.ADMIN_JOIN_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
-                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).send(Bukkit.getConsoleSender());
+                Messages.ADMIN_JOIN_LOG_.replace("{player}", gamer.getName()).sendConsole();
+                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).sendConsole();
             } else {
                 Messages.ALREADY_IN_GAME.send(gamer);
             }
@@ -195,8 +195,8 @@ public class GameManager {
             if (removed) {
                 Messages.ADMIN_LEAVE_SELF.send(gamer);
                 // Log the leave
-                Messages.ADMIN_LEAVE_LOG_.replace("{player}", gamer.getName()).send(Bukkit.getConsoleSender());
-                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).send(Bukkit.getConsoleSender());
+                Messages.ADMIN_LEAVE_LOG_.replace("{player}", gamer.getName()).sendConsole();
+                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).sendConsole();
             } else {
                 Messages.NOT_IN_GAME.send(gamer);
             }
@@ -270,7 +270,7 @@ public class GameManager {
             ));
         }
 
-        Messages.LOADED_EXTRACTIONS_LOG_.replace("{count}", extractions.size() + "").send(Bukkit.getConsoleSender());
+        Messages.LOADED_EXTRACTIONS_LOG_.counted(extractions.size()).sendConsole();
     }
 
     /**
@@ -290,7 +290,7 @@ public class GameManager {
             ));
         }
 
-        Messages.LOADED_SPAWNS_LOG_.replace("{count}", spawnLocations.size() + "").send(Bukkit.getConsoleSender());
+        Messages.LOADED_SPAWNS_LOG_.counted(spawnLocations.size()).sendConsole();
     }
 
     public void removeAllPlayers(boolean clearInventory) {
@@ -307,13 +307,7 @@ public class GameManager {
             item.remove();
         }
 
-        Messages.CLEARED_ITEM_DROPS_LOG_.replace("{count}", items.size() + "").send(Bukkit.getConsoleSender());
-    }
-
-    public void broadcast(Component message) {
-        for (Player player : players) {
-            player.sendMessage(message);
-        }
+        Messages.CLEARED_ITEM_DROPS_LOG_.counted(items.size()).sendConsole();
     }
 
     private void initTasks() {
@@ -347,6 +341,11 @@ public class GameManager {
         }
 
         return instance;
+    }
+
+    @Override
+    public @NotNull Iterable<Player> audiences() {
+        return List.copyOf(players);
     }
 
     public Set<Player> getPlayers() {
