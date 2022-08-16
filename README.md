@@ -1,4 +1,4 @@
-# Survival
+# Survive
 
 ## Table of Contents
 
@@ -7,7 +7,7 @@
 
 ## Description
 
-Survival is a Minecraft Minigame made to freshen up the PVP experience in 1.19. Players start with nothing when they join the server, and they are prompted to jump into the Arena--a custom-made map--including different points of interest and extraction points.
+Survive is a Minecraft Minigame made to freshen up the PVP experience in 1.19. Players start with nothing when they join the server, and they are prompted to jump into the Arena--a custom-made map--including different points of interest and extraction points.
 
 To get loot, the Player will join this Arena and look for different tiers of chests. From these chests, players can find items that will aid in their combat against other players looking to do the same. By killing other Players, one is rewarded with Tokens which can be used at various NPCs located in the Arena to upgrade your items or to spawn Airdrops which can give high-tiered items. Be careful though, dying in the arena will cause you to lose the stuff you acquired and send you back to the hub.
 
@@ -15,11 +15,11 @@ After acquiring some loot and killing some Players, Players can extract at one o
 
 #### What was your motivation?
 
-- Survival is quite a bit of a passion project of mine. I love working with Java, and I love to make games, so writing this plugin for a Minecraft server is one of the best solutions I have available to me. What's kept me going is wanting to make a fun game experience for those who may come to play this game, and it also fills one of my desires to create a game that is of this style.
+- Survive is quite a bit of a passion project of mine. I love working with Java, and I love to make games, so writing this plugin for a Minecraft server is one of the best solutions I have available to me. What's kept me going is wanting to make a fun game experience for those who may come to play this game, and it also fills one of my desires to create a game that is of this style.
 
 #### Why did you build this project?
 
-- Survival is a passion project of mine that brings a lot of different aspects of games that I enjoy. The looting, player vs player action, and the infinite feeling gameplay loop is one that I quite enjoy, and creating this in the form of a Minecraft server plugin allows me to bring this idea to life.
+- Survive is a passion project of mine that brings a lot of different aspects of games that I enjoy. The looting, player vs player action, and the infinite feeling gameplay loop is one that I quite enjoy, and creating this in the form of a Minecraft server plugin allows me to bring this idea to life.
 
 #### What did you learn?
 
