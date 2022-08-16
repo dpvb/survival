@@ -70,7 +70,7 @@ public class NPCManager {
             }
         }
 
-        Bukkit.getLogger().info("Loaded " + npcs.size() + " Survival NPCs.");
+        Bukkit.getLogger().info("Loaded " + npcs.size() + " Survive NPCs.");
     }
 
     public void addNPC(AbstractNPC npc) {

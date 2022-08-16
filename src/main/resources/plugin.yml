@@ -1,9 +1,9 @@
-name: Survival
+name: Survive
 version: '${project.version}'
 main: dev.dpvb.survival.Survival
 api-version: 1.19
 authors: [ dpvb ]
-description: Modern Twist on PvP and Base Building
+description: '${project.description}'
 depend:
   - Citizens
   - Multiverse-Core

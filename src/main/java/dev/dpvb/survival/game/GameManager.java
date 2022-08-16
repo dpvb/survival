@@ -331,11 +331,11 @@ public class GameManager implements ForwardingAudience {
                 // Get the World instances.
                 hubWorld = Bukkit.getWorld("hub");
                 if (hubWorld == null) {
-                    throw new IllegalStateException("Survival requires a world named 'hub'");
+                    throw new IllegalStateException("Survive requires a world named 'hub'");
                 }
                 arenaWorld = Bukkit.getWorld("arena");
                 if (arenaWorld == null) {
-                    throw new IllegalStateException("Survival requires a world named 'arena'");
+                    throw new IllegalStateException("Survive requires a world named 'arena'");
                 }
             } catch (IllegalStateException e) {
                 // explain what's happened
