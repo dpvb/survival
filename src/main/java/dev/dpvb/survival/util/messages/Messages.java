@@ -11,6 +11,7 @@ public enum Messages implements CountableMessage {
 
     NOT_IN_GAME("<red>You are not in the game."),
     ALREADY_IN_GAME("<red>You are already in the game."),
+    CANNOT_INTERACT("<red>You cannot interact with this."),
     GAME_NOT_RUNNING("<yellow>The game is not running."),
     GAME_RUNNING("<red>The game is currently running."),
     GAME_STARTED("<green>The game started."),
