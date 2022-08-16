@@ -301,13 +301,18 @@ public class GameManager implements ForwardingAudience {
         }
     }
 
-    public void clearDropsOnGround() {
+    /**
+     * Clears drops on ground and returns the amount cleared from the arena.
+     * @return The amount of drops cleared.
+     */
+    public int clearDropsOnGround() {
         Collection<Item> items = arenaWorld.getEntitiesByClass(Item.class);
         for (Item item : items) {
             item.remove();
         }
 
         Messages.CLEARED_ITEM_DROPS_LOG_.counted(items.size()).sendConsole();
+        return items.size();
     }
 
     private void initTasks() {
