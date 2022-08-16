@@ -59,6 +59,18 @@ public class GameListener implements Listener {
         }
     }
 
+    // Disable Barrels in Game
+    @EventHandler(ignoreCancelled = true)
+    public void onInteractBarrel(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (!manager.playerInGame(event.getPlayer())) return;
+        //noinspection ConstantConditions (there is a block)
+        if (event.getClickedBlock().getType() == Material.BARREL) {
+            event.setCancelled(true);
+        }
+    }
+
     // Handling Player Death
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
