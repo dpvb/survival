@@ -1,6 +1,6 @@
 name: Survive
 version: '${project.version}'
-main: dev.dpvb.survival.Survival
+main: dev.dpvb.survive.Survive
 api-version: 1.19
 authors: [ dpvb ]
 description: '${project.description}'
