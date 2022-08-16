@@ -239,7 +239,10 @@ public class Commands {
     @CommandMethod(value = "survivaladmin|sa cleardrops")
     @CommandPermission("survival.admin.cleardrops")
     void clearItemDrops(CommandSender sender) {
-        GameManager.getInstance().clearDropsOnGround();
+        final int dropsCleared = GameManager.getInstance().clearDropsOnGround();
+        if (sender instanceof Player) {
+            Messages.CLEARED_ITEM_DROPS_LOG_.counted(dropsCleared).send(sender);
+        }
     }
 
     @CommandMethod(value = "survivaladmin|sa join", requiredSender = Player.class)
