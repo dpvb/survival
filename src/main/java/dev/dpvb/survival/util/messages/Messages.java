@@ -25,25 +25,25 @@ public enum Messages implements CountableMessage {
     ADMIN_LEAVE_LOG_("<green>{player} <gray>left the game as an admin."),
     PLAYER_COUNT_LOG_("<gray>Player count: <green>{count}"),
     @Counting(value = "extraction_points",
-            zero = "<yellow>no extraction points</yellow>",
-            one = "<green>{count}</green> extraction point",
-            many = "<green>{count}</green> extraction points")
-    LOADED_EXTRACTIONS_LOG_("<gray>Loaded {extraction_points} in the arena."),
+            zero = "<yellow><bold>No</bold> extraction points loaded</yellow>",
+            one = "Loaded <green>{count}</green> extraction point",
+            many = "Loaded <green>{count}</green> extraction points")
+    LOADED_EXTRACTIONS_LOG_("<gray>{extraction_points} in the arena."),
     @Counting(value = "lootchests",
-            zero = "<yellow>no extraction points</yellow>",
-            one = "<green>{count}</green> extraction point",
-            many = "<green>{count}</green> extraction points")
-    LOADED_LOOTCHESTS_LOG_("<gray>Loaded {lootchests} in the arena."),
+            zero = "<yellow><bold>No</bold> lootchests loaded</yellow>",
+            one = "Loaded <green>{count}</green> lootchest",
+            many = "Loaded <green>{count}</green> lootchests")
+    LOADED_LOOTCHESTS_LOG_("<gray>{lootchests} in the arena."),
     @Counting(value = "spawnpoints",
-            zero = "<yellow>no spawnpoints</yellow>",
-            one = "<green>{count}</green> spawnpoint",
-            many = "<green>{count}</green> spawnpoints")
-    LOADED_SPAWNS_LOG_("<gray>Loaded {spawnpoints} in the arena."),
+            zero = "<yellow><bold>No</bold> spawnpoints loaded</yellow>",
+            one = "Loaded <green>{count}</green> spawnpoint",
+            many = "Loaded <green>{count}</green> spawnpoints")
+    LOADED_SPAWNS_LOG_("<gray>{spawnpoints} in the arena."),
     @Counting(value = "drops",
-            zero = "<yellow>no item drops</yellow>",
-            one = "<green>{count}</green> item drop",
-            many = "<green>{count}</green> item drops")
-    CLEARED_ITEM_DROPS_LOG_("<gray>Cleared {drops} from the ground."),
+            zero = "<yellow>No</yellow> item drops were cleared",
+            one = "Cleared <green>{count}</green> item drop",
+            many = "Cleared <green>{count}</green> item drops")
+    CLEARED_ITEM_DROPS_LOG_("<gray>{drops} from the ground."),
     ADMIN_JOIN_SELF("<gray>You have been added to the game."),
     ADMIN_LEAVE_SELF("<gray>You have been removed from the game."),
     @Counting(value = "tokens",
