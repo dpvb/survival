@@ -3,6 +3,7 @@ package dev.dpvb.survive.util.messages;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,9 +50,31 @@ public interface Message extends ComponentLike {
      * Create a message from a MiniMessage string.
      *
      * @param message a MiniMessage string
-     * @return a new message with the built MiniMessage string as its source
+     * @return a new Message with the MiniMessage string as its source
      */
     static Message mini(@NotNull String message) {
-        return from(Messages.build(message));
+        return from(MiniMessageService.build(message));
+    }
+
+    /**
+     * Create a message from a MiniMessage string using custom tag resolution.
+     *
+     * @param message a MiniMessage string
+     * @param resolver an additional tag resolver to use
+     * @return a new Message from the MiniMessage and <code>resolver</code>
+     */
+    static Message mini(@NotNull String message, @NotNull TagResolver resolver) {
+        return from(MiniMessageService.build(message, resolver));
+    }
+
+    /**
+     * Create a message from a MiniMessage string using custom tag resolution.
+     *
+     * @param message a MiniMessage string
+     * @param resolvers additional tag resolvers to use
+     * @return a new Message from the MiniMessage and <code>resolvers</code>
+     */
+    static Message mini(@NotNull String message, @NotNull TagResolver... resolvers) {
+        return from(MiniMessageService.build(message, resolvers));
     }
 }

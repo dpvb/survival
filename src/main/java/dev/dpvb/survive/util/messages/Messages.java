@@ -1,7 +1,6 @@
 package dev.dpvb.survive.util.messages;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
@@ -58,7 +57,6 @@ public enum Messages implements CountableMessage {
     ;
 
     private static final Map<Messages, Counting.Counted[]> COUNTING;
-    private static MiniMessage mm;
 
     static {
         COUNTING = new EnumMap<>(Messages.class);
@@ -87,7 +85,7 @@ public enum Messages implements CountableMessage {
 
     @Override
     public @NotNull Component asComponent() {
-        return build(message);
+        return MiniMessageService.build(message);
     }
 
     @Override
@@ -122,13 +120,5 @@ public enum Messages implements CountableMessage {
             ++c;
         }
         return Message.mini(sb.toString());
-    }
-
-    public static void setBuilder(MiniMessage mm) {
-        Messages.mm = mm;
-    }
-
-    static Component build(@NotNull String message) {
-        return mm.deserialize(message);
     }
 }
