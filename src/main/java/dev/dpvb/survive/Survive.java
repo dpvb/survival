@@ -3,6 +3,7 @@ package dev.dpvb.survive;
 import dev.dpvb.survive.chests.airdrop.AirdropManager;
 import dev.dpvb.survive.commands.Commands;
 import dev.dpvb.survive.events.FirstJoinListener;
+import dev.dpvb.survive.events.PlayerDeathListener;
 import dev.dpvb.survive.events.PlayerJoinQuitMessageListener;
 import dev.dpvb.survive.events.ServerPingListener;
 import dev.dpvb.survive.events.SpawnPlayerOnJoinListener;
@@ -95,6 +96,7 @@ public final class Survive extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerJoinQuitMessageListener(), this);
         Bukkit.getPluginManager().registerEvents(new ServerPingListener(), this);
         Bukkit.getPluginManager().registerEvents(new SpawnPlayerOnJoinListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
     }
 
     public static Survive getInstance() {
