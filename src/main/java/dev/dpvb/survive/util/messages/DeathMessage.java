@@ -38,7 +38,7 @@ public interface DeathMessage extends ComponentLike {
         final List<TagResolver> resolvers = new ArrayList<>(size);
         final var iterator = args.iterator();
         int naturalIndex = 1;
-        while (iterator.hasNext() && naturalIndex < size) {
+        while (iterator.hasNext() && naturalIndex <= size) {
             resolvers.add(Placeholder.component(String.valueOf(naturalIndex++), iterator.next()));
         }
         return MiniMessageService.build(miniMessage, resolvers.toArray(new TagResolver[0]));
