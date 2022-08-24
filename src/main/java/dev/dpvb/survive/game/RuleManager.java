@@ -16,7 +16,7 @@ public class RuleManager {
         if (rules.size() > 0) rules.clear();
         int naturalIndex = 1;
         for (String ruleText : Survive.Configuration.getRulesList()) {
-            rules.add(new Rule(naturalIndex, ruleText));
+            rules.add(new Rule(naturalIndex++, ruleText));
         }
     }
 
