@@ -3,6 +3,7 @@ package dev.dpvb.survive;
 import dev.dpvb.survive.chests.airdrop.AirdropManager;
 import dev.dpvb.survive.commands.Commands;
 import dev.dpvb.survive.events.FirstJoinListener;
+import dev.dpvb.survive.events.PlayerDeathListener;
 import dev.dpvb.survive.events.PlayerJoinQuitMessageListener;
 import dev.dpvb.survive.events.ServerPingListener;
 import dev.dpvb.survive.events.SpawnPlayerOnJoinListener;
@@ -12,7 +13,7 @@ import dev.dpvb.survive.npc.listeners.NPCListener;
 import dev.dpvb.survive.npc.NPCManager;
 import dev.dpvb.survive.npc.storage.StorageManager;
 import dev.dpvb.survive.stats.PlayerInfoManager;
-import dev.dpvb.survive.util.messages.Messages;
+import dev.dpvb.survive.util.messages.MiniMessageService;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
@@ -58,7 +59,7 @@ public final class Survive extends JavaPlugin {
     }
 
     private void setupMessages() {
-        Messages.setBuilder(MiniMessage.builder()
+        MiniMessageService.setMiniMessage(MiniMessage.builder()
                 .tags(TagResolver.standard())
                 .build());
     }
@@ -95,6 +96,7 @@ public final class Survive extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerJoinQuitMessageListener(), this);
         Bukkit.getPluginManager().registerEvents(new ServerPingListener(), this);
         Bukkit.getPluginManager().registerEvents(new SpawnPlayerOnJoinListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
     }
 
     public static Survive getInstance() {
