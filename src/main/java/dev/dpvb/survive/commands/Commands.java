@@ -12,6 +12,7 @@ import dev.dpvb.survive.Survive;
 import dev.dpvb.survive.chests.tiered.ChestManager;
 import dev.dpvb.survive.chests.airdrop.AirdropManager;
 import dev.dpvb.survive.game.GameManager;
+import dev.dpvb.survive.game.RuleManager;
 import dev.dpvb.survive.game.extraction.ExtractionRegionSelector;
 import dev.dpvb.survive.game.spawn.SpawnTool;
 import dev.dpvb.survive.mongo.MongoManager;
@@ -75,6 +76,13 @@ public class Commands {
     }
 
     // ------- GAME COMMANDS -------
+    @CommandMethod("rules")
+    @CommandPermission("survive.rules")
+    void rulesCommand(CommandSender sender) {
+        Message.mini("<blue><bold>Rules:").send(sender);
+        RuleManager.getInstance().getRules().forEach(sender::sendMessage);
+    }
+
     @CommandMethod(value = "survive join", requiredSender = Player.class)
     @CommandPermission("survive.join")
     void gameJoinCommand(Player player) {

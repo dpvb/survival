@@ -8,6 +8,7 @@ import dev.dpvb.survive.events.PlayerJoinQuitMessageListener;
 import dev.dpvb.survive.events.ServerPingListener;
 import dev.dpvb.survive.events.SpawnPlayerOnJoinListener;
 import dev.dpvb.survive.game.GameManager;
+import dev.dpvb.survive.game.RuleManager;
 import dev.dpvb.survive.mongo.MongoManager;
 import dev.dpvb.survive.npc.listeners.NPCListener;
 import dev.dpvb.survive.npc.NPCManager;
@@ -20,6 +21,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.List;
 
 public final class Survive extends JavaPlugin {
 
@@ -67,6 +70,8 @@ public final class Survive extends JavaPlugin {
     private void setupManagers() {
         // Setup Mongo
         MongoManager.getInstance();
+        // Setup Rules
+        RuleManager.getInstance().load();
         // Load Player Info Statistics from Mongo
         PlayerInfoManager.getInstance().load();
         // Load all Player Storage from Mongo
@@ -136,6 +141,14 @@ public final class Survive extends JavaPlugin {
 
         public static String getMongoPassword() {
             return config.getString("mongo.password");
+        }
+
+        public static String getRuleStyle() {
+            return config.getString("rule-style");
+        }
+
+        public static List<String> getRulesList() {
+            return config.getStringList("rules");
         }
     }
 }
