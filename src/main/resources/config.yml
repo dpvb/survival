@@ -3,6 +3,14 @@ mongo:
   username: "dummy_username"
   password: "dummy_password"
 
+rules:
+  - "This is a rule."
+  - "This is another rule."
+
+# <n> = natural index
+# <rule> = rule text
+rule-style: "<bold><n>.</bold> <rule>"
+
 loot:
   tier-one:
     # SWORDS
