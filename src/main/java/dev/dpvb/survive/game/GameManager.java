@@ -5,6 +5,7 @@ import dev.dpvb.survive.chests.airdrop.AirdropManager;
 import dev.dpvb.survive.chests.tiered.ChestManager;
 import dev.dpvb.survive.game.extraction.Extraction;
 import dev.dpvb.survive.game.tasks.ClearDrops;
+import dev.dpvb.survive.game.world.ArenaChunkTicketManager;
 import dev.dpvb.survive.mongo.MongoManager;
 import dev.dpvb.survive.mongo.models.Region;
 import dev.dpvb.survive.mongo.models.SpawnLocation;
@@ -32,6 +33,7 @@ public class GameManager implements ForwardingAudience {
     private final Set<Extraction> extractions = new HashSet<>();
     private final List<Location> spawnLocations = new ArrayList<>();
     private final AtomicBoolean state = new AtomicBoolean();
+    private final ArenaChunkTicketManager arenaChunkTicketManager;
     private final GameListener listener;
     private final World hubWorld;
     private final World arenaWorld;
@@ -41,6 +43,7 @@ public class GameManager implements ForwardingAudience {
     private GameManager(World hubWorld, World arenaWorld) {
         this.hubWorld = hubWorld;
         this.arenaWorld = arenaWorld;
+        arenaChunkTicketManager = new ArenaChunkTicketManager(this);
         listener = new GameListener(this);
     }
 
@@ -68,6 +71,10 @@ public class GameManager implements ForwardingAudience {
 
             // Initialize Tasks
             initTasks();
+
+            // Setup chunk ticket manager
+            arenaChunkTicketManager.calculate();
+            arenaChunkTicketManager.addTickets();
 
             // Register Listener
             Bukkit.getPluginManager().registerEvents(listener, Survive.getInstance());
@@ -106,6 +113,9 @@ public class GameManager implements ForwardingAudience {
 
             // Cleanup Tasks
             cleanupTasks();
+
+            // Remove chunk tickets
+            arenaChunkTicketManager.clearTickets();
 
             // Set state
             state.set(false);
@@ -312,6 +322,10 @@ public class GameManager implements ForwardingAudience {
         }
 
         Messages.CLEARED_ITEM_DROPS_LOG_.counted(items.size()).sendConsole();
+        // if no one is online now we can unload the chunks
+        if (Bukkit.isPrimaryThread() && Bukkit.getOnlinePlayers().isEmpty()) {
+            arenaChunkTicketManager.clearTickets();
+        }
         return items.size();
     }
 
@@ -361,6 +375,10 @@ public class GameManager implements ForwardingAudience {
     public Set<Extraction> getExtractions() {
         // prevent modification of the set
         return Collections.unmodifiableSet(extractions);
+    }
+
+    public ArenaChunkTicketManager getArenaChunkTicketManager() {
+        return arenaChunkTicketManager;
     }
 
     public World getHubWorld() {

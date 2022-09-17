@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -214,6 +215,14 @@ public class GameListener implements Listener {
         if (event.getBlock().getType() == Material.FIRE && event.isCancelled()) {
             // Re-allow "break"
             event.setCancelled(false);
+        }
+    }
+
+    // Load chunks ahead of player join
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onAsyncPlayerJoin(AsyncPlayerPreLoginEvent event) {
+        if (event.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+            manager.getArenaChunkTicketManager().addTickets();
         }
     }
 
