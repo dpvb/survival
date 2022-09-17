@@ -74,7 +74,6 @@ public class GameManager implements ForwardingAudience {
 
             // Setup chunk ticket manager
             arenaChunkTicketManager.calculate();
-            arenaChunkTicketManager.addTickets();
 
             // Register Listener
             Bukkit.getPluginManager().registerEvents(listener, Survive.getInstance());
@@ -322,10 +321,8 @@ public class GameManager implements ForwardingAudience {
         }
 
         Messages.CLEARED_ITEM_DROPS_LOG_.counted(items.size()).sendConsole();
-        // if no one is online now we can unload the chunks
-        if (Bukkit.isPrimaryThread() && Bukkit.getOnlinePlayers().isEmpty()) {
-            arenaChunkTicketManager.clearTickets();
-        }
+        // we can let the chunks unload now
+        arenaChunkTicketManager.clearTickets();
         return items.size();
     }
 

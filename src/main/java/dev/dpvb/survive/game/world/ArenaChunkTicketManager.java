@@ -50,7 +50,7 @@ public class ArenaChunkTicketManager {
         synchronized (arenaChunks) {
             arenaChunks.forEach(c -> util.getWorld().getChunkAtAsync(c.x(), c.z())
                     .thenAccept(loaded -> loaded.addPluginChunkTicket(Survive.getInstance())));
-            added = true;
+            added = !arenaChunks.isEmpty();
         }
     }
 
