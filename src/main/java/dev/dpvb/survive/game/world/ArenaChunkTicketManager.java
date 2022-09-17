@@ -55,6 +55,20 @@ public class ArenaChunkTicketManager {
     }
 
     /**
+     * Add tickets to all chunks within the arena's world border.
+     * <p>
+     * <b>This method is meant to block until all tickets have been added.</b>
+     */
+    public void addTicketsBlocking() {
+        synchronized (arenaChunks) {
+            for (ChunkCoordinate c : arenaChunks) {
+                util.getWorld().getChunkAt(c.x(), c.z()).addPluginChunkTicket(Survive.getInstance());
+            }
+            added = !arenaChunks.isEmpty();
+        }
+    }
+
+    /**
      * Clear all Survive tickets from the arena world.
      *
      * @implNote No-op if no tickets are currently added.

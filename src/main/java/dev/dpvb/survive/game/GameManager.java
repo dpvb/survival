@@ -315,6 +315,8 @@ public class GameManager implements ForwardingAudience {
      * @return The amount of drops cleared.
      */
     public int clearDropsOnGround() {
+        // load chunks NOW if necessary
+        arenaChunkTicketManager.addTicketsBlocking();
         Collection<Item> items = arenaWorld.getEntitiesByClass(Item.class);
         for (Item item : items) {
             item.remove();
