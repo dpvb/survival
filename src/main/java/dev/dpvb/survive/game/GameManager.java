@@ -348,7 +348,7 @@ public class GameManager implements ForwardingAudience {
 
     private void initTasks() {
         clearDropsTask = new ClearDrops(this);
-        clearDropsTask.runTaskTimer(Survive.getInstance(), 20L * 1800, 20L * 1800);
+        clearDropsTask.runTaskTimer(Survive.getInstance(), 20L * 1770, 20L * 1800);
     }
 
     private void cleanupTasks() {
