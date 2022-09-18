@@ -54,6 +54,7 @@ public enum Messages implements CountableMessage {
     SET_TOKEN_AMOUNT__("<gray>Set <green>{player}'s</green> token count to <green>{tokens}</green>."),
     CLEARING_DROPS_WARNING("<red>Item drops will be despawned in 30 seconds."),
     DESPAWNED_DROPS("<red>Item drops despawned."),
+    LOADING_CHUNKS_FOR_DROP_CLEAR("<yellow>Loading chunks to complete item drop clear task."),
     ;
 
     private static final Map<Messages, Counting.Counted[]> COUNTING;

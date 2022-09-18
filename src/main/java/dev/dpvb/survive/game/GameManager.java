@@ -22,6 +22,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
@@ -310,13 +311,30 @@ public class GameManager implements ForwardingAudience {
         }
     }
 
+
+    /**
+     * Clear drops in the arena and get the number of stacks cleared.
+     *
+     * @return a CompletableFuture of stacks cleared
+     */
+    public CompletableFuture<Integer> clearDropsOnGround() {
+        // clear sync if possible
+        if (arenaChunkTicketManager.isAdded()) {
+            final int value = clearDrops();
+            return CompletableFuture.completedFuture(value);
+        }
+        // load chunks (non-blocking)
+        Messages.LOADING_CHUNKS_FOR_DROP_CLEAR.sendConsole();
+        final CompletableFuture<Integer> result = new CompletableFuture<>();
+        arenaChunkTicketManager.addTicketsThen(() -> result.complete(clearDrops()));
+        return result;
+    }
+
     /**
      * Clears drops on ground and returns the amount cleared from the arena.
      * @return The amount of drops cleared.
      */
-    public int clearDropsOnGround() {
-        // load chunks NOW if necessary
-        arenaChunkTicketManager.addTicketsBlocking();
+    private int clearDrops() {
         Collection<Item> items = arenaWorld.getEntitiesByClass(Item.class);
         for (Item item : items) {
             item.remove();

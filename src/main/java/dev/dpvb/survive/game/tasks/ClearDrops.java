@@ -17,13 +17,13 @@ public class ClearDrops extends BukkitRunnable {
     @Override
     public void run() {
         manager.sendMessage(Messages.CLEARING_DROPS_WARNING);
-        // we need to make sure we load the chunks before we try to clear them
+        // have the server async load chunks ahead of our trying to clear them
         manager.getArenaChunkTicketManager().addTickets();
         Bukkit.getScheduler().runTaskLater(Survive.getInstance(), this::despawnItems, 20L * 30);
     }
 
     private void despawnItems() {
-        manager.clearDropsOnGround();
-        manager.sendMessage(Messages.DESPAWNED_DROPS);
+        // send message once clear is complete (in case it doesn't happen immediately)
+        manager.clearDropsOnGround().thenRunAsync(() -> manager.sendMessage(Messages.DESPAWNED_DROPS));
     }
 }

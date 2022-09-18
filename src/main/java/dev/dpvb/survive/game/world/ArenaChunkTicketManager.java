@@ -2,8 +2,10 @@ package dev.dpvb.survive.game.world;
 
 import dev.dpvb.survive.Survive;
 import dev.dpvb.survive.game.GameManager;
+import dev.dpvb.survive.game.world.util.AsyncChunkLoadUtil;
 import dev.dpvb.survive.game.world.util.WorldBorderChunkCalculator;
 import dev.dpvb.survive.game.world.util.ChunkCoordinate;
+import dev.dpvb.survive.util.computation.AsyncWait;
 
 import java.util.LinkedList;
 
@@ -11,6 +13,7 @@ public class ArenaChunkTicketManager {
     private final LinkedList<ChunkCoordinate> arenaChunks = new LinkedList<>();
     private final WorldBorderChunkCalculator util;
     private boolean added;
+    private boolean adding;
 
     public ArenaChunkTicketManager(GameManager manager) {
         this.util = new WorldBorderChunkCalculator(manager.getArenaWorld());
@@ -32,6 +35,7 @@ public class ArenaChunkTicketManager {
      * @see #clearTickets()
      */
     public void calculate() throws IllegalStateException {
+        if (adding) throw new IllegalStateException("Cannot calculate tickets while loading");
         if (added) throw new IllegalStateException("Tickets are currently added--run clearTickets() first.");
         synchronized (arenaChunks) {
             arenaChunks.clear();
@@ -42,43 +46,85 @@ public class ArenaChunkTicketManager {
     /**
      * Add tickets to all chunks within the arena's world border.
      *
-     * @implNote No-op if tickets have already been added.
+     * @implNote No-op if tickets are being adding, have already been added,
+     * or if the list of chunks to ticket is empty.
      * @see #isAdded()
      */
     public void addTickets() {
         if (added) return;
+        if (adding) return;
         synchronized (arenaChunks) {
-            arenaChunks.forEach(c -> util.getWorld().getChunkAtAsync(c.x(), c.z())
-                    .thenAccept(loaded -> loaded.addPluginChunkTicket(Survive.getInstance())));
-            added = !arenaChunks.isEmpty();
+            if (arenaChunks.isEmpty()) return;
         }
+        add();
     }
 
     /**
-     * Add tickets to all chunks within the arena's world border.
-     * <p>
-     * <b>This method is meant to block until all tickets have been added.</b>
+     * Add tickets to all chunks within the arena's world border, performing a
+     * task as soon as possible after.
+     *
+     * @param task a task to perform
+     * @implNote If no tickets have been or will be added, <code>task</code>
+     * will not run. If any tickets have already been added, <code>task</code>
+     * will run immediately. If tickets are currently being added, this method
+     * will schedule <code>task</code> to run after
      */
-    public void addTicketsBlocking() {
-        synchronized (arenaChunks) {
-            for (ChunkCoordinate c : arenaChunks) {
-                util.getWorld().getChunkAt(c.x(), c.z()).addPluginChunkTicket(Survive.getInstance());
+    public void addTicketsThen(Runnable task) {
+        if (added) {
+            task.run();
+        } else {
+            // no tickets have been added, check for adding
+            if (!adding) {
+                // no tickets are being added, add them
+                synchronized (arenaChunks) {
+                    if (arenaChunks.isEmpty()) return; // no-op
+                    // add tickets
+                    add();
+                }
             }
-            added = !arenaChunks.isEmpty();
+            // Wait for adding to finish, then run the task
+            new AsyncWait(() -> !adding, task).runTaskTimer(Survive.getInstance(), 0, 1);
+        }
+    }
+
+    private void add() {
+        final AsyncChunkLoadUtil load;
+        synchronized (arenaChunks) {
+            if (adding) throw new IllegalStateException();
+            adding = true;
+            load = new AsyncChunkLoadUtil(util.getWorld(), arenaChunks);
+        }
+        load.runTaskTimer(Survive.getInstance(), 0, 1);
+        new AsyncWait(load::isComplete, this::unlock).runTaskTimer(Survive.getInstance(), 0, 1);
+    }
+
+    private void unlock() {
+        synchronized (arenaChunks) {
+            added = true;
+            adding = false;
         }
     }
 
     /**
      * Clear all Survive tickets from the arena world.
      *
-     * @implNote No-op if no tickets are currently added.
+     * @implNote No-op if no tickets are currently added or being added.
      * @see #isAdded()
      */
     public void clearTickets() {
         if (!added) return;
+        if (adding) {
+            // clear as soon as possible
+            new AsyncWait(() -> !adding, this::clear).runTaskTimer(Survive.getInstance(), 0, 1);
+            return;
+        }
+        clear();
+    }
+
+    private void clear() {
         util.getWorld().removePluginChunkTickets(Survive.getInstance());
         synchronized (arenaChunks) {
-            added = false;
+            added = false; // no matter the complexity of the previous state there are no tickets added now
         }
     }
 }
