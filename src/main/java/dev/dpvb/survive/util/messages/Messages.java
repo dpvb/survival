@@ -53,8 +53,8 @@ public enum Messages implements CountableMessage {
     TOKEN_AMOUNT_SELF_("<gray>You have {tokens}."),
     SET_TOKEN_AMOUNT__("<gray>Set <green>{player}'s</green> token count to <green>{tokens}</green>."),
     CLEARING_DROPS_WARNING("<red>Item drops will be despawned in 30 seconds."),
-    CLEARING_DROPS_SKIP("<gray>The server <yellow>has been empty</yellow>. Skipping item drop despawn."),
-    CLEARING_DROPS_SKIP_NEXT("<yellow>The server is now empty. <gray>Item drop despawn may be skipped next time."),
+    CLEARING_DROPS_SKIP("<gray><yellow>The game has been empty.</yellow> Skipping item drop despawn."),
+    CLEARING_DROPS_SKIP_NEXT("<gray><yellow>The game is currently empty.</yellow> Item drop despawn may be skipped next time."),
     DESPAWNED_DROPS("<red>Item drops despawned."),
     LOADING_CHUNKS_FOR_DROP_CLEAR("<yellow>Loading chunks to complete item drop clear task."),
     ;
