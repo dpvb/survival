@@ -242,6 +242,8 @@ public class GameManager implements ForwardingAudience {
         }
         synchronized (players) {
             runSync.accept(players.add(player), player);
+            // Notify clear task
+            clearDropsTask.playerSinceLastClear();
         }
     }
 
