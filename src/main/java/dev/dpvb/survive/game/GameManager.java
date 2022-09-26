@@ -5,6 +5,7 @@ import dev.dpvb.survive.chests.airdrop.AirdropManager;
 import dev.dpvb.survive.chests.tiered.ChestManager;
 import dev.dpvb.survive.game.extraction.Extraction;
 import dev.dpvb.survive.game.tasks.ClearDrops;
+import dev.dpvb.survive.game.world.ArenaChunkTicketManager;
 import dev.dpvb.survive.mongo.MongoManager;
 import dev.dpvb.survive.mongo.models.Region;
 import dev.dpvb.survive.mongo.models.SpawnLocation;
@@ -21,6 +22,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
@@ -32,6 +34,7 @@ public class GameManager implements ForwardingAudience {
     private final Set<Extraction> extractions = new HashSet<>();
     private final List<Location> spawnLocations = new ArrayList<>();
     private final AtomicBoolean state = new AtomicBoolean();
+    private final ArenaChunkTicketManager arenaChunkTicketManager;
     private final GameListener listener;
     private final World hubWorld;
     private final World arenaWorld;
@@ -41,6 +44,7 @@ public class GameManager implements ForwardingAudience {
     private GameManager(World hubWorld, World arenaWorld) {
         this.hubWorld = hubWorld;
         this.arenaWorld = arenaWorld;
+        arenaChunkTicketManager = new ArenaChunkTicketManager(this);
         listener = new GameListener(this);
     }
 
@@ -68,6 +72,9 @@ public class GameManager implements ForwardingAudience {
 
             // Initialize Tasks
             initTasks();
+
+            // Setup chunk ticket manager
+            arenaChunkTicketManager.calculate();
 
             // Register Listener
             Bukkit.getPluginManager().registerEvents(listener, Survive.getInstance());
@@ -106,6 +113,9 @@ public class GameManager implements ForwardingAudience {
 
             // Cleanup Tasks
             cleanupTasks();
+
+            // Remove chunk tickets
+            arenaChunkTicketManager.clearTickets();
 
             // Set state
             state.set(false);
@@ -232,6 +242,8 @@ public class GameManager implements ForwardingAudience {
         }
         synchronized (players) {
             runSync.accept(players.add(player), player);
+            // Notify clear task
+            clearDropsTask.playerSinceLastClear();
         }
     }
 
@@ -301,23 +313,44 @@ public class GameManager implements ForwardingAudience {
         }
     }
 
+
+    /**
+     * Clear drops in the arena and get the number of stacks cleared.
+     *
+     * @return a CompletableFuture of stacks cleared
+     */
+    public CompletableFuture<Integer> clearDropsOnGround() {
+        // clear sync if possible
+        if (arenaChunkTicketManager.isAdded()) {
+            final int value = clearDrops();
+            return CompletableFuture.completedFuture(value);
+        }
+        // load chunks (non-blocking)
+        Messages.LOADING_CHUNKS_FOR_DROP_CLEAR.sendConsole();
+        final CompletableFuture<Integer> result = new CompletableFuture<>();
+        arenaChunkTicketManager.addTicketsThen(() -> result.complete(clearDrops()));
+        return result;
+    }
+
     /**
      * Clears drops on ground and returns the amount cleared from the arena.
      * @return The amount of drops cleared.
      */
-    public int clearDropsOnGround() {
+    private int clearDrops() {
         Collection<Item> items = arenaWorld.getEntitiesByClass(Item.class);
         for (Item item : items) {
             item.remove();
         }
 
         Messages.CLEARED_ITEM_DROPS_LOG_.counted(items.size()).sendConsole();
+        // we can let the chunks unload now
+        arenaChunkTicketManager.clearTickets();
         return items.size();
     }
 
     private void initTasks() {
         clearDropsTask = new ClearDrops(this);
-        clearDropsTask.runTaskTimer(Survive.getInstance(), 20L * 1800, 20L * 1800);
+        clearDropsTask.runTaskTimer(Survive.getInstance(), 20L * 1770, 20L * 1800);
     }
 
     private void cleanupTasks() {
@@ -361,6 +394,10 @@ public class GameManager implements ForwardingAudience {
     public Set<Extraction> getExtractions() {
         // prevent modification of the set
         return Collections.unmodifiableSet(extractions);
+    }
+
+    public ArenaChunkTicketManager getArenaChunkTicketManager() {
+        return arenaChunkTicketManager;
     }
 
     public World getHubWorld() {
