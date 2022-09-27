@@ -5,9 +5,8 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
-import java.util.function.Function;
 
-public class PointsExpansion implements Function<OfflinePlayer, @Nullable String> {
+public class PointsExpansion implements ProtoExpansion {
     @Override
     public @Nullable String apply(@Nullable OfflinePlayer player) {
         if (player == null) return null;

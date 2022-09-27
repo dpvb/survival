@@ -9,22 +9,22 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class SurviveExpansions extends PlaceholderExpansion {
-    final Map<String, Function<OfflinePlayer, @Nullable String>> protoExpansions = new HashMap<>();
+    final Map<String, ProtoExpansion> protoExpansions = new HashMap<>();
     final Survive plugin = Survive.getInstance();
 
-    public void addProtoExpansion(String params, Function<OfflinePlayer, @Nullable String> expansion) {
+    public void addProtoExpansion(String params, ProtoExpansion expansion) {
         protoExpansions.put(params, expansion);
     }
 
     @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
-        final var proto = protoExpansions.get(params);
+        final var split = params.split(":"); // split params into [0] = expansion, [1] = expansion params
+        final var proto = protoExpansions.get(split.length > 0 ? split[0] : params); // try to use split if possible
         if (proto == null) return null;
-        return proto.apply(player);
+        return proto.apply(player, params);
     }
 
     @Override
