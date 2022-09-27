@@ -7,6 +7,8 @@ description: '${project.description}'
 depend:
   - Citizens
   - Multiverse-Core
+softdepend:
+  - PlaceholderAPI
 libraries:
   - cloud.commandframework:cloud-paper:1.7.0
   - cloud.commandframework:cloud-annotations:1.7.0
