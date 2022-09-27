@@ -9,6 +9,7 @@ import dev.dpvb.survive.events.ServerPingListener;
 import dev.dpvb.survive.events.SpawnPlayerOnJoinListener;
 import dev.dpvb.survive.game.GameManager;
 import dev.dpvb.survive.game.RuleManager;
+import dev.dpvb.survive.integrations.placeholderapi.PlaceholderAPIHook;
 import dev.dpvb.survive.mongo.MongoManager;
 import dev.dpvb.survive.npc.listeners.NPCListener;
 import dev.dpvb.survive.npc.NPCManager;
@@ -42,6 +43,8 @@ public final class Survive extends JavaPlugin {
         setupCommands();
         // Register Listeners
         registerListeners();
+        // Register Placeholders
+        registerPlaceholders();
     }
 
     @Override
@@ -102,6 +105,14 @@ public final class Survive extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ServerPingListener(), this);
         Bukkit.getPluginManager().registerEvents(new SpawnPlayerOnJoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
+    }
+
+    private void registerPlaceholders() {
+        try {
+            new PlaceholderAPIHook();
+        } catch (IllegalStateException e) {
+            this.getLogger().info("PlaceholderAPI not found. Skipping placeholder registration.");
+        }
     }
 
     public static Survive getInstance() {
