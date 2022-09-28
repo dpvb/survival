@@ -141,10 +141,10 @@ public class GameManager implements ForwardingAudience {
                 // Teleport them to a random spawn location
                 spawnPlayer(gamer);
                 // Log the join
-                Messages.STANDARD_JOIN_LOG_.replace("{player}", gamer.getName()).sendConsole();
-                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).sendConsole();
+                Messages.game("log.join.standard_").replace("{player}", gamer.getName()).sendConsole();
+                Messages.game("log.playerCount_").replace("{count}", "" + players.size()).sendConsole();
             } else {
-                Messages.ALREADY_IN_GAME.send(gamer);
+                Messages.game("game.alreadyIn.player").send(gamer);
             }
         });
     }
@@ -164,8 +164,8 @@ public class GameManager implements ForwardingAudience {
                 if (dropAndClearInventory) dropAndClearInventory(gamer);
                 if (sendToHub) sendToHub(gamer);
                 // Log the leave
-                Messages.STANDARD_LEAVE_LOG_.replace("{player}", gamer.getName()).sendConsole();
-                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).sendConsole();
+                Messages.game("log.leave.standard_").replace("{player}", gamer.getName()).sendConsole();
+                Messages.game("log.playerCount_").replace("{count}", "" + players.size()).sendConsole();
             }
         });
     }
@@ -180,16 +180,16 @@ public class GameManager implements ForwardingAudience {
     public void adminJoin(@NotNull Player player) throws IllegalStateException {
         add(player, (added, gamer) -> {
             if (added) {
-                Messages.ADMIN_JOIN_SELF.send(gamer);
+                Messages.game("admin.join.self").send(gamer);
                 // Take them to the arena if needed
                 if (gamer.getWorld() != arenaWorld) {
                     spawnPlayer(gamer);
                 }
                 // Log the join
-                Messages.ADMIN_JOIN_LOG_.replace("{player}", gamer.getName()).sendConsole();
-                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).sendConsole();
+                Messages.game("log.join.admin_").replace("{player}", gamer.getName()).sendConsole();
+                Messages.game("log.playerCount_").replace("{count}", "" + players.size()).sendConsole();
             } else {
-                Messages.ALREADY_IN_GAME.send(gamer);
+                Messages.game("game.alreadyIn.player").send(gamer);
             }
         });
     }
@@ -203,12 +203,12 @@ public class GameManager implements ForwardingAudience {
     public void adminLeave(@NotNull Player player) {
         remove(player, (removed, gamer) -> {
             if (removed) {
-                Messages.ADMIN_LEAVE_SELF.send(gamer);
+                Messages.game("admin.leave.self").send(gamer);
                 // Log the leave
-                Messages.ADMIN_LEAVE_LOG_.replace("{player}", gamer.getName()).sendConsole();
-                Messages.PLAYER_COUNT_LOG_.replace("{count}", "" + players.size()).sendConsole();
+                Messages.game("log.leave.admin_").replace("{player}", gamer.getName()).sendConsole();
+                Messages.game("log.playerCount_").replace("{count}", "" + players.size()).sendConsole();
             } else {
-                Messages.NOT_IN_GAME.send(gamer);
+                Messages.game("game.notIn.player").send(gamer);
             }
         });
     }
@@ -282,7 +282,7 @@ public class GameManager implements ForwardingAudience {
             ));
         }
 
-        Messages.LOADED_EXTRACTIONS_LOG_.counted(extractions.size()).sendConsole();
+        Messages.Count.LOADED_EXTRACTIONS_LOG_.counted(extractions.size()).sendConsole();
     }
 
     /**
@@ -302,7 +302,7 @@ public class GameManager implements ForwardingAudience {
             ));
         }
 
-        Messages.LOADED_SPAWNS_LOG_.counted(spawnLocations.size()).sendConsole();
+        Messages.Count.LOADED_SPAWNS_LOG_.counted(spawnLocations.size()).sendConsole();
     }
 
     public void removeAllPlayers(boolean clearInventory) {
@@ -326,7 +326,7 @@ public class GameManager implements ForwardingAudience {
             return CompletableFuture.completedFuture(value);
         }
         // load chunks (non-blocking)
-        Messages.LOADING_CHUNKS_FOR_DROP_CLEAR.sendConsole();
+        Messages.game("system.delay.loadingChunksForDropClear").sendConsole();
         final CompletableFuture<Integer> result = new CompletableFuture<>();
         arenaChunkTicketManager.addTicketsThen(() -> result.complete(clearDrops()));
         return result;
@@ -342,7 +342,7 @@ public class GameManager implements ForwardingAudience {
             item.remove();
         }
 
-        Messages.CLEARED_ITEM_DROPS_LOG_.counted(items.size()).sendConsole();
+        Messages.Count.CLEARED_ITEM_DROPS_LOG_.counted(items.size()).sendConsole();
         // we can let the chunks unload now
         arenaChunkTicketManager.clearTickets();
         return items.size();

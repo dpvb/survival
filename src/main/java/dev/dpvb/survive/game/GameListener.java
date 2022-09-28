@@ -68,7 +68,7 @@ public class GameListener implements Listener {
         //noinspection ConstantConditions (there is a block)
         if (event.getClickedBlock().getType() == Material.BARREL) {
             event.setCancelled(true);
-            Messages.CANNOT_INTERACT.send(event.getPlayer());
+            Messages.game("player.cannotInteract").send(event.getPlayer());
             // TODO: Add particle effect
         }
     }
@@ -123,7 +123,7 @@ public class GameListener implements Listener {
         final var clickedBlock = event.getClickedBlock();
         //noinspection ConstantConditions (We know there is a block)
         if (!manager.getArenaWorld().getHighestBlockAt(clickedBlock.getLocation()).equals(clickedBlock)) {
-            Messages.AIRDROP_INCORRECT_PLACEMENT.send(player);
+            Messages.game("game.airdrop.incorrectPlacement").send(player);
             return;
         }
         if (item.isSimilar(AirdropManager.getInstance().getAirdropItem())) {
