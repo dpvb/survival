@@ -18,7 +18,7 @@ public class ClearDrops extends BukkitRunnable {
     @Override
     public void run() {
         if (playerSinceLastClear) {
-            manager.sendMessage(Messages.game("game.clearingDrops.warning"));
+            Messages.game("game.clearingDrops.warning").sendGame();
             // have the server async load chunks ahead of our trying to clear them
             manager.getArenaChunkTicketManager().addTickets();
         }
@@ -32,7 +32,7 @@ public class ClearDrops extends BukkitRunnable {
     private void despawnItems() {
         if (playerSinceLastClear) {
             // send message once clear is complete (in case it doesn't happen immediately)
-            manager.clearDropsOnGround().thenRunAsync(() -> manager.sendMessage(Messages.game("game.clearingDrops.despawned")));
+            manager.clearDropsOnGround().thenRunAsync(Messages.game("game.clearingDrops.despawned")::sendGame);
         } else {
             Messages.game("log.clearingDrops.skipping").sendConsole();
         }

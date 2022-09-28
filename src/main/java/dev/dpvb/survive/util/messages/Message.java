@@ -1,5 +1,6 @@
 package dev.dpvb.survive.util.messages;
 
+import dev.dpvb.survive.game.GameManager;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -16,6 +17,13 @@ public interface Message extends ComponentLike {
      */
     default void send(Audience audience) {
         audience.sendMessage(asComponent());
+    }
+
+    /**
+     * Send this message to all players in the game.
+     */
+    default void sendGame() {
+        send(GameManager.getInstance());
     }
 
     /**
