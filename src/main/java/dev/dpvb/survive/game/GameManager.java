@@ -74,7 +74,7 @@ public class GameManager implements ForwardingAudience {
             initTasks();
 
             // Setup chunk ticket manager
-            // arenaChunkTicketManager.calculate();
+            arenaChunkTicketManager.calculate();
 
             // Register Listener
             Bukkit.getPluginManager().registerEvents(listener, Survive.getInstance());
