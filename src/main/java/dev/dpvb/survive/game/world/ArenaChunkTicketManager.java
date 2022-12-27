@@ -3,20 +3,34 @@ package dev.dpvb.survive.game.world;
 import dev.dpvb.survive.Survive;
 import dev.dpvb.survive.game.GameManager;
 import dev.dpvb.survive.game.world.util.AsyncChunkLoadUtil;
-import dev.dpvb.survive.game.world.util.WorldBorderChunkCalculator;
 import dev.dpvb.survive.game.world.util.ChunkCoordinate;
+import dev.dpvb.survive.game.world.util.ConfigChunkCalculator;
 import dev.dpvb.survive.util.computation.AsyncWait;
 
 import java.util.LinkedList;
 
+/**
+ * Manages chunk tickets in the arena world.
+ * <p>
+ * Adding a chunk ticket makes the server keep a chunk loaded even in the
+ * absence of players. This is useful for managing the arena world, as item
+ * drops will not otherwise be detected if the chunk is not loaded.
+ *
+ * @author ms5984
+ */
 public class ArenaChunkTicketManager {
     private final LinkedList<ChunkCoordinate> arenaChunks = new LinkedList<>();
-    private final WorldBorderChunkCalculator util;
+    private final ConfigChunkCalculator util;
     private boolean added;
     private boolean adding;
 
+    /**
+     * Creates a new chunk ticket manager.
+     *
+     * @param manager the game manager
+     */
     public ArenaChunkTicketManager(GameManager manager) {
-        this.util = new WorldBorderChunkCalculator(manager.getArenaWorld());
+        this.util = new ConfigChunkCalculator(manager.getArenaWorld());
     }
 
     /**
@@ -29,7 +43,7 @@ public class ArenaChunkTicketManager {
     }
 
     /**
-     * Calculate and reload the list of chunks to be ticketed.
+     * Calculates and reloads the list of chunks to be ticketed.
      *
      * @throws IllegalStateException if tickets have not been removed
      * @see #clearTickets()
@@ -39,12 +53,12 @@ public class ArenaChunkTicketManager {
         if (added) throw new IllegalStateException("Tickets are currently added--run clearTickets() first.");
         synchronized (arenaChunks) {
             arenaChunks.clear();
-            arenaChunks.addAll(util.loadCenter().getValidChunks());
+            arenaChunks.addAll(util.loadCenter(Survive.Configuration.getArenaConfigSection()).getValidChunks());
         }
     }
 
     /**
-     * Add tickets to all chunks within the arena's world border.
+     * Adds tickets to all chunks.
      *
      * @implNote No-op if tickets are being adding, have already been added,
      * or if the list of chunks to ticket is empty.
@@ -60,8 +74,7 @@ public class ArenaChunkTicketManager {
     }
 
     /**
-     * Add tickets to all chunks within the arena's world border, performing a
-     * task as soon as possible after.
+     * Adds tickets to all chunks, performing a task as soon as possible after.
      *
      * @param task a task to perform
      * @implNote If no tickets have been or will be added, <code>task</code>
@@ -106,7 +119,7 @@ public class ArenaChunkTicketManager {
     }
 
     /**
-     * Clear all Survive tickets from the arena world.
+     * Clears all tickets from the arena world.
      *
      * @implNote No-op if no tickets are currently added or being added.
      * @see #isAdded()

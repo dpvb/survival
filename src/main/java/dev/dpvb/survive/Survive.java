@@ -145,6 +145,10 @@ public final class Survive extends JavaPlugin {
             return config.getConfigurationSection("token-trader");
         }
 
+        public static ConfigurationSection getArenaConfigSection() {
+            return config.getConfigurationSection("arena");
+        }
+
         public static String getMongoConnectionString() {
             return config.getString("mongo.connection-string");
         }

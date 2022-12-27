@@ -3,6 +3,12 @@ package dev.dpvb.survive.game.world.util;
 import org.bukkit.Chunk;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents a chunk location as chunk coordinates.
+ *
+ * @param x a chunk x coordinate
+ * @param z a chunk z coordinate
+ */
 public record ChunkCoordinate(int x, int z) implements Comparable<ChunkCoordinate> {
     ChunkCoordinate(Chunk chunk) {
         this(chunk.getX(), chunk.getZ());

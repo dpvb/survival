@@ -3,6 +3,12 @@ mongo:
   username: "dummy_username"
   password: "dummy_password"
 
+arena:
+  center:
+    x: 0.5
+    z: 0.5
+  size: 840
+
 rules:
   - "This is a rule."
   - "This is another rule."
