@@ -3,20 +3,20 @@ package dev.dpvb.survive.game.world;
 import dev.dpvb.survive.Survive;
 import dev.dpvb.survive.game.GameManager;
 import dev.dpvb.survive.game.world.util.AsyncChunkLoadUtil;
-import dev.dpvb.survive.game.world.util.WorldBorderChunkCalculator;
 import dev.dpvb.survive.game.world.util.ChunkCoordinate;
+import dev.dpvb.survive.game.world.util.ConfigChunkCalculator;
 import dev.dpvb.survive.util.computation.AsyncWait;
 
 import java.util.LinkedList;
 
 public class ArenaChunkTicketManager {
     private final LinkedList<ChunkCoordinate> arenaChunks = new LinkedList<>();
-    private final WorldBorderChunkCalculator util;
+    private final ConfigChunkCalculator util;
     private boolean added;
     private boolean adding;
 
     public ArenaChunkTicketManager(GameManager manager) {
-        this.util = new WorldBorderChunkCalculator(manager.getArenaWorld());
+        this.util = new ConfigChunkCalculator(manager.getArenaWorld());
     }
 
     /**
@@ -39,7 +39,7 @@ public class ArenaChunkTicketManager {
         if (added) throw new IllegalStateException("Tickets are currently added--run clearTickets() first.");
         synchronized (arenaChunks) {
             arenaChunks.clear();
-            arenaChunks.addAll(util.loadCenter().getValidChunks());
+            arenaChunks.addAll(util.loadCenter(Survive.Configuration.getArenaConfigSection()).getValidChunks());
         }
     }
 
