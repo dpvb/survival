@@ -88,7 +88,7 @@ public class Commands {
     void gameJoinCommand(Player player) {
         GameManager manager = GameManager.getInstance();
         if (!manager.isRunning()) {
-            Messages.GAME_NOT_RUNNING.send(player);
+            Messages.game("state.notRunning").send(player);
             return;
         }
         manager.join(player);
@@ -127,7 +127,7 @@ public class Commands {
             );
             player.sendMessage(Component.text("Your items will drop and remain here... hopefully.").decorate(TextDecoration.ITALIC).color(NamedTextColor.RED));
         } else {
-            Messages.NOT_IN_GAME.send(player);
+            Messages.game("game.notIn.player").send(player);
         }
     }
 
@@ -155,11 +155,11 @@ public class Commands {
             case "join" -> NPCManager.getInstance().addNPC(new JoinNPC(player.getLocation()));
             case "token-trader" -> NPCManager.getInstance().addNPC(new TokenTraderNPC(player.getLocation()));
             default -> {
-                Messages.INVALID_NPC_TYPE.send(player);
+                Messages.game("admin.setup.npc.invalid").send(player);
                 return;
             }
         }
-        Messages.NPC_CREATED.send(player);
+        Messages.game("admin.setup.npc.created").send(player);
     }
 
     // ------- STAT COMMANDS -------
@@ -181,14 +181,14 @@ public class Commands {
     @CommandPermission("survive.tokens")
     void tokenCommand(Player player) {
         int tokens = PlayerInfoManager.getInstance().getTokens(player.getUniqueId());
-        Messages.TOKEN_AMOUNT_SELF_.counted(tokens).send(player);
+        Messages.Count.TOKEN_AMOUNT_SELF_.counted(tokens).send(player);
     }
 
     @CommandMethod(value = "surviveadmin|sa token set <player> <tokens>")
     @CommandPermission("survive.admin.token.set")
     void tokenSetCommand(CommandSender sender, @Argument("player") Player player, @Argument("tokens") int tokens) {
         PlayerInfoManager.getInstance().setTokens(player.getUniqueId(), tokens);
-        Messages.SET_TOKEN_AMOUNT__.replace("{player}", player.getName()).replace("{tokens}", "" + tokens).send(sender);
+        Messages.game("admin.setTokens__").replace("{player}", player.getName()).replace("{tokens}", "" + tokens).send(sender);
     }
 
     // ------- SETUP COMMANDS -------
@@ -212,22 +212,22 @@ public class Commands {
     @CommandPermission("survive.admin.start")
     void startGameCommand(CommandSender sender) {
         if (GameManager.getInstance().isRunning()) {
-            Messages.GAME_RUNNING.send(sender);
+            Messages.game("state.isRunning").send(sender);
             return;
         }
         GameManager.getInstance().start();
-        Messages.GAME_STARTED.send(sender);
+        Messages.game("state.started").send(sender);
     }
 
     @CommandMethod(value = "surviveadmin|sa stop")
     @CommandPermission("survive.admin.stop")
     void stopGameCommand(CommandSender sender) {
         if (!GameManager.getInstance().isRunning()) {
-            Messages.GAME_NOT_RUNNING.send(sender);
+            Messages.game("state.notRunning").send(sender);
             return;
         }
         GameManager.getInstance().stop();
-        Messages.GAME_STOPPED.send(sender);
+        Messages.game("state.stopped").send(sender);
     }
 
     // ------- OTHER COMMANDS -------
@@ -241,7 +241,7 @@ public class Commands {
     @CommandPermission("survive.admin.savechests")
     void saveChestsCommand(Player player, @Argument("radius") int radius) {
         ChestManager.getInstance().saveChestsToMongo(player.getLocation(), radius);
-        Messages.SAVED_CHESTS.send(player);
+        Messages.game("admin.setup.chestsSaved").send(player);
     }
 
     @CommandMethod(value = "surviveadmin|sa cleardrops")
@@ -249,11 +249,11 @@ public class Commands {
     void clearItemDrops(CommandSender sender) {
         final var result = GameManager.getInstance().clearDropsOnGround();
         if (!result.isDone() && sender instanceof Player) {
-            Messages.LOADING_CHUNKS_FOR_DROP_CLEAR.send(sender);
+            Messages.game("system.delay.loadingChunksForDropClear").send(sender);
         }
         result.thenAccept(dropsCleared -> {
             if (sender instanceof Player) {
-                Messages.CLEARED_ITEM_DROPS_LOG_.counted(dropsCleared).send(sender);
+                Messages.Count.CLEARED_ITEM_DROPS_LOG_.counted(dropsCleared).send(sender);
             }
         });
     }
@@ -264,7 +264,7 @@ public class Commands {
     void adminJoin(Player player) {
         GameManager manager = GameManager.getInstance();
         if (!manager.isRunning()) {
-            Messages.GAME_NOT_RUNNING.send(player);
+            Messages.game("state.notRunning").send(player);
             return;
         }
         manager.adminJoin(player);
@@ -276,7 +276,7 @@ public class Commands {
     void adminLeave(Player player) {
         GameManager manager = GameManager.getInstance();
         if (!manager.isRunning()) {
-            Messages.GAME_NOT_RUNNING.send(player);
+            Messages.game("state.notRunning").send(player);
             return;
         }
         manager.adminLeave(player);

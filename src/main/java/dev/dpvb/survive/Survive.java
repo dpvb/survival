@@ -15,6 +15,7 @@ import dev.dpvb.survive.npc.listeners.NPCListener;
 import dev.dpvb.survive.npc.NPCManager;
 import dev.dpvb.survive.npc.storage.StorageManager;
 import dev.dpvb.survive.stats.PlayerInfoManager;
+import dev.dpvb.survive.util.messages.Messages;
 import dev.dpvb.survive.util.messages.MiniMessageService;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -68,6 +69,8 @@ public final class Survive extends JavaPlugin {
         MiniMessageService.setMiniMessage(MiniMessage.builder()
                 .tags(TagResolver.standard())
                 .build());
+        // load resource bundle
+        Messages.init();
     }
 
     private void setupManagers() {
