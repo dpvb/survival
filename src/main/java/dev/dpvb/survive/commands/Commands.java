@@ -33,6 +33,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -205,6 +206,13 @@ public class Commands {
     @CommandPermission("survive.admin.spawn.set")
     void setArenaSpawnsCommand(Player player) {
         new SpawnTool(player);
+    }
+
+    @CommandMethod(value = "surviveadmin|sa clearspawns", requiredSender = Player.class)
+    @CommandPermission("survive.admin.spawn.clear")
+    void clearArenaSpawnsCommand(Player player) {
+        MongoManager.getInstance().getSpawnLocationService().deleteAll();
+        Message.mini("<rainbow>Cleared all spawns from Mongo").send(player);
     }
 
     // ------- STATE COMMANDS -------
