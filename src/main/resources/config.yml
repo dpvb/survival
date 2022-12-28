@@ -17,6 +17,24 @@ rules:
 # <rule> = rule text
 rule-style: "<bold><n>.</bold> <rule>"
 
+airdrop-spawning:
+  # how far from a player a location must be to be considered
+  min-distance-to-nearest-player: 45
+  # airdrop spawn frequency in minutes
+  # formula:
+  # Let
+  #  n = player count
+  # f(n) = (((ceil - floor - (n - 1) * scale) + floor) * fuzz
+  frequency:
+    # the average minimum time between airdrops
+    floor: 60
+    # the average maximum time between airdrops
+    ceil: 120
+    # player count multiplier: the higher the player count, the more frequent airdrops will be
+    scale: 1.3
+    # the range of randomness applied to the final frequency
+    fuzz: 8
+
 loot:
   tier-one:
     # SWORDS

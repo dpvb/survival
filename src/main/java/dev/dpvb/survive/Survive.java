@@ -149,6 +149,10 @@ public final class Survive extends JavaPlugin {
             return config.getConfigurationSection("arena");
         }
 
+        public static ConfigurationSection getAirdropSpawningSection() {
+            return config.getConfigurationSection("airdrop-spawning");
+        }
+
         public static String getMongoConnectionString() {
             return config.getString("mongo.connection-string");
         }
