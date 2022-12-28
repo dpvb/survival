@@ -5,6 +5,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class NaturalAirdropSpawn extends BukkitRunnable {
     private final GameManager manager;
+    private boolean spawned;
 
     public NaturalAirdropSpawn(GameManager manager) {
         this.manager = manager;
@@ -12,5 +13,8 @@ public class NaturalAirdropSpawn extends BukkitRunnable {
 
     @Override
     public void run() {
+        if (!spawned && !isCancelled()) {
+            // TODO
+        }
     }
 }

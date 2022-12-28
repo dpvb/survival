@@ -24,7 +24,7 @@ airdrop-spawning:
   # formula:
   # Let
   #  n = player count
-  # f(n) = (((ceil - floor - (n - 1) * scale) + floor) * fuzz
+  # f(n) = (((ceil - floor - scale^(n - 1)) + floor) + rng(-fuzz, fuzz) + 1
   frequency:
     # the average minimum time between airdrops
     floor: 60
