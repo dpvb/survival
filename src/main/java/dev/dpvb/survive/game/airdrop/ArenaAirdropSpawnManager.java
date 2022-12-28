@@ -1,5 +1,7 @@
 package dev.dpvb.survive.game.airdrop;
 
+import dev.dpvb.survive.Survive;
+import dev.dpvb.survive.game.GameManager;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +14,36 @@ import java.util.List;
  * @author ms5984
  */
 public class ArenaAirdropSpawnManager {
+    final NextAirdropCalculator calculator;
+    final ProtoLocationGenerator locationGenerator;
+
+    public ArenaAirdropSpawnManager(GameManager manager) {
+        final var frequencySection = Survive.Configuration.getAirdropSpawningSection().getConfigurationSection("frequency");
+        if (frequencySection == null) {
+            throw new IllegalStateException("Missing frequency subsection");
+        }
+        this.calculator = new NextAirdropCalculator(frequencySection);
+        this.locationGenerator = new ProtoLocationGenerator(manager.getSpawnLocationsCopy());
+    }
+
+    /**
+     * Gets the time-to-next-drop calculator util.
+     *
+     * @return the calculator
+     */
+    public NextAirdropCalculator getCalculator() {
+        return calculator;
+    }
+
+    /**
+     * Gets the airdrop proto location generator util.
+     *
+     * @return the proto location generator
+     */
+    public ProtoLocationGenerator getLocationGenerator() {
+        return locationGenerator;
+    }
+
     /**
      * Tests spawn location fitness--whether it is far enough from a list of players.
      *

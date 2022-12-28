@@ -396,6 +396,18 @@ public class GameManager implements ForwardingAudience {
         return Collections.unmodifiableSet(extractions);
     }
 
+    /**
+     * Gets a copy of the game's current list of spawn locations.
+     * <p>
+     * Each element is cloned, so modifying the list will not affect the game.
+     *
+     * @return a list of spawn locations
+     */
+    public List<Location> getSpawnLocationsCopy() {
+        // returned list contains copies of the locations
+        return spawnLocations.stream().map(Location::clone).toList();
+    }
+
     public ArenaChunkTicketManager getArenaChunkTicketManager() {
         return arenaChunkTicketManager;
     }
