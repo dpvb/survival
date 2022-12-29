@@ -3,6 +3,7 @@ package dev.dpvb.survive.game;
 import dev.dpvb.survive.Survive;
 import dev.dpvb.survive.chests.airdrop.AirdropManager;
 import dev.dpvb.survive.chests.tiered.ChestManager;
+import dev.dpvb.survive.game.airdrop.ArenaAirdropSpawnManager;
 import dev.dpvb.survive.game.extraction.Extraction;
 import dev.dpvb.survive.game.tasks.ClearDrops;
 import dev.dpvb.survive.game.world.ArenaChunkTicketManager;
@@ -40,12 +41,14 @@ public class GameManager implements ForwardingAudience {
     private final World arenaWorld;
     private Extraction.PollingTask extractionPoller;
     private ClearDrops clearDropsTask;
+    private final ArenaAirdropSpawnManager randomAirdropManager;
 
     private GameManager(World hubWorld, World arenaWorld) {
         this.hubWorld = hubWorld;
         this.arenaWorld = arenaWorld;
         arenaChunkTicketManager = new ArenaChunkTicketManager(this);
         listener = new GameListener(this);
+        randomAirdropManager = new ArenaAirdropSpawnManager(this);
     }
 
     /**
@@ -351,6 +354,8 @@ public class GameManager implements ForwardingAudience {
     private void initTasks() {
         clearDropsTask = new ClearDrops(this);
         clearDropsTask.runTaskTimer(Survive.getInstance(), 20L * 1770, 20L * 1800);
+
+        randomAirdropManager.startAirdropTask();
     }
 
     private void cleanupTasks() {
@@ -429,5 +434,9 @@ public class GameManager implements ForwardingAudience {
             player.getWorld().dropItemNaturally(player.getLocation(), item);
         }
         player.getInventory().clear();
+    }
+
+    public int getPlayerCount() {
+        return players.size();
     }
 }

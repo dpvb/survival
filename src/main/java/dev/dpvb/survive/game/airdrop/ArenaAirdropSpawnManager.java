@@ -2,8 +2,10 @@ package dev.dpvb.survive.game.airdrop;
 
 import dev.dpvb.survive.Survive;
 import dev.dpvb.survive.game.GameManager;
+import dev.dpvb.survive.game.tasks.NaturalAirdropSpawn;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
+import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -16,14 +18,33 @@ import java.util.List;
 public class ArenaAirdropSpawnManager {
     final NextAirdropCalculator calculator;
     final ProtoLocationGenerator locationGenerator;
+    private NaturalAirdropSpawn current;
+    private boolean active = false;
+    private GameManager manager;
 
     public ArenaAirdropSpawnManager(GameManager manager) {
+        this.manager = manager;
         final var frequencySection = Survive.Configuration.getAirdropSpawningSection().getConfigurationSection("frequency");
         if (frequencySection == null) {
             throw new IllegalStateException("Missing frequency subsection");
         }
         this.calculator = new NextAirdropCalculator(frequencySection);
         this.locationGenerator = new ProtoLocationGenerator(manager.getSpawnLocationsCopy());
+    }
+
+    /**
+     * Starts an Airdrop Task that will spawn in the map based on a time provided by the NextAirdropCalculator.
+     * 
+     * @see NextAirdropCalculator#calculate(int)
+     */
+    public void startAirdropTask() {
+        if (active) {
+            return;
+        }
+
+        active = true;
+        current = new NaturalAirdropSpawn(manager);
+        current.runTaskLater(Survive.getInstance(), 20L * calculator.calculate(manager.getPlayerCount()));
     }
 
     /**
