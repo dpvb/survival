@@ -4,6 +4,7 @@ import dev.dpvb.survive.Survive;
 import dev.dpvb.survive.chests.LootSource;
 import dev.dpvb.survive.chests.LootableChest;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -48,6 +49,6 @@ public class LootChest extends LootableChest {
 
     @Override
     protected String hologramText() {
-        return "TIER " + tier.name();
+        return tier.getHoloColor() + "★ TIER " + tier.getHoloTier();
     }
 }
