@@ -56,4 +56,9 @@ public class AirdropChest extends LootableChest implements Listener {
 
         open(event.getPlayer());
     }
+
+    @Override
+    protected String hologramText() {
+        return "AIRDROP";
+    }
 }

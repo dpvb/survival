@@ -9,6 +9,7 @@ depend:
   - Multiverse-Core
 softdepend:
   - PlaceholderAPI
+  - HolographicDisplays
 libraries:
   - cloud.commandframework:cloud-paper:1.7.0
   - cloud.commandframework:cloud-annotations:1.7.0
