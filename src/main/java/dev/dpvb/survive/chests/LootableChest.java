@@ -1,7 +1,10 @@
 package dev.dpvb.survive.chests;
 
 import com.destroystokyo.paper.ParticleBuilder;
+import dev.dpvb.survive.Survive;
 import dev.dpvb.survive.gui.InventoryWrapper;
+import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
+import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -10,6 +13,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Lidded;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class LootableChest {
@@ -17,6 +21,9 @@ public abstract class LootableChest {
     protected final Material material;
     protected final BlockFace facing;
     protected InventoryWrapper wrapper;
+
+    protected final static HolographicDisplaysAPI holoAPI = Survive.getHoloAPI();
+    protected Hologram hologram;
 
     protected LootableChest(@NotNull Block block, Material material, BlockFace facing) {
         this.block = block;
@@ -39,6 +46,8 @@ public abstract class LootableChest {
             dir.setFacing(facing);
         }
         block.setBlockData(data);
+
+        generateHologram();
     }
 
     public void open(Player player) {
@@ -68,6 +77,9 @@ public abstract class LootableChest {
         // Unregister wrapper
         wrapper.unregister();
 
+        // Remove hologram
+        deleteHologram();
+
         // capture block data for particle effect
         final var data = block.getBlockData();
 
@@ -89,4 +101,17 @@ public abstract class LootableChest {
     public final @NotNull Block getBlock() {
         return block;
     }
+
+    private void generateHologram() {
+        final Vector hologramOffset = new Vector(0.5, 1.5, 0.5);
+        hologram = holoAPI.createHologram(block.getLocation().add(hologramOffset));
+        hologram.getLines().appendText(hologramText());
+    }
+
+    private void deleteHologram() {
+        hologram.delete();
+        hologram = null;
+    }
+
+    protected abstract String hologramText();
 }

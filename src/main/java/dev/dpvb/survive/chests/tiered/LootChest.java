@@ -45,4 +45,9 @@ public class LootChest extends LootableChest {
                 respawnTime * 20L
         );
     }
+
+    @Override
+    protected String hologramText() {
+        return "TIER " + tier.name();
+    }
 }
