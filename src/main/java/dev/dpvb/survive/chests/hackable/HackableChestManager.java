@@ -29,6 +29,7 @@ public class HackableChestManager implements LootSource {
         for (HackableChest chest : hackableChests) {
             chest.destroy();
         }
+        hackableChests.clear();
         clearing.set(false);
     }
 

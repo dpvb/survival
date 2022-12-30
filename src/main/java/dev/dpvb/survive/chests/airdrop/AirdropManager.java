@@ -93,6 +93,7 @@ public class AirdropManager implements LootSource {
         for (AirdropChest airdropChest : airdropChests) {
             airdropChest.destroy();
         }
+        airdropChests.clear();
         clearing.set(false);
     }
 
