@@ -92,6 +92,11 @@ loot:
       chance: 0.5
     diamond_axe:
       chance: 0.65
+  hackable:
+    netherite_sword:
+      chance: 0.8
+    netherite_axe:
+      chance: 0.8
 
 enchanting:
   basic:

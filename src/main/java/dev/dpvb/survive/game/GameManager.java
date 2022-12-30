@@ -2,6 +2,7 @@ package dev.dpvb.survive.game;
 
 import dev.dpvb.survive.Survive;
 import dev.dpvb.survive.chests.airdrop.AirdropManager;
+import dev.dpvb.survive.chests.hackable.HackableChestManager;
 import dev.dpvb.survive.chests.tiered.ChestManager;
 import dev.dpvb.survive.game.airdrop.ArenaAirdropSpawnManager;
 import dev.dpvb.survive.game.extraction.Extraction;
@@ -123,6 +124,9 @@ public class GameManager implements ForwardingAudience {
 
             // Remove Airdrops from the Arena
             AirdropManager.getInstance().clearAirdrops();
+
+            // Remove Hackable Chests from the Arena
+            HackableChestManager.getInstance().clearHackableChests();
 
             // Cleanup Tasks
             cleanupTasks();

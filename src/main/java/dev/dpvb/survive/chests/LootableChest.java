@@ -102,7 +102,7 @@ public abstract class LootableChest {
         return block;
     }
 
-    private void generateHologram() {
+    protected void generateHologram() {
         final Vector hologramOffset = new Vector(0.5, 1.5, 0.5);
         hologram = holoAPI.createHologram(block.getLocation().add(hologramOffset));
         hologram.getLines().appendText(hologramText());

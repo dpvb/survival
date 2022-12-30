@@ -9,6 +9,7 @@ import cloud.commandframework.extra.confirmation.CommandConfirmationManager;
 import cloud.commandframework.meta.SimpleCommandMeta;
 import cloud.commandframework.paper.PaperCommandManager;
 import dev.dpvb.survive.Survive;
+import dev.dpvb.survive.chests.hackable.HackableChestManager;
 import dev.dpvb.survive.chests.tiered.ChestManager;
 import dev.dpvb.survive.chests.airdrop.AirdropManager;
 import dev.dpvb.survive.game.GameManager;
@@ -35,6 +36,8 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -242,7 +245,13 @@ public class Commands {
     @CommandMethod(value = "survive test", requiredSender = Player.class)
     @CommandPermission("survive.test")
     void testCommand(Player player) {
-        player.getInventory().addItem(AirdropManager.getInstance().getAirdropItem());
+        Block targetBlock = player.getTargetBlock(5);
+        if (targetBlock == null) {
+            return;
+        }
+
+        Location location = targetBlock.getLocation().add(0, 1, 0);
+        HackableChestManager.getInstance().spawnHackableChest(location);
     }
 
     @CommandMethod(value = "surviveadmin|sa savechests <radius>", requiredSender = Player.class)
