@@ -109,8 +109,9 @@ public abstract class LootableChest {
     }
 
     private void deleteHologram() {
-        hologram.delete();
-        hologram = null;
+        if (hologram != null) {
+            hologram.delete();
+        }
     }
 
     protected abstract String hologramText();
