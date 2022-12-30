@@ -3,9 +3,10 @@ package dev.dpvb.survive.game.airdrop;
 import dev.dpvb.survive.Survive;
 import dev.dpvb.survive.game.GameManager;
 import dev.dpvb.survive.game.tasks.NaturalAirdropSpawn;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
-import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -16,11 +17,11 @@ import java.util.List;
  * @author ms5984
  */
 public class ArenaAirdropSpawnManager {
-    final NextAirdropCalculator calculator;
-    final ProtoLocationGenerator locationGenerator;
-    private NaturalAirdropSpawn current;
-    private boolean active = false;
-    private GameManager manager;
+    final GameManager manager;
+    private final NextAirdropCalculator calculator;
+    private final RandomLocationGenerator locationGenerator;
+    private List<Location> cachedProtoSpawns;
+    private BukkitTask task;
 
     public ArenaAirdropSpawnManager(GameManager manager) {
         this.manager = manager;
@@ -29,31 +30,54 @@ public class ArenaAirdropSpawnManager {
             throw new IllegalStateException("Missing frequency subsection");
         }
         this.calculator = new NextAirdropCalculator(frequencySection);
-        this.locationGenerator = new ProtoLocationGenerator(manager.getSpawnLocationsCopy());
+        this.locationGenerator = new RandomLocationGenerator(this::getCachedProtoSpawns);
     }
 
     /**
-     * Starts an Airdrop Task that will spawn in the map based on a time provided by the NextAirdropCalculator.
-     * 
-     * @see NextAirdropCalculator#calculate(int)
-     */
-    public void startAirdropTask() {
-        if (active) {
-            return;
-        }
-
-        active = true;
-        current = new NaturalAirdropSpawn(manager);
-        current.runTaskLater(Survive.getInstance(), 20L * calculator.calculate(manager.getPlayerCount()));
-    }
-
-    /**
-     * Gets the time-to-next-drop calculator util.
+     * Schedules the next natural airdrop spawn.
      *
-     * @return the calculator
+     * @return the time in minutes until the next natural airdrop spawn
      */
-    public NextAirdropCalculator getCalculator() {
-        return calculator;
+    public int scheduleNextDrop() {
+        final int nextAirdrop;
+        synchronized (this) {
+            nextAirdrop = calculator.calculate(manager.getPlayerCount());
+            task = Bukkit.getScheduler().runTaskLater(Survive.getInstance(), this::scheduleDrop, 20L * nextAirdrop * 60L);
+        }
+        return nextAirdrop;
+    }
+
+    /**
+     * Stops the current schedule of natural airdrop spawning.
+     */
+    public void stopScheduling() {
+        synchronized (this) {
+            if (task != null && !task.isCancelled()) {
+                task.cancel();
+            }
+            task = null;
+        }
+    }
+
+    private void scheduleDrop() {
+        // Starts a sync task to spawn the airdrop
+        new NaturalAirdropSpawn(this).runTaskTimer(Survive.getInstance(), 0L, 1L);
+    }
+
+    private List<Location> getCachedProtoSpawns() {
+        if (cachedProtoSpawns == null) {
+            throw new IllegalStateException("Spawn locations not yet cached");
+        }
+        return cachedProtoSpawns;
+    }
+
+    /**
+     * Sets the cached list of proto-spawn locations.
+     *
+     * @param cachedSpawnLocations the new list of proto-spawn locations
+     */
+    public void setCachedProtoSpawns(List<Location> cachedSpawnLocations) {
+        this.cachedProtoSpawns = cachedSpawnLocations;
     }
 
     /**
@@ -61,7 +85,7 @@ public class ArenaAirdropSpawnManager {
      *
      * @return the proto location generator
      */
-    public ProtoLocationGenerator getLocationGenerator() {
+    public RandomLocationGenerator getLocationGenerator() {
         return locationGenerator;
     }
 

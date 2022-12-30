@@ -5,9 +5,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import static java.lang.Math.max;
-import static java.lang.Math.pow;
-
 /**
  * Calculates time till the next airdrop spawn in minutes.
  * <p>
@@ -26,8 +23,8 @@ public final class NextAirdropCalculator {
      * @param ceil the maximum average time to the next drop
      * @param floor the minimum average time to the next drop
      * @param scale how rapidly the average time decreases with player count
-     * @throws IllegalArgumentException if {@code fuzz < 0},
-     * {@code ceil <= floor} or {@code floor <= fuzz}
+     * @throws IllegalArgumentException if {@code floor <= 0} or
+     * {@code ceil <= floor}
      */
     NextAirdropCalculator(int ceil, int floor, double scale) throws IllegalArgumentException {
         if (ceil <= floor) {

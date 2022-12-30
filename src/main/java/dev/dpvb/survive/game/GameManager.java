@@ -10,6 +10,7 @@ import dev.dpvb.survive.game.world.ArenaChunkTicketManager;
 import dev.dpvb.survive.mongo.MongoManager;
 import dev.dpvb.survive.mongo.models.Region;
 import dev.dpvb.survive.mongo.models.SpawnLocation;
+import dev.dpvb.survive.util.messages.Message;
 import dev.dpvb.survive.util.messages.Messages;
 import net.kyori.adventure.audience.ForwardingAudience;
 import org.bukkit.Bukkit;
@@ -36,19 +37,19 @@ public class GameManager implements ForwardingAudience {
     private final List<Location> spawnLocations = new ArrayList<>();
     private final AtomicBoolean state = new AtomicBoolean();
     private final ArenaChunkTicketManager arenaChunkTicketManager;
+    private final ArenaAirdropSpawnManager randomAirdropManager;
     private final GameListener listener;
     private final World hubWorld;
     private final World arenaWorld;
     private Extraction.PollingTask extractionPoller;
     private ClearDrops clearDropsTask;
-    private final ArenaAirdropSpawnManager randomAirdropManager;
 
     private GameManager(World hubWorld, World arenaWorld) {
         this.hubWorld = hubWorld;
         this.arenaWorld = arenaWorld;
         arenaChunkTicketManager = new ArenaChunkTicketManager(this);
-        listener = new GameListener(this);
         randomAirdropManager = new ArenaAirdropSpawnManager(this);
+        listener = new GameListener(this);
     }
 
     /**
@@ -76,8 +77,15 @@ public class GameManager implements ForwardingAudience {
             // Initialize Tasks
             initTasks();
 
-            // Setup chunk ticket manager
+            // Set up chunk ticket manager
             arenaChunkTicketManager.calculate();
+
+            // Set up natural airdrop spawn manager
+            randomAirdropManager.setCachedProtoSpawns(getSpawnLocationsCopy());
+            Message.mini("Repopulating airdrop spawns").sendConsole();
+            randomAirdropManager.getLocationGenerator().repopulate();
+            final int nextAirdrop = randomAirdropManager.scheduleNextDrop();
+            Message.mini("Starting regular airdrop spawning. Next airdrop: " + nextAirdrop).sendConsole();
 
             // Register Listener
             Bukkit.getPluginManager().registerEvents(listener, Survive.getInstance());
@@ -119,6 +127,10 @@ public class GameManager implements ForwardingAudience {
 
             // Remove chunk tickets
             arenaChunkTicketManager.clearTickets();
+
+            // Teardown natural airdrop spawn manager
+            randomAirdropManager.stopScheduling();
+            randomAirdropManager.setCachedProtoSpawns(null);
 
             // Set state
             state.set(false);
@@ -354,8 +366,6 @@ public class GameManager implements ForwardingAudience {
     private void initTasks() {
         clearDropsTask = new ClearDrops(this);
         clearDropsTask.runTaskTimer(Survive.getInstance(), 20L * 1770, 20L * 1800);
-
-        randomAirdropManager.startAirdropTask();
     }
 
     private void cleanupTasks() {
