@@ -266,6 +266,13 @@ public class Commands {
         });
     }
 
+    @CommandMethod(value = "surviveadmin|sa getairdroptoken", requiredSender = Player.class)
+    @CommandPermission("survive.getairdroptoken")
+    void getAirdropToken(Player player) {
+        Message.mini("<yellow>Here you go!").send(player);
+        player.getInventory().addItem(AirdropManager.getInstance().getAirdropItem());
+    }
+
     @CommandMethod(value = "surviveadmin|sa join", requiredSender = Player.class)
     @CommandPermission("survive.admin.join")
     @CommandDescription("Tool to 'join' the game without respawn (unless necessary).")
