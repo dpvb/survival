@@ -58,10 +58,15 @@ public class NaturalAirdropSpawn extends BukkitRunnable {
             Message.mini("Spawning airdrop at <loc>", Placeholder.unparsed("loc", randomLocation.toString())).sendConsole();
             AirdropManager.getInstance().startAirdrop(randomLocation);
             // schedule a repopulate task next-tick
-            Bukkit.getScheduler().runTask(Survive.getInstance(), manager.getLocationGenerator()::repopulate);
+            Bukkit.getScheduler().runTask(Survive.getInstance(), () -> {
+                manager.getLocationGenerator().repopulate();
+                Message.mini("<gray>Repopulated airdrop spawns").sendConsole();
+            });
             if (GameManager.getInstance().isRunning()) {
                 // schedule next airdrop
-                manager.scheduleNextDrop();
+                int nextAirdrop = manager.scheduleNextDrop();
+                Message.mini("<gray>Next airdrop: <yellow><next>",
+                        Placeholder.unparsed("next", String.valueOf(nextAirdrop))).sendConsole();
             }
             cancel();
         }

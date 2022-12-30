@@ -13,6 +13,7 @@ import dev.dpvb.survive.mongo.models.SpawnLocation;
 import dev.dpvb.survive.util.messages.Message;
 import dev.dpvb.survive.util.messages.Messages;
 import net.kyori.adventure.audience.ForwardingAudience;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -82,10 +83,11 @@ public class GameManager implements ForwardingAudience {
 
             // Set up natural airdrop spawn manager
             randomAirdropManager.setCachedProtoSpawns(getSpawnLocationsCopy());
-            Message.mini("Repopulating airdrop spawns").sendConsole();
+            Message.mini("<gray>Populating airdrop spawns").sendConsole();
             randomAirdropManager.getLocationGenerator().repopulate();
             final int nextAirdrop = randomAirdropManager.scheduleNextDrop();
-            Message.mini("Starting regular airdrop spawning. Next airdrop: " + nextAirdrop).sendConsole();
+            Message.mini("<gray>Starting regular airdrop spawning. Next airdrop: <yellow><next>",
+                    Placeholder.unparsed("next", String.valueOf(nextAirdrop))).sendConsole();
 
             // Register Listener
             Bukkit.getPluginManager().registerEvents(listener, Survive.getInstance());
