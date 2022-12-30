@@ -2,6 +2,7 @@ package dev.dpvb.survive.chests.tiered;
 
 import dev.dpvb.survive.chests.Loot;
 import dev.dpvb.survive.chests.LootSource;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
@@ -13,17 +14,21 @@ import java.util.List;
 import java.util.Set;
 
 public enum ChestTier implements LootSource {
-    ONE(Material.CHEST, Sound.BLOCK_WOOD_BREAK),
-    TWO(Material.ENDER_CHEST, Sound.BLOCK_STONE_BREAK),
+    ONE(Material.CHEST, Sound.BLOCK_WOOD_BREAK, ChatColor.GOLD, "I"),
+    TWO(Material.ENDER_CHEST, Sound.BLOCK_STONE_BREAK, ChatColor.LIGHT_PURPLE, "II"),
     ;
 
     private final Material chestMaterial;
     private final Sound breakSound;
+    private final ChatColor holoColor;
+    private final String holoTier;
     private final Set<Loot> lootTable = new HashSet<>();
 
-    ChestTier(Material chestMaterial, Sound breakSound) {
+    ChestTier(Material chestMaterial, Sound breakSound, ChatColor holoColor, String holoTier) {
         this.chestMaterial = chestMaterial;
         this.breakSound = breakSound;
+        this.holoColor = holoColor;
+        this.holoTier = holoTier;
         fillLootTable();
     }
 
@@ -55,5 +60,13 @@ public enum ChestTier implements LootSource {
 
     public Set<Loot> getLootTable() {
         return lootTable;
+    }
+
+    public ChatColor getHoloColor() {
+        return holoColor;
+    }
+
+    public String getHoloTier() {
+        return holoTier;
     }
 }

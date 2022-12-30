@@ -4,6 +4,7 @@ import dev.dpvb.survive.Survive;
 import dev.dpvb.survive.chests.LootSource;
 import dev.dpvb.survive.chests.LootableChest;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -55,5 +56,10 @@ public class AirdropChest extends LootableChest implements Listener {
         event.setCancelled(true);
 
         open(event.getPlayer());
+    }
+
+    @Override
+    protected String hologramText() {
+        return ChatColor.YELLOW + "" + ChatColor.BOLD + "★ AIRDROP";
     }
 }

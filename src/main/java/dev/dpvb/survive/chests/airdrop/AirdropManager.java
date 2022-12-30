@@ -76,6 +76,10 @@ public class AirdropManager implements LootSource {
         }
     }
 
+    /**
+     * Call in an Airdrop at the specified location.
+     * @param location The location that the airdrop should land.
+     */
     public void startAirdrop(Location location) {
         new AirdropAnimation(location).runTaskTimer(Survive.getInstance(), 0L, 1L);
     }

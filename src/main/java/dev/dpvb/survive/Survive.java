@@ -17,6 +17,7 @@ import dev.dpvb.survive.npc.storage.StorageManager;
 import dev.dpvb.survive.stats.PlayerInfoManager;
 import dev.dpvb.survive.util.messages.Messages;
 import dev.dpvb.survive.util.messages.MiniMessageService;
+import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
@@ -29,6 +30,7 @@ import java.util.List;
 public final class Survive extends JavaPlugin {
 
     private static Survive instance;
+    private static HolographicDisplaysAPI holoAPI;
 
     @Override
     public void onEnable() {
@@ -38,6 +40,8 @@ public final class Survive extends JavaPlugin {
         setupConfigFile();
         // Setup Messages
         setupMessages();
+        // Register HolographicDisplays
+        registerHolographicDisplays();
         // Setup Managers
         setupManagers();
         // Setup Commands
@@ -118,8 +122,21 @@ public final class Survive extends JavaPlugin {
         }
     }
 
+    private void registerHolographicDisplays() {
+        if (!Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
+            getLogger().severe("HolographicDisplays not found. Disabling this plugin.");
+            this.setEnabled(false);
+        }
+
+        holoAPI = HolographicDisplaysAPI.get(this);
+    }
+
     public static Survive getInstance() {
         return instance;
+    }
+
+    public static HolographicDisplaysAPI getHoloAPI() {
+        return holoAPI;
     }
 
     public static class Configuration {
@@ -147,6 +164,10 @@ public final class Survive extends JavaPlugin {
 
         public static ConfigurationSection getArenaConfigSection() {
             return config.getConfigurationSection("arena");
+        }
+
+        public static ConfigurationSection getAirdropSpawningSection() {
+            return config.getConfigurationSection("airdrop-spawning");
         }
 
         public static String getMongoConnectionString() {

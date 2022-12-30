@@ -3,14 +3,17 @@ package dev.dpvb.survive.game;
 import dev.dpvb.survive.Survive;
 import dev.dpvb.survive.chests.airdrop.AirdropManager;
 import dev.dpvb.survive.chests.tiered.ChestManager;
+import dev.dpvb.survive.game.airdrop.ArenaAirdropSpawnManager;
 import dev.dpvb.survive.game.extraction.Extraction;
 import dev.dpvb.survive.game.tasks.ClearDrops;
 import dev.dpvb.survive.game.world.ArenaChunkTicketManager;
 import dev.dpvb.survive.mongo.MongoManager;
 import dev.dpvb.survive.mongo.models.Region;
 import dev.dpvb.survive.mongo.models.SpawnLocation;
+import dev.dpvb.survive.util.messages.Message;
 import dev.dpvb.survive.util.messages.Messages;
 import net.kyori.adventure.audience.ForwardingAudience;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -35,6 +38,7 @@ public class GameManager implements ForwardingAudience {
     private final List<Location> spawnLocations = new ArrayList<>();
     private final AtomicBoolean state = new AtomicBoolean();
     private final ArenaChunkTicketManager arenaChunkTicketManager;
+    private final ArenaAirdropSpawnManager randomAirdropManager;
     private final GameListener listener;
     private final World hubWorld;
     private final World arenaWorld;
@@ -45,6 +49,7 @@ public class GameManager implements ForwardingAudience {
         this.hubWorld = hubWorld;
         this.arenaWorld = arenaWorld;
         arenaChunkTicketManager = new ArenaChunkTicketManager(this);
+        randomAirdropManager = new ArenaAirdropSpawnManager(this);
         listener = new GameListener(this);
     }
 
@@ -73,8 +78,16 @@ public class GameManager implements ForwardingAudience {
             // Initialize Tasks
             initTasks();
 
-            // Setup chunk ticket manager
+            // Set up chunk ticket manager
             arenaChunkTicketManager.calculate();
+
+            // Set up natural airdrop spawn manager
+            randomAirdropManager.setCachedProtoSpawns(getSpawnLocationsCopy());
+            Message.mini("<gray>Populating airdrop spawns").sendConsole();
+            randomAirdropManager.getLocationGenerator().repopulate();
+            final int nextAirdrop = randomAirdropManager.scheduleNextDrop();
+            Message.mini("<gray>Starting regular airdrop spawning. Next airdrop: <yellow><next>",
+                    Placeholder.unparsed("next", String.valueOf(nextAirdrop))).sendConsole();
 
             // Register Listener
             Bukkit.getPluginManager().registerEvents(listener, Survive.getInstance());
@@ -116,6 +129,10 @@ public class GameManager implements ForwardingAudience {
 
             // Remove chunk tickets
             arenaChunkTicketManager.clearTickets();
+
+            // Teardown natural airdrop spawn manager
+            randomAirdropManager.stopScheduling();
+            randomAirdropManager.setCachedProtoSpawns(null);
 
             // Set state
             state.set(false);
@@ -396,6 +413,18 @@ public class GameManager implements ForwardingAudience {
         return Collections.unmodifiableSet(extractions);
     }
 
+    /**
+     * Gets a copy of the game's current list of spawn locations.
+     * <p>
+     * Each element is cloned, so modifying the list will not affect the game.
+     *
+     * @return a list of spawn locations
+     */
+    public List<Location> getSpawnLocationsCopy() {
+        // returned list contains copies of the locations
+        return spawnLocations.stream().map(Location::clone).toList();
+    }
+
     public ArenaChunkTicketManager getArenaChunkTicketManager() {
         return arenaChunkTicketManager;
     }
@@ -417,5 +446,9 @@ public class GameManager implements ForwardingAudience {
             player.getWorld().dropItemNaturally(player.getLocation(), item);
         }
         player.getInventory().clear();
+    }
+
+    public int getPlayerCount() {
+        return players.size();
     }
 }
