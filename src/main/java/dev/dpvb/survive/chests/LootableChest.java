@@ -108,7 +108,7 @@ public abstract class LootableChest {
         hologram.getLines().appendText(hologramText());
     }
 
-    private void deleteHologram() {
+    public void deleteHologram() {
         if (hologram != null) {
             hologram.delete();
         }

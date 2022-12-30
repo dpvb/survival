@@ -110,6 +110,9 @@ public class GameManager implements ForwardingAudience {
             // Remove all Players from the Arena (free extraction, basically)
             removeAllPlayers(false);
 
+            // Clear LootChest Holograms
+            ChestManager.getInstance().clearHolograms();
+
             // Clear chest data
             ChestManager.getInstance().getLootChestMap().clear();
 

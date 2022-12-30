@@ -2,6 +2,7 @@ package dev.dpvb.survive;
 
 import dev.dpvb.survive.chests.airdrop.AirdropManager;
 import dev.dpvb.survive.chests.hackable.HackableChestManager;
+import dev.dpvb.survive.chests.tiered.ChestManager;
 import dev.dpvb.survive.commands.Commands;
 import dev.dpvb.survive.events.FirstJoinListener;
 import dev.dpvb.survive.events.PlayerDeathListener;
@@ -63,6 +64,8 @@ public final class Survive extends JavaPlugin {
         AirdropManager.getInstance().clearAirdrops();
         // Clear all Hackable Chests
         HackableChestManager.getInstance().clearHackableChests();
+        // Clear all LootChest Holograms
+        ChestManager.getInstance().clearHolograms();
         // Remove all Players from the Arena
         GameManager.getInstance().removeAllPlayers(false);
     }

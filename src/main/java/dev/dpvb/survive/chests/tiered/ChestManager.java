@@ -87,6 +87,12 @@ public class ChestManager {
         return lootChestMap;
     }
 
+    public void clearHolograms() {
+        for (LootChest chest : getLootChestMap().values()) {
+            chest.deleteHologram();
+        }
+    }
+
     static ChestTier getTier(Material material) {
         return switch (material) {
             case CHEST -> ChestTier.ONE;
