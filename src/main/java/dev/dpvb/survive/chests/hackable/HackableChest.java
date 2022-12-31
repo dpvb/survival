@@ -3,6 +3,7 @@ package dev.dpvb.survive.chests.hackable;
 import dev.dpvb.survive.Survive;
 import dev.dpvb.survive.chests.LootSource;
 import dev.dpvb.survive.chests.LootableChest;
+import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -60,7 +61,6 @@ public class HackableChest extends LootableChest implements Listener {
         event.setCancelled(true);
         switch (state) {
             case LOCKED -> {
-                // TODO set a time in config.
                 timer = new Timer(hackTime);
                 timer.runTaskTimer(Survive.getInstance(), 0L, 20L);
                 state = HackableChestState.UNLOCKING;
@@ -91,8 +91,15 @@ public class HackableChest extends LootableChest implements Listener {
     }
 
     private void updateHologram() {
-        hologram.getLines().clear();
-        hologram.getLines().appendText(hologramText());
+        if (hologram.getLines().size() < 1) {
+            hologram.getLines().appendText(hologramText());
+        } else {
+            if (hologram.getLines().get(0) instanceof TextHologramLine textLine) {
+                textLine.setText(hologramText());
+            } else {
+                throw new IllegalStateException("Hologram line is not a text line.");
+            }
+        }
     }
 
     private String parseTime(long seconds) {
