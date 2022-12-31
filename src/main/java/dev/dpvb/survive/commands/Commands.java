@@ -18,6 +18,7 @@ import dev.dpvb.survive.game.extraction.ExtractionRegionSelector;
 import dev.dpvb.survive.game.spawn.SpawnTool;
 import dev.dpvb.survive.mongo.MongoManager;
 import dev.dpvb.survive.mongo.models.PlayerInfo;
+import dev.dpvb.survive.mongo.models.SpawnLocation;
 import dev.dpvb.survive.npc.NPCManager;
 import dev.dpvb.survive.npc.enchanting.AdvancedEnchanterNPC;
 import dev.dpvb.survive.npc.enchanting.BasicEnchanterNPC;
@@ -205,17 +206,54 @@ public class Commands {
         });
     }
 
-    @CommandMethod(value = "surviveadmin|sa setspawns", requiredSender = Player.class)
-    @CommandPermission("survive.admin.spawn.set")
-    void setArenaSpawnsCommand(Player player) {
-        new SpawnTool(player);
+    @CommandMethod(value = "surviveadmin|sa setspawns player", requiredSender = Player.class)
+    @CommandPermission("survive.admin.spawn.set.player")
+    void setArenaPlayerSpawnsCommand(Player player) {
+        new SpawnTool(player, locations -> {
+            // Save all locations to the DB
+            for (Location loc : locations) {
+                MongoManager.getInstance().getSpawnLocationService().create(
+                        new SpawnLocation(
+                                loc.getBlockX(),
+                                loc.getBlockY() + 1,
+                                loc.getBlockZ()
+                        )
+                );
+            }
+            player.sendMessage("Saved player spawn locations to Mongo");
+        });
     }
 
-    @CommandMethod(value = "surviveadmin|sa clearspawns", requiredSender = Player.class)
-    @CommandPermission("survive.admin.spawn.clear")
-    void clearArenaSpawnsCommand(Player player) {
+    @CommandMethod(value = "surviveadmin|sa setspawns hackcrates", requiredSender = Player.class)
+    @CommandPermission("survive.admin.spawn.set.hackcrates")
+    void setArenaHackCratesSpawnsCommand(Player player) {
+        new SpawnTool(player, locations -> {
+            for (Location loc : locations) {
+                MongoManager.getInstance().getHackableCrateSpawnsService().create(
+                        new SpawnLocation(
+                                loc.getBlockX(),
+                                loc.getBlockY() + 1,
+                                loc.getBlockZ()
+                        )
+                );
+            }
+
+            player.sendMessage("Saved hackable crate spawn locations to Mongo");
+        });
+    }
+
+    @CommandMethod(value = "surviveadmin|sa clearspawns player", requiredSender = Player.class)
+    @CommandPermission("survive.admin.spawn.clear.player")
+    void clearArenaPlayerSpawnsCommand(Player player) {
         MongoManager.getInstance().getSpawnLocationService().deleteAll();
-        Message.mini("<rainbow>Cleared all spawns from Mongo").send(player);
+        Message.mini("<rainbow>Cleared all player spawns from Mongo").send(player);
+    }
+
+    @CommandMethod(value = "surviveadmin|sa clearspawns hackcrate", requiredSender = Player.class)
+    @CommandPermission("survive.admin.spawn.clear.hackcrate")
+    void clearArenaHackCratesSpawnsCommand(Player player) {
+        MongoManager.getInstance().getHackableCrateSpawnsService().deleteAll();
+        Message.mini("<rainbow>Cleared all hackable crate spawns from Mongo").send(player);
     }
 
     // ------- STATE COMMANDS -------

@@ -377,12 +377,11 @@ public class GameManager implements ForwardingAudience {
             throw new IllegalStateException("Game is currently running");
         }
         final List<CrateSpawn> spawns = new ArrayList<>();
-        for (FacedBlock facedBlock : MongoManager.getInstance().getHackableCrateSpawnsService().getAll()) {
+        for (SpawnLocation spawnLocation : MongoManager.getInstance().getHackableCrateSpawnsService().getAll()) {
             spawns.add(new CrateSpawn(
-                    facedBlock.getX(),
-                    facedBlock.getY(),
-                    facedBlock.getZ(),
-                    facedBlock.getFace()
+                    spawnLocation.getX(),
+                    spawnLocation.getY(),
+                    spawnLocation.getZ()
             ));
         }
         Messages.Count.LOADED_HACKABLE_CRATE_SPAWNS_.counted(spawns.size()).sendConsole();

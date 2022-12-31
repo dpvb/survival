@@ -8,11 +8,10 @@ import org.bukkit.block.BlockFace;
 /**
  * Represents the spawn location of a crate.
  */
-public record CrateSpawn(int x, int y, int z, BlockFace facing) {
+public record CrateSpawn(int x, int y, int z) {
     /**
      * Gets this spawn as a {@link Location} in the arena world.
      * <p>
-     * This method is lossy, as {@link #facing()} is not preserved.
      *
      * @return a corresponding location
      */

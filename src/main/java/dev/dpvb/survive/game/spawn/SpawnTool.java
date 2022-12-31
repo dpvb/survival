@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -22,6 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class SpawnTool implements Listener {
 
@@ -29,9 +31,11 @@ public class SpawnTool implements Listener {
     private static ItemStack selectionTool;
     private static NamespacedKey key;
     private final List<Location> spawnLocations = new ArrayList<>();
+    private final Consumer<List<Location>> consumer;
 
-    public SpawnTool(Player player) {
+    public SpawnTool(Player player, Consumer<List<Location>> consumer) {
         this.player = player;
+        this.consumer = consumer;
         player.getInventory().addItem(getTool());
         Bukkit.getPluginManager().registerEvents(this, Survive.getInstance());
     }
@@ -57,17 +61,12 @@ public class SpawnTool implements Listener {
         if (droppedItem.equals(selectionTool)) {
             // Delete the Item
             event.getItemDrop().remove();
-            // Save all locations to the DB
-            for (Location loc : spawnLocations) {
-                MongoManager.getInstance().getSpawnLocationService().create(
-                        new SpawnLocation(
-                                loc.getBlockX(),
-                                loc.getBlockY() + 1,
-                                loc.getBlockZ()
-                        )
-                );
-            }
-            player.sendMessage("Saved spawn locations to Mongo");
+
+            // Do something with the locations.
+            consumer.accept(spawnLocations);
+
+            // Unregister the listener. this is embarrassing moment for us.
+            HandlerList.unregisterAll(this);
         }
     }
 
