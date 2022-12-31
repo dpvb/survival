@@ -4,8 +4,6 @@ import com.mongodb.client.MongoDatabase;
 import dev.dpvb.survive.mongo.models.FacedBlock;
 import org.bson.Document;
 
-// TODO do we need to store time-to-hack?
-
 /**
  * Stores position data for the natural spawning of hackable crates.
  */
