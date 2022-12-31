@@ -18,6 +18,7 @@ import java.util.function.Supplier;
  *
  * @author ms5984
  */
+@Deprecated
 public class RandomLocationGenerator {
     private static final int MAX_FUZZ = 8;
     private final Supplier<List<Location>> sourcesGetter;

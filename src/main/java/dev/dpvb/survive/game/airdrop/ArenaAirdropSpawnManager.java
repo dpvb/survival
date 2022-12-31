@@ -16,6 +16,7 @@ import java.util.List;
  *
  * @author ms5984
  */
+@Deprecated
 public class ArenaAirdropSpawnManager {
     final GameManager manager;
     private final NextAirdropCalculator calculator;
@@ -25,7 +26,7 @@ public class ArenaAirdropSpawnManager {
 
     public ArenaAirdropSpawnManager(GameManager manager) {
         this.manager = manager;
-        final var frequencySection = Survive.Configuration.getAirdropSpawningSection().getConfigurationSection("frequency");
+        final var frequencySection = Survive.Configuration.getHackableCrateSpawningSection().getConfigurationSection("frequency");
         if (frequencySection == null) {
             throw new IllegalStateException("Missing frequency subsection");
         }

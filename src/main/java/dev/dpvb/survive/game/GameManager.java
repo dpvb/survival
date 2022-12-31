@@ -4,11 +4,13 @@ import dev.dpvb.survive.Survive;
 import dev.dpvb.survive.chests.airdrop.AirdropManager;
 import dev.dpvb.survive.chests.hackable.HackableChestManager;
 import dev.dpvb.survive.chests.tiered.ChestManager;
-import dev.dpvb.survive.game.airdrop.ArenaAirdropSpawnManager;
+import dev.dpvb.survive.game.crates.CrateSpawn;
+import dev.dpvb.survive.game.crates.HackableCrateSpawnManager;
 import dev.dpvb.survive.game.extraction.Extraction;
 import dev.dpvb.survive.game.tasks.ClearDrops;
 import dev.dpvb.survive.game.world.ArenaChunkTicketManager;
 import dev.dpvb.survive.mongo.MongoManager;
+import dev.dpvb.survive.mongo.models.FacedBlock;
 import dev.dpvb.survive.mongo.models.Region;
 import dev.dpvb.survive.mongo.models.SpawnLocation;
 import dev.dpvb.survive.util.messages.Message;
@@ -39,7 +41,7 @@ public class GameManager implements ForwardingAudience {
     private final List<Location> spawnLocations = new ArrayList<>();
     private final AtomicBoolean state = new AtomicBoolean();
     private final ArenaChunkTicketManager arenaChunkTicketManager;
-    private final ArenaAirdropSpawnManager randomAirdropManager;
+    private final HackableCrateSpawnManager hackableCrateSpawnManager;
     private final GameListener listener;
     private final World hubWorld;
     private final World arenaWorld;
@@ -50,7 +52,7 @@ public class GameManager implements ForwardingAudience {
         this.hubWorld = hubWorld;
         this.arenaWorld = arenaWorld;
         arenaChunkTicketManager = new ArenaChunkTicketManager(this);
-        randomAirdropManager = new ArenaAirdropSpawnManager(this);
+        hackableCrateSpawnManager = new HackableCrateSpawnManager(this);
         listener = new GameListener(this);
     }
 
@@ -82,13 +84,11 @@ public class GameManager implements ForwardingAudience {
             // Set up chunk ticket manager
             arenaChunkTicketManager.calculate();
 
-            // Set up natural airdrop spawn manager
-            randomAirdropManager.setCachedProtoSpawns(getSpawnLocationsCopy());
-            Message.mini("<gray>Populating airdrop spawns").sendConsole();
-            randomAirdropManager.getLocationGenerator().repopulate();
-            final int nextAirdrop = randomAirdropManager.scheduleNextDrop();
-            Message.mini("<gray>Starting regular airdrop spawning. Next airdrop: <yellow><next>",
-                    Placeholder.unparsed("next", String.valueOf(nextAirdrop))).sendConsole();
+            // Set up natural hackable crate spawn manager
+            loadHackableCrateSpawns();
+            final int nextHCSpawn = hackableCrateSpawnManager.scheduleSpawns();
+            Message.mini("<gray>Starting regular spawning of hackable crates. Next crate: <yellow><next>",
+                    Placeholder.unparsed("next", String.valueOf(nextHCSpawn))).sendConsole();
 
             // Register Listener
             Bukkit.getPluginManager().registerEvents(listener, Survive.getInstance());
@@ -138,8 +138,8 @@ public class GameManager implements ForwardingAudience {
             arenaChunkTicketManager.clearTickets();
 
             // Teardown natural airdrop spawn manager
-            randomAirdropManager.stopScheduling();
-            randomAirdropManager.setCachedProtoSpawns(null);
+            hackableCrateSpawnManager.stopScheduling();
+            hackableCrateSpawnManager.setSpawns(null);
 
             // Set state
             state.set(false);
@@ -370,6 +370,23 @@ public class GameManager implements ForwardingAudience {
         // we can let the chunks unload now
         arenaChunkTicketManager.clearTickets();
         return items.size();
+    }
+
+    private void loadHackableCrateSpawns() {
+        if (state.get()) {
+            throw new IllegalStateException("Game is currently running");
+        }
+        final List<CrateSpawn> spawns = new ArrayList<>();
+        for (FacedBlock facedBlock : MongoManager.getInstance().getHackableCrateSpawnsService().getAll()) {
+            spawns.add(new CrateSpawn(
+                    facedBlock.getX(),
+                    facedBlock.getY(),
+                    facedBlock.getZ(),
+                    facedBlock.getFace()
+            ));
+        }
+        Messages.Count.LOADED_HACKABLE_CRATE_SPAWNS_.counted(spawns.size()).sendConsole();
+        hackableCrateSpawnManager.setSpawns(spawns);
     }
 
     private void initTasks() {

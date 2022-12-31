@@ -58,6 +58,11 @@ public class Messages {
                 one = "<green>{count}</green> token",
                 many = "<green>{count}</green> tokens")
         TOKEN_AMOUNT_SELF_("<gray>You have {tokens}."),
+        @Counting(value = "spawnpoints",
+                zero = "<yellow><bold>No</bold> hackable crate spawnpoints loaded</yellow>",
+                one = "Loaded <green>{count}</green> hackable crate spawnpoint",
+                many = "Loaded <green>{count}</green> hackable crate spawnpoints")
+        LOADED_HACKABLE_CRATE_SPAWNS_("<gray>{spawnpoints} in the arena."),
         ;
 
         final String message;

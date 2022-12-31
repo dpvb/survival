@@ -19,6 +19,7 @@ import static dev.dpvb.survive.game.airdrop.ArenaAirdropSpawnManager.testLocatio
  *
  * @author ms5984
  */
+@Deprecated(forRemoval = true)
 public class NaturalAirdropSpawn extends BukkitRunnable {
     private static final int MAX_TRIES = 5;
     private final ArenaAirdropSpawnManager manager;
@@ -28,7 +29,7 @@ public class NaturalAirdropSpawn extends BukkitRunnable {
 
     public NaturalAirdropSpawn(ArenaAirdropSpawnManager manager) {
         this.manager = manager;
-        minDistanceToNearestPlayer = Survive.Configuration.getAirdropSpawningSection().getInt("min-distance-to-nearest-player");
+        minDistanceToNearestPlayer = Survive.Configuration.getHackableCrateSpawningSection().getInt("min-distance-to-nearest-player");
         playerLocations = GameManager.getInstance().getPlayers().stream()
                 .map(p -> p.getLocation().toVector())
                 .toList();

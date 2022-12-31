@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author ms5984
  */
+@Deprecated(forRemoval = true)
 public final class NextAirdropCalculator {
     final int ceil;
     final int floor;

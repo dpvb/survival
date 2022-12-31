@@ -172,8 +172,8 @@ public final class Survive extends JavaPlugin {
             return config.getConfigurationSection("arena");
         }
 
-        public static ConfigurationSection getAirdropSpawningSection() {
-            return config.getConfigurationSection("airdrop-spawning");
+        public static ConfigurationSection getHackableCrateSpawningSection() {
+            return config.getConfigurationSection("hackable-crate-spawning");
         }
 
         public static String getMongoConnectionString() {
