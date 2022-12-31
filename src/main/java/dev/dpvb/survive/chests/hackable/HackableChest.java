@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class HackableChest extends LootableChest implements Listener {
 
     private final long hackTime;
-    private HackableChestState state;
+    private @NotNull HackableChestState state;
     private Timer timer;
 
     public HackableChest(@NotNull Block block, long hackTime) {
@@ -76,18 +76,11 @@ public class HackableChest extends LootableChest implements Listener {
 
     @Override
     protected String hologramText() {
-        switch (state) {
-            case LOCKED -> {
-                return ChatColor.RED + parseTime(hackTime);
-            }
-            case UNLOCKING -> {
-                return ChatColor.YELLOW + parseTime(timer.currTime);
-            }
-            case UNLOCKED -> {
-                return ChatColor.GREEN + "0:00";
-            }
-        }
-        return "BASED";
+        return switch (state) {
+            case LOCKED -> ChatColor.RED + parseTime(hackTime);
+            case UNLOCKING -> ChatColor.YELLOW + parseTime(timer.currTime);
+            case UNLOCKED -> ChatColor.GREEN + "UNLOCKED";
+        };
     }
 
     private void updateHologram() {
