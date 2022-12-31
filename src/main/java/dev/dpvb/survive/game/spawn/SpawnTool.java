@@ -1,8 +1,6 @@
 package dev.dpvb.survive.game.spawn;
 
 import dev.dpvb.survive.Survive;
-import dev.dpvb.survive.mongo.MongoManager;
-import dev.dpvb.survive.mongo.models.SpawnLocation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;

@@ -1,12 +1,11 @@
 package dev.dpvb.survive.mongo.services;
 
 import com.mongodb.client.MongoDatabase;
-import dev.dpvb.survive.mongo.models.FacedBlock;
 import dev.dpvb.survive.mongo.models.SpawnLocation;
 import org.bson.Document;
 
 /**
- * Stores position data for the natural spawning of hackable crates.
+ * Stores locations for the natural spawning of hackable crates.
  */
 public class HackableCrateSpawnsService extends MongoService<SpawnLocation> {
     public HackableCrateSpawnsService(MongoDatabase database) {

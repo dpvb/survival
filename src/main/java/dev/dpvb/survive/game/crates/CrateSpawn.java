@@ -3,7 +3,6 @@ package dev.dpvb.survive.game.crates;
 import dev.dpvb.survive.game.GameManager;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.BlockFace;
 
 /**
  * Represents the spawn location of a crate.
