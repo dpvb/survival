@@ -7,10 +7,10 @@ import org.bson.Document;
 // TODO do we need to store time-to-hack?
 
 /**
- * Stores position data for the natural spawning of hacked chests.
+ * Stores position data for the natural spawning of hackable crates.
  */
-public class HackedChestService extends MongoService<FacedBlock> {
-    public HackedChestService(MongoDatabase database) {
+public class HackableCrateSpawnsService extends MongoService<FacedBlock> {
+    public HackableCrateSpawnsService(MongoDatabase database) {
         super(database, "hacked-chests", FacedBlock.class);
     }
 
