@@ -17,12 +17,14 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class HackableCrateSpawnManager {
     private final GameManager manager;
+    private final long hackTime;
     private final BoundedRngCalculator calculator;
     private List<CrateSpawn> spawns;
     private BukkitTask task;
 
     public HackableCrateSpawnManager(GameManager manager) {
         this.manager = manager;
+        this.hackTime = Survive.Configuration.getHackableCrateSpawningSection().getLong("hack-time");
         final var frequencySection = Survive.Configuration.getHackableCrateSpawningSection().getConfigurationSection("frequency");
         if (frequencySection == null) {
             throw new IllegalStateException("Missing frequency subsection");
@@ -68,7 +70,7 @@ public class HackableCrateSpawnManager {
     }
 
     private void spawn() {
-        HackableChestManager.getInstance().spawnHackableChest(getRandomSpawn().asLocation());
+        HackableChestManager.getInstance().spawnHackableChest(getRandomSpawn().asLocation(), hackTime);
     }
 
     private CrateSpawn getRandomSpawn() {

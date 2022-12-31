@@ -19,12 +19,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class HackableChest extends LootableChest implements Listener {
 
+    private final long hackTime;
     private HackableChestState state;
     private Timer timer;
-    private final long hackTime = 30;
 
-    public HackableChest(@NotNull Block block) {
+    public HackableChest(@NotNull Block block, long hackTime) {
         super(block, Material.ENDER_CHEST, BlockFace.NORTH);
+        this.hackTime = hackTime;
         state = HackableChestState.LOCKED;
         spawnChest();
         Bukkit.getPluginManager().registerEvents(this, Survive.getInstance());

@@ -18,6 +18,9 @@ rules:
 rule-style: "<bold><n>.</bold> <rule>"
 
 hackable-crate-spawning:
+  # The time in seconds a player must wait for hacks to complete
+  #  try to keep <3600 as the display is in minutes:seconds
+  hack-time: 300
   # spawn frequency in minutes
   # formula:
   # Let

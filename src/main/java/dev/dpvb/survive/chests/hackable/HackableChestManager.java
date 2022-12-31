@@ -20,8 +20,8 @@ public class HackableChestManager implements LootSource {
         LootSource.loadFromLoot("hackable", lootTable);
     }
 
-    public void spawnHackableChest(Location location) {
-        hackableChests.add(new HackableChest(location.getBlock()));
+    public void spawnHackableChest(Location location, long hackTime) {
+        hackableChests.add(new HackableChest(location.getBlock(), hackTime));
     }
 
     public void clearHackableChests() {

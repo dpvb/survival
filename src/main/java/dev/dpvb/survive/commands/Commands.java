@@ -40,6 +40,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -279,16 +280,17 @@ public class Commands {
     }
 
     // ------- OTHER COMMANDS -------
-    @CommandMethod(value = "survive test", requiredSender = Player.class)
+    @CommandMethod(value = "survive test [time]", requiredSender = Player.class)
     @CommandPermission("survive.test")
-    void testCommand(Player player) {
+    void testCommand(Player player, @Argument("time") @Nullable Long time) {
         Block targetBlock = player.getTargetBlock(5);
         if (targetBlock == null) {
             return;
         }
 
         Location location = targetBlock.getLocation().add(0, 1, 0);
-        HackableChestManager.getInstance().spawnHackableChest(location);
+        time = time == null ? Survive.Configuration.getHackableCrateSpawningSection().getLong("hack-time") : time;
+        HackableChestManager.getInstance().spawnHackableChest(location, time);
     }
 
     @CommandMethod(value = "surviveadmin|sa savechests <radius>", requiredSender = Player.class)
