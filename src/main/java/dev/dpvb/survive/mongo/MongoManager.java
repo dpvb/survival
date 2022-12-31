@@ -21,6 +21,7 @@ public class MongoManager {
     private final PlayerInfoService playerInfoService;
     private final PlayerStorageService playerStorageService;
     private final ChestDataService chestDataService;
+    private final HackedChestService hackedChestService;
     private final ExtractionRegionService extractionRegionService;
     private final SpawnLocationService spawnLocationService;
 
@@ -49,6 +50,7 @@ public class MongoManager {
         playerInfoService = new PlayerInfoService(db);
         playerStorageService = new PlayerStorageService(db);
         chestDataService = new ChestDataService(db);
+        hackedChestService = new HackedChestService(db);
         extractionRegionService = new ExtractionRegionService(db);
         spawnLocationService = new SpawnLocationService(db);
     }
@@ -71,6 +73,10 @@ public class MongoManager {
 
     public ChestDataService getChestDataService() {
         return chestDataService;
+    }
+
+    public HackedChestService getHackedChestService() {
+        return hackedChestService;
     }
 
     public ExtractionRegionService getExtractionRegionService() {
