@@ -39,6 +39,9 @@ public class HackableChest extends LootableChest implements Listener {
     @Override
     public void destroy() {
         super.destroy();
+        if (timer != null && !timer.isCancelled()) {
+            timer.cancel();
+        }
         HandlerList.unregisterAll(this);
         if (!HackableChestManager.getInstance().isClearing()) {
             HackableChestManager.getInstance().removeHackableChestFromCache(this);
