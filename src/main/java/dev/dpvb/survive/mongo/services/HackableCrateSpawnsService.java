@@ -11,7 +11,7 @@ import org.bson.Document;
  */
 public class HackableCrateSpawnsService extends MongoService<FacedBlock> {
     public HackableCrateSpawnsService(MongoDatabase database) {
-        super(database, "hacked-chests", FacedBlock.class);
+        super(database, "hackable-crate-spawns", FacedBlock.class);
     }
 
     public void create(FacedBlock chestData) {
